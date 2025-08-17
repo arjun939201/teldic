@@ -176,8 +176,6 @@
  * లోసీమ (n. రాష్ట్రం/state)
 వ
  * వడం (n. writing)
- * వాత (n. composition)
- * వాతరి (n. writer)
  * వాకువ (n. కథ/story)
  * వాడుకనుడివాటులు (n. వ్యావహారిక భాషావాదులు)
  * విచ్చుకం (n. స్వాతంత్ర్యం/independence)
@@ -191,6 +189,8 @@
  * వేయడం (n. putting)
  * వ్రాయడం (n. writing)
  * వ్రాయు (v. write)
+ * వ్రాత (n. composition)
+ * వ్రాతరి (n. writer)
 స
  * సాతం (n. పాత్ర/role)
  * సీ-పఱపాల చెలరేఁగుడు (n. దుష్ప్రచారాల విజృంభణ/spread of propaganda)
