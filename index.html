@@ -9,21 +9,24 @@
   <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Telugu:wght@400;600;700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
   <style>
     body { margin:0; background:#f9f7f1; font-family:"Inter", sans-serif; color:#222; }
-    header { padding:12px 16px; background:#fff; border-bottom:1px solid #ddd; position:sticky; top:0; }
-    h1 { margin:0; font-size:20px; color:#7a2d00; font-weight:700; }
-    main { max-width:1050px; margin:20px auto; padding:0 16px; }
-    .sheet { background:#fff; border:1px solid #ddd; border-radius:16px; box-shadow:0 4px 12px #0001; padding:20px; }
-    .columns { column-count:2; column-gap:28px; column-rule:1px solid #eee; }
-    @media(max-width:900px){ .columns{ column-count:1; } }
-    .entry { break-inside:avoid; padding:6px 0; font-family:"Noto Serif Telugu", serif; font-size:18px; line-height:1.35; }
-    .word { font-weight:700; }
-    .pos { font-style:italic; opacity:.9; font-size:.95em; }
-    .meaning { font-family:"Inter", sans-serif; font-size:.96em; }
+    header { padding:12px 16px; background:#fff; border-bottom:1px solid #ddd; position:sticky; top:0; display:flex; align-items:center; gap:12px; }
+    h1 { margin:0; font-size:20px; color:#7a2d00; font-weight:700; flex:1; }
+    #search { padding:8px 12px; border:1px solid #ccc; border-radius:6px; font-size:14px; width:220px; }
+    main { max-width:1200px; margin:20px auto; padding:0 16px; }
+    .sheet { background:#fff; border:1px solid #ddd; border-radius:12px; box-shadow:0 4px 12px #0001; padding:20px; max-height:80vh; overflow-y:auto; }
+    .columns { display:flex; flex-wrap:wrap; gap:16px; }
+    .group { flex:1 1 calc(50% - 16px); background:#fafafa; border:1px solid #e0e0e0; border-radius:8px; padding:10px 14px; font-size:15px; line-height:1.4; scroll-margin-top:80px; }
+    .headword { font-family:"Noto Serif Telugu", serif; font-size:16px; font-weight:700; margin-bottom:4px; }
+    .entry { margin-left:10px; font-family:"Noto Serif Telugu", serif; }
+    .pos { font-style:italic; opacity:.9; font-size:.85em; }
+    .meaning { font-family:"Inter", sans-serif; font-size:.9em; }
+    .highlight { background:yellow; }
   </style>
 </head>
 <body>
   <header>
     <h1>తెలుగు నిఘంటువు • Web</h1>
+    <input id="search" type="text" placeholder="Search word…" />
   </header>
   <main>
     <section class="sheet">
@@ -32,34 +35,89 @@
   </main>
 
   <script>
+    let groups = {};
+
     async function loadDictionary(){
       try {
         const res = await fetch('dictionary.json');
         const entries = await res.json();
-        render(entries);
+        groups = groupByRoot(entries);
+        render(groups);
       } catch(err){
         document.getElementById('dict').innerHTML = '<p>Could not load dictionary.json</p>';
       }
     }
 
-    function render(list){
+    // Group entries by root property
+    function groupByRoot(list){
+      const groups = {};
+      list.forEach(e => {
+        const root = e.root || e.word; // if no root given, word itself is root
+        if(!groups[root]) groups[root] = [];
+        groups[root].push(e);
+      });
+      return groups;
+    }
+
+    function render(groups){
       const dictEl = document.getElementById('dict');
       dictEl.innerHTML = '';
-      list.forEach(e=>{
-        const div = document.createElement('div');
-        div.className = 'entry';
-        div.innerHTML = `
-          <span class="word">${escapeHtml(e.word)}</span>
-          ${e.pos? ` <span class="pos">(${escapeHtml(e.pos)})</span>`: ''}
-          <span class="meaning"> — ${escapeHtml(e.meaning || '')}</span>
-        `;
-        dictEl.appendChild(div);
-      });
+      for(const root in groups){
+        const box = document.createElement('div');
+        box.className = 'group';
+        box.id = 'box-' + root;
+
+        // root entry
+        const rootEntry = groups[root].find(e=>e.word===root) || groups[root][0];
+        const head = document.createElement('div');
+        head.className = 'headword';
+        head.innerHTML = `${escapeHtml(rootEntry.word)} ${rootEntry.pos? `<span class="pos">(${escapeHtml(rootEntry.pos)})</span>`:''} — <span class="meaning">${escapeHtml(rootEntry.meaning||'')}</span>`;
+        box.appendChild(head);
+
+        // derived words
+        groups[root].forEach(e=>{
+          if(e.word!==rootEntry.word){
+            const div = document.createElement('div');
+            div.className = 'entry';
+            div.innerHTML = `${escapeHtml(e.word)} ${e.pos? `<span class="pos">(${escapeHtml(e.pos)})</span>`:''} — <span class="meaning">${escapeHtml(e.meaning||'')}</span>`;
+            box.appendChild(div);
+          }
+        });
+
+        dictEl.appendChild(box);
+      }
     }
 
     function escapeHtml(s){
       return (s||'').replace(/[&<>]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]))
     }
+
+    // Search functionality
+    const searchInput = document.getElementById('search');
+    searchInput.addEventListener('keydown', e => {
+      if(e.key==='Enter'){
+        const term = searchInput.value.trim().toLowerCase();
+        if(!term) return;
+        let targetId = null;
+        for(const root in groups){
+          for(const entry of groups[root]){
+            if(entry.word.toLowerCase().includes(term)){
+              targetId = 'box-' + root;
+              break;
+            }
+          }
+          if(targetId) break;
+        }
+        if(targetId){
+          const el = document.getElementById(targetId);
+          el.scrollIntoView({behavior:'smooth', block:'start'});
+          el.classList.add('highlight');
+          setTimeout(()=> el.classList.remove('highlight'),2000);
+        } else {
+          alert('Word not found');
+        }
+      }
+    });
 
     loadDictionary();
   </script>
