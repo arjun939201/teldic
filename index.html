@@ -13,8 +13,8 @@
     main { max-width:1200px; margin:20px auto; padding:0 16px; }
     .sheet { background:#fff; border:1px solid #ddd; border-radius:12px; box-shadow:0 4px 12px #0001; padding:20px; max-height:80vh; overflow-y:auto; }
     .columns { display:flex; flex-wrap:wrap; gap:16px; }
-    .group { flex:1 1 calc(50% - 16px); background:#fafafa; border:1px solid #e0e0e0; border-radius:8px; padding:12px 14px; font-size:14px; line-height:1.5; scroll-margin-top:80px; transition:background .3s; }
-    .highlight { background:yellow; }
+    .group { flex:1 1 calc(50% - 16px); background:#fafafa; border:1px solid #e0e0e0; border-radius:8px; padding:12px 14px; font-size:14px; line-height:1.5; scroll-margin-top:80px; }
+    mark { background:yellow; padding:0; }
   </style>
 </head>
 <body>
@@ -30,6 +30,7 @@
 
   <script>
     let entries = [];
+    let lastTerm = "";
 
     async function loadDictionary(){
       try {
@@ -41,14 +42,22 @@
       }
     }
 
-    function render(list){
+    function render(list, highlightTerm=""){
       const dictEl = document.getElementById('dict');
       dictEl.innerHTML = '';
       list.forEach((text, idx) => {
         const box = document.createElement('div');
         box.className = 'group';
         box.id = 'box-' + idx;
-        box.textContent = text;
+
+        // highlight match if exists
+        if(highlightTerm){
+          const regex = new RegExp("(" + highlightTerm + ")", "gi");
+          box.innerHTML = text.replace(regex, "<mark>$1</mark>");
+        } else {
+          box.textContent = text;
+        }
+
         dictEl.appendChild(box);
       });
     }
@@ -88,8 +97,8 @@
         if(best.idx!==null){
           const el = document.getElementById('box-' + best.idx);
           el.scrollIntoView({behavior:'smooth', block:'start'});
-          el.classList.add('highlight');
-          setTimeout(()=>el.classList.remove('highlight'),2000);
+          // re-render with highlighted term
+          render(entries, term);
         } else {
           alert('Not found');
         }
