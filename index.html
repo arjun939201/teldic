@@ -23,10 +23,17 @@
 
     /* Each dictionary line */
     .entry {
-      white-space: nowrap;     /* keep content on one line */
-      overflow-x: auto;        /* horizontal scroll if long */
-      display: block;          /* each entry in its own row */
+      white-space: nowrap;
+      overflow-x: auto;
+      display: block;
       padding: 2px 0;
+    }
+
+    /* 🔢 Number style */
+    .entry .num {
+      color:#7a2d00;
+      font-weight:bold;
+      margin-right:6px;
     }
 
     mark { background:yellow; padding:0 2px; }
@@ -68,8 +75,10 @@
         const lines = originalText.trim().split("\n");
         const dictEl = document.getElementById("dict");
 
-        // render each line in a scrollable div
-        dictEl.innerHTML = lines.map(line => `<div class="entry">${line}</div>`).join("");
+        // 🔢 render each line with number
+        dictEl.innerHTML = lines
+          .map((line, i) => `<div class="entry"><span class="num">${i + 1}.</span> ${line}</div>`)
+          .join("");
         
       } catch (err) {
         document.getElementById("dict").textContent = "Could not load dictionary.txt";
@@ -93,23 +102,26 @@
 
     function highlight(term) {
       const dictEl = document.getElementById("dict");
+      const lines = originalText.trim().split("\n");
+
       if (!term) {
-        const lines = originalText.trim().split("\n");
-        dictEl.innerHTML = lines.map(line => `<div class="entry">${line}</div>`).join("");
+        dictEl.innerHTML = lines
+          .map((line, i) => `<div class="entry"><span class="num">${i + 1}.</span> ${line}</div>`)
+          .join("");
         matches = [];
         document.querySelector(".floating-bar").style.display = "none";
         return;
       }
 
-      // Exact substring matches
       const regex = new RegExp("(" + term + ")", "gi");
-      const lines = originalText.trim().split("\n");
-      let html = lines.map(line => `<div class="entry">${line.replace(regex, "<mark>$1</mark>")}</div>`).join("");
+      let html = lines
+        .map((line, i) => `<div class="entry"><span class="num">${i + 1}.</span> ${line.replace(regex, "<mark>$1</mark>")}</div>`)
+        .join("");
       dictEl.innerHTML = html;
 
       matches = Array.from(dictEl.querySelectorAll("mark"));
 
-      // If no exact matches, try fuzzy search
+      // fuzzy search
       if (matches.length === 0) {
         let words = originalText.split(/\s+/);
         let candidates = [];
@@ -118,7 +130,9 @@
         });
         if (candidates.length > 0) {
           const fuzzyRegex = new RegExp("(" + candidates.join("|") + ")", "gi");
-          html = lines.map(line => `<div class="entry">${line.replace(fuzzyRegex, "<mark>$1</mark>")}</div>`).join("");
+          html = lines
+            .map((line, i) => `<div class="entry"><span class="num">${i + 1}.</span> ${line.replace(fuzzyRegex, "<mark>$1</mark>")}</div>`)
+            .join("");
           dictEl.innerHTML = html;
           matches = Array.from(dictEl.querySelectorAll("mark"));
         }
@@ -131,7 +145,9 @@
         updateCounter();
         document.querySelector(".floating-bar").style.display = "flex";
       } else {
-        dictEl.innerHTML = lines.map(line => `<div class="entry">${line}</div>`).join("") + "<br>(❌ No results found)";
+        dictEl.innerHTML = lines
+          .map((line, i) => `<div class="entry"><span class="num">${i + 1}.</span> ${line}</div>`)
+          .join("") + "<br>(❌ No results found)";
         document.querySelector(".floating-bar").style.display = "none";
       }
     }
@@ -153,14 +169,12 @@
       document.getElementById("nextBtn").disabled = currentIndex === matches.length - 1;
     }
 
-    // Search on Enter
     document.getElementById("search").addEventListener("keydown", e => {
       if (e.key === "Enter") {
         highlight(e.target.value.trim());
       }
     });
 
-    // Navigation
     document.getElementById("prevBtn").addEventListener("click", () => {
       if (currentIndex > 0) {
         currentIndex--;
