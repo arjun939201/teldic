@@ -2,79 +2,24 @@
 <html lang="te">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>తెలుగు నిఘంటువు</title>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Telugu:wght@400;600&display=swap" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
-    body {
-      margin: 0;
-      background: #f9f7f1;
-      font-family: "Noto Serif Telugu", serif;
-      color: #222;
-      line-height: 1.6;
-      font-size: 16px;
-      padding: 20px;
-      white-space: pre-wrap;
-    }
-    header {
-      padding: 12px 0;
-      margin-bottom: 16px;
-      border-bottom: 1px solid #ddd;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-    h1 {
-      margin: 0;
-      font-size: 20px;
-      color: #7a2d00;
-      flex: 1;
-    }
-    #search {
-      padding: 6px 10px;
-      border: 1px solid #aaa;
-      border-radius: 6px;
-      font-size: 14px;
-    }
-    #dict {
-      background: #fff;
-      border: 1px solid #ddd;
-      border-radius: 8px;
-      padding: 16px;
-      box-shadow: 0 4px 12px #0001;
-      overflow-y: auto;
-      max-height: 80vh;
-    }
-    mark {
-      background: yellow;
-      padding: 0 2px;
-    }
+    body { margin:0; font-family:"Noto Serif Telugu", serif; background:#f9f7f1; color:#222; }
+    header { padding:12px 16px; background:#fff; border-bottom:1px solid #ddd; position:sticky; top:0; display:flex; align-items:center; gap:12px; }
+    h1 { margin:0; font-size:18px; color:#7a2d00; font-weight:700; flex:1; }
+    #search { padding:8px 12px; border:1px solid #ccc; border-radius:6px; font-size:14px; width:220px; }
+    main { max-width:800px; margin:20px auto; padding:0 16px; }
+    .sheet { background:#fff; border:1px solid #ddd; border-radius:12px; box-shadow:0 4px 12px #0001; padding:20px; white-space:pre-wrap; line-height:1.5; }
+    mark { background:yellow; padding:0 2px; }
+    mark.active { background:orange; }
     .floating-bar {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      background: #fff;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      box-shadow: 0 4px 12px #0003;
-      padding: 8px 12px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 14px;
+      position:fixed; bottom:20px; right:20px;
+      background:#fff; border:1px solid #ccc; border-radius:8px;
+      padding:6px 12px; display:none; align-items:center; gap:8px;
+      box-shadow:0 2px 8px #0003; font-size:14px;
     }
-    .floating-bar button {
-      background: #7a2d00;
-      color: #fff;
-      border: none;
-      border-radius: 4px;
-      padding: 4px 8px;
-      cursor: pointer;
-    }
-    .floating-bar button:disabled {
-      background: #ccc;
-      cursor: not-allowed;
-    }
+    .floating-bar button { padding:4px 8px; }
   </style>
 </head>
 <body>
@@ -83,12 +28,11 @@
     <input id="search" type="text" placeholder="Search word…" />
   </header>
   <main>
-    <div id="dict">Loading dictionary...</div>
+    <section class="sheet" id="dict">Loading…</section>
   </main>
-
-  <div class="floating-bar" style="display:none;">
+  <div class="floating-bar">
     <button id="prevBtn">⬅</button>
-    <span id="counter">0 / 0</span>
+    <span id="counter"></span>
     <button id="nextBtn">➡</button>
   </div>
 
@@ -107,14 +51,19 @@
       }
     }
 
-    function fuzzyMatch(haystack, needle) {
-      needle = needle.toLowerCase();
-      haystack = haystack.toLowerCase();
-      let j = 0;
-      for (let i = 0; i < haystack.length && j < needle.length; i++) {
-        if (haystack[i] === needle[j]) j++;
+    // Simple Levenshtein distance
+    function levenshtein(a, b) {
+      const m = [];
+      for (let i = 0; i <= b.length; i++) m[i] = [i];
+      for (let j = 0; j <= a.length; j++) m[0][j] = j;
+      for (let i = 1; i <= b.length; i++) {
+        for (let j = 1; j <= a.length; j++) {
+          m[i][j] = b.charAt(i-1) === a.charAt(j-1)
+            ? m[i-1][j-1]
+            : Math.min(m[i-1][j-1]+1, m[i][j-1]+1, m[i-1][j]+1);
+        }
       }
-      return j === needle.length;
+      return m[b.length][a.length];
     }
 
     function highlight(term) {
@@ -126,21 +75,43 @@
         return;
       }
 
-      // Split by lines and highlight words inside lines
+      // Exact substring matches
       const regex = new RegExp("(" + term + ")", "gi");
       let html = originalText.replace(regex, "<mark>$1</mark>");
       dictEl.innerHTML = html;
 
-      // Collect all highlights
       matches = Array.from(dictEl.querySelectorAll("mark"));
+
+      // If no exact matches, try fuzzy search
+      if (matches.length === 0) {
+        const words = originalText.split(/\s+/);
+        let candidates = [];
+        words.forEach(w => {
+          if (levenshtein(term, w) <= 2) candidates.push(w);
+        });
+        if (candidates.length > 0) {
+          const fuzzyRegex = new RegExp("(" + candidates.join("|") + ")", "gi");
+          html = originalText.replace(fuzzyRegex, "<mark>$1</mark>");
+          dictEl.innerHTML = html;
+          matches = Array.from(dictEl.querySelectorAll("mark"));
+        }
+      }
+
       if (matches.length > 0) {
         currentIndex = 0;
+        updateActive();
         scrollToMatch();
         updateCounter();
         document.querySelector(".floating-bar").style.display = "flex";
       } else {
         document.querySelector(".floating-bar").style.display = "none";
+        alert("No match found");
       }
+    }
+
+    function updateActive() {
+      matches.forEach(m => m.classList.remove("active"));
+      if (matches[currentIndex]) matches[currentIndex].classList.add("active");
     }
 
     function scrollToMatch() {
@@ -166,6 +137,7 @@
     document.getElementById("prevBtn").addEventListener("click", () => {
       if (currentIndex > 0) {
         currentIndex--;
+        updateActive();
         scrollToMatch();
         updateCounter();
       }
@@ -174,6 +146,7 @@
     document.getElementById("nextBtn").addEventListener("click", () => {
       if (currentIndex < matches.length - 1) {
         currentIndex++;
+        updateActive();
         scrollToMatch();
         updateCounter();
       }
