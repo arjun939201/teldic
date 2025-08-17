@@ -9,19 +9,29 @@
     header { padding:12px 16px; background:#fff; border-bottom:1px solid #ddd; position:sticky; top:0; display:flex; align-items:center; gap:12px; }
     h1 { margin:0; font-size:18px; color:#7a2d00; font-weight:700; flex:1; }
     #search { padding:8px 12px; border:1px solid #ccc; border-radius:6px; font-size:14px; width:220px; }
-    main { max-width:800px; margin:20px auto; padding:0 16px; }
+    main { max-width:100%; margin:20px auto; padding:0 16px; }
+    
     .sheet {
-  background:#fff;
-  border:1px solid #ddd;
-  border-radius:12px;
-  box-shadow:0 4px 12px #0001;
-  padding:20px;
-  white-space:pre-wrap;
-  line-height:1.3;
-  font-size:15px;  /* Telugu text smaller */
-}
-mark { background:yellow; padding:0 2px; }
+      background:#fff;
+      border:1px solid #ddd;
+      border-radius:12px;
+      box-shadow:0 4px 12px #0001;
+      padding:20px;
+      line-height:1.4;
+      font-size:15px;
+    }
+
+    /* Each dictionary line */
+    .entry {
+      white-space: nowrap;     /* keep content on one line */
+      overflow-x: auto;        /* horizontal scroll if long */
+      display: block;          /* each entry in its own row */
+      padding: 2px 0;
+    }
+
+    mark { background:yellow; padding:0 2px; }
     mark.active { background:orange; }
+
     .floating-bar {
       position:fixed; bottom:20px; right:20px;
       background:#fff; border:1px solid #ccc; border-radius:8px;
@@ -54,7 +64,13 @@ mark { background:yellow; padding:0 2px; }
       try {
         const res = await fetch("dictionary.txt");
         originalText = await res.text();
-        document.getElementById("dict").textContent = originalText.trim();
+
+        const lines = originalText.trim().split("\n");
+        const dictEl = document.getElementById("dict");
+
+        // render each line in a scrollable div
+        dictEl.innerHTML = lines.map(line => `<div class="entry">${line}</div>`).join("");
+        
       } catch (err) {
         document.getElementById("dict").textContent = "Could not load dictionary.txt";
       }
@@ -78,7 +94,8 @@ mark { background:yellow; padding:0 2px; }
     function highlight(term) {
       const dictEl = document.getElementById("dict");
       if (!term) {
-        dictEl.textContent = originalText;
+        const lines = originalText.trim().split("\n");
+        dictEl.innerHTML = lines.map(line => `<div class="entry">${line}</div>`).join("");
         matches = [];
         document.querySelector(".floating-bar").style.display = "none";
         return;
@@ -86,21 +103,22 @@ mark { background:yellow; padding:0 2px; }
 
       // Exact substring matches
       const regex = new RegExp("(" + term + ")", "gi");
-      let html = originalText.replace(regex, "<mark>$1</mark>");
+      const lines = originalText.trim().split("\n");
+      let html = lines.map(line => `<div class="entry">${line.replace(regex, "<mark>$1</mark>")}</div>`).join("");
       dictEl.innerHTML = html;
 
       matches = Array.from(dictEl.querySelectorAll("mark"));
 
       // If no exact matches, try fuzzy search
       if (matches.length === 0) {
-        const words = originalText.split(/\s+/);
+        let words = originalText.split(/\s+/);
         let candidates = [];
         words.forEach(w => {
           if (levenshtein(term, w) <= 2) candidates.push(w);
         });
         if (candidates.length > 0) {
           const fuzzyRegex = new RegExp("(" + candidates.join("|") + ")", "gi");
-          html = originalText.replace(fuzzyRegex, "<mark>$1</mark>");
+          html = lines.map(line => `<div class="entry">${line.replace(fuzzyRegex, "<mark>$1</mark>")}</div>`).join("");
           dictEl.innerHTML = html;
           matches = Array.from(dictEl.querySelectorAll("mark"));
         }
@@ -113,8 +131,8 @@ mark { background:yellow; padding:0 2px; }
         updateCounter();
         document.querySelector(".floating-bar").style.display = "flex";
       } else {
+        dictEl.innerHTML = lines.map(line => `<div class="entry">${line}</div>`).join("") + "<br>(❌ No results found)";
         document.querySelector(".floating-bar").style.display = "none";
-        dictEl.innerHTML = originalText + "\n\n(❌ No results found)";
       }
     }
 
