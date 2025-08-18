@@ -67,21 +67,56 @@
     let matches = [];
     let currentIndex = 0;
 
+    // Telugu alphabet order
+    const teluguOrder = [
+      "అ", "ఆ", "ఇ", "ఈ", "ఉ", "ఊ", "ఋ", "ౠ", "ఎ", "ఏ", "ఐ", "ఒ", "ఓ", "ఔ",
+      "క", "ఖ", "గ", "ఘ", "ఙ",
+      "చ", "ఛ", "జ", "ఝ", "ఞ",
+      "ట", "ఠ", "డ", "ఢ", "ణ",
+      "త", "థ", "ద", "ధ", "న",
+      "ప", "ఫ", "బ", "భ", "మ",
+      "య", "ర", "ల", "వ",
+      "శ", "ష", "స", "హ",
+      "ళ", "క్ష", "ఱ"
+    ];
+
+    const orderMap = {};
+    teluguOrder.forEach((ch, i) => orderMap[ch] = i);
+
+    function teluguSortKey(word) {
+      const clean = word.replace(/[()\.a-zA-Z]/g, "").trim();
+      return [...clean].map(ch => orderMap[ch] ?? 999);
+    }
+
     async function loadDictionary() {
       try {
         const res = await fetch("dictionary.txt");
-        originalText = await res.text();
+        let text = await res.text();
 
-        const lines = originalText.trim().split("\n");
+        let lines = text.trim().split("\n").filter(Boolean);
+
+        // 🔠 Sort Telugu dictionary
+        lines.sort((a, b) => {
+          const ka = teluguSortKey(a);
+          const kb = teluguSortKey(b);
+          const len = Math.max(ka.length, kb.length);
+          for (let i = 0; i < len; i++) {
+            const va = ka[i] ?? -1;
+            const vb = kb[i] ?? -1;
+            if (va !== vb) return va - vb;
+          }
+          return 0;
+        });
+
         const dictEl = document.getElementById("dict");
-
-        // 🔢 render each line with number
         dictEl.innerHTML = lines
           .map((line, i) => `<div class="entry"><span class="num">${i + 1}.</span> ${line}</div>`)
           .join("");
-        
+
+        originalText = lines.join("\n");
+
       } catch (err) {
-        document.getElementById("dict").textContent = "Could not load dictionary.txt";
+        document.getElementById("dict").textContent = "❌ Could not load dictionary.txt";
       }
     }
 
