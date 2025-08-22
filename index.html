@@ -8,28 +8,17 @@
     body { margin:0; font-family:"Noto Serif Telugu", serif; background:#f9f7f1; color:#222; }
     header { padding:12px 16px; background:#fff; border-bottom:1px solid #ddd; position:sticky; top:0; display:flex; align-items:center; gap:12px; }
     h1 { margin:0; font-size:18px; color:#7a2d00; font-weight:700; flex:1; }
-    #search { padding:8px 12px; border:1px solid #ccc; border-radius:6px; font-size:14px; width:220px; }
+    #search { padding:8px 12px; border:1px solid #ccc; border-radius:6px; font-size:14px; width:180px; }
+    #category { padding:8px 12px; border:1px solid #ccc; border-radius:6px; font-size:14px; }
+
     main { max-width:100%; margin:20px auto; padding:0 16px; }
-
     .sheet { background:#fff; border:1px solid #ddd; border-radius:12px;
-             box-shadow:0 4px 12px #0001; padding:20px; line-height:1.5; font-size:15px; }
+             box-shadow:0 4px 12px #0001; padding:20px; line-height:1.6; font-size:15px; }
 
-    .entry { padding:4px 0; display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
-    .word, .opposite { cursor:pointer; padding:2px 6px; border-radius:6px; transition:0.2s; }
-    .word:hover, .opposite:hover { background:#ffe8cc; }
+    .entry { padding:4px 0; cursor:pointer; }
+    .entry:hover { background:#fff7e6; }
 
     .num { color:#7a2d00; font-weight:bold; margin-right:6px; }
-
-    mark { background:yellow; padding:0 2px; }
-    mark.active { background:orange; }
-
-    .floating-bar {
-      position:fixed; bottom:20px; right:20px;
-      background:#fff; border:1px solid #ccc; border-radius:8px;
-      padding:6px 12px; display:none; align-items:center; gap:8px;
-      box-shadow:0 2px 8px #0003; font-size:14px;
-    }
-    .floating-bar button { padding:4px 8px; }
 
     /* Popup modal */
     .modal {
@@ -47,23 +36,29 @@
 </head>
 <body>
   <header>
-    <h1>తెలుగు తెల్లడి</h1>
+    <h1>తెలుగు నిఘంటువు</h1>
+    <select id="category">
+      <option value="noun.txt">Nouns</option>
+      <option value="pronoun.txt">Pronouns</option>
+      <option value="verb.txt">Verbs</option>
+      <option value="adjective.txt">Adjectives</option>
+      <option value="adverb.txt">Adverbs</option>
+      <option value="synonyms.txt">Synonyms</option>
+      <option value="antonyms.txt">Antonyms</option>
+    </select>
     <input id="search" type="text" placeholder="Search word…" />
   </header>
+
   <main>
     <section class="sheet" id="dict">Loading…</section>
   </main>
-  <div class="floating-bar">
-    <button id="prevBtn">⬅</button>
-    <span id="counter"></span>
-    <button id="nextBtn">➡</button>
-  </div>
 
   <!-- Popup modal -->
   <div class="modal" id="popup">
     <div class="modal-content">
       <span class="close" onclick="closePopup()">✖</span>
       <h2 id="popupWord"></h2>
+      <p id="popupMeaning"></p>
       <p id="popupRole"></p>
       <p id="popupExample"></p>
     </div>
@@ -71,48 +66,24 @@
 
   <script>
     let originalText = "";
-    let matches = [];
-    let currentIndex = 0;
-    const teluguOrder = ["అ","ఆ","ఇ","ఈ","ఉ","ఊ","ఋ","ౠ","ఎ","ఏ","ఐ","ఒ","ఓ","ఔ",
-      "క","ఖ","గ","ఘ","ఙ","చ","ఛ","జ","ఝ","ఞ","ట","ఠ","డ","ఢ","ణ",
-      "త","థ","ద","ధ","న","ప","ఫ","బ","భ","మ","య","ర","ల","వ",
-      "శ","ష","స","హ","ళ","క్ష","ఱ"];
-    const orderMap = {}; teluguOrder.forEach((ch,i)=>orderMap[ch]=i);
 
-    function teluguSortKey(word){
-      const clean = word.replace(/[(){}\.a-zA-Z]/g,"").trim();
-      return [...clean].map(ch=>orderMap[ch]??999);
-    }
+    async function loadDictionary(file){
+      try{
+        const res = await fetch(file);
+        let text = await res.text();
+        let lines = text.trim().split("\n").filter(Boolean);
 
-    async function loadDictionary(){
-      const res = await fetch("dictionary.txt");
-      let text = await res.text();
-      let lines = text.trim().split("\n").filter(Boolean);
-
-      // sort
-      lines.sort((a,b)=>{
-        const ka=teluguSortKey(a), kb=teluguSortKey(b);
-        for(let i=0;i<Math.max(ka.length,kb.length);i++){
-          if((ka[i]??-1)!==(kb[i]??-1)) return (ka[i]??-1)-(kb[i]??-1);
-        }
-        return 0;
-      });
-
-      const dictEl=document.getElementById("dict");
-      dictEl.innerHTML = lines.map((line,i)=>renderEntry(line,i)).join("");
-      originalText=lines.join("\n");
+        const dictEl=document.getElementById("dict");
+        dictEl.innerHTML = lines.map((line,i)=>renderEntry(line,i)).join("");
+        originalText=lines.join("\n");
+      }catch(err){
+        document.getElementById("dict").textContent="❌ Could not load "+file;
+      }
     }
 
     function renderEntry(line,i){
-      // structure: word (syn) {role} × opposite (syn) {role}
-      const parts=line.split("×");
-      const left=parts[0]?.trim()||"";
-      const right=parts[1]?.trim()||"";
-      return `<div class="entry">
-        <span class="num">${i+1}.</span>
-        <span class="word" onclick="showPopup(\`${escapeHtml(left)}\`)">${left}</span>
-        <b>×</b>
-        <span class="opposite" onclick="showPopup(\`${escapeHtml(right)}\`)">${right}</span>
+      return `<div class="entry" onclick="showPopup(\`${escapeHtml(line)}\`)">
+        <span class="num">${i+1}.</span> ${line}
       </div>`;
     }
 
@@ -120,22 +91,41 @@
       return str.replace(/`/g,"&#96;").replace(/"/g,"&quot;");
     }
 
-    // Popup handler
-    function showPopup(fullText){
-      const roleMatch = fullText.match(/{([^}]*)}/);
-      const wordOnly = fullText.replace(/\{.*?\}/,"").trim();
-      const role = roleMatch?roleMatch[1]:"(No role)";
-      document.getElementById("popupWord").textContent=wordOnly;
+    function showPopup(line){
+      // line format: word = meaning {role}
+      const [wordPart, meaningPart] = line.split("=");
+      const word = wordPart?.trim() || "";
+      const roleMatch = line.match(/{([^}]*)}/);
+      const role = roleMatch ? roleMatch[1] : "(role unknown)";
+      const meaning = meaningPart?.replace(/\{.*?\}/,"").trim() || "";
+
+      document.getElementById("popupWord").textContent=word;
+      document.getElementById("popupMeaning").textContent="Meaning: "+meaning;
       document.getElementById("popupRole").textContent="Role: "+role;
-      document.getElementById("popupExample").textContent="ఉదాహరణ: "+wordOnly+" వాడుకలో వాక్యం.";
+      document.getElementById("popupExample").textContent="ఉదాహరణ: "+word+" వాక్యంలో వాడబడింది.";
       document.getElementById("popup").style.display="flex";
     }
+
     function closePopup(){ document.getElementById("popup").style.display="none"; }
 
-    // keep your search + fuzzy highlight code (unchanged from before)
-    // ... you can merge same highlight(), levenshtein(), navigation logic ...
+    // search
+    document.getElementById("search").addEventListener("input", e=>{
+      const term=e.target.value.trim();
+      const lines=originalText.split("\n");
+      const dictEl=document.getElementById("dict");
+      if(!term){ dictEl.innerHTML=lines.map((line,i)=>renderEntry(line,i)).join(""); return; }
+      const regex=new RegExp(term,"gi");
+      dictEl.innerHTML=lines
+        .filter(l=>regex.test(l))
+        .map((line,i)=>renderEntry(line,i)).join("") || "(❌ No results)";
+    });
 
-    loadDictionary();
+    // load default
+    loadDictionary("noun.txt");
+    document.getElementById("category").addEventListener("change", e=>{
+      loadDictionary(e.target.value);
+      document.getElementById("search").value="";
+    });
   </script>
 </body>
 </html>
