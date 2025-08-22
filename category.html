@@ -53,18 +53,18 @@
   </style>
 </head>
 <body>
-  <h1>📚 Word Categories</h1>
+  <h1>📚 పలుకు వింగడాలు </h1>   <button class="main-btn" onclick="window.location.href='index.html'">← ముంగిలి</button>
 
   <!-- Dropdown -->
   <select id="categorySelect" onchange="openFile(this.value)">
-    <option value="">--Select a Category--</option>
-    <option value="noun.txt">Nouns</option>
-    <option value="pronoun.txt">Pronouns</option>
-    <option value="verb.txt">Verbs</option>
-    <option value="adjective.txt">Adjectives</option>
-    <option value="adverb.txt">Adverbs</option>
-    <option value="synonyms.txt">Synonyms</option>
-    <option value="antonyms.txt">Antonyms</option>
+    <option value="">-- వింగడాన్ని ఎంచుకోండి--</option>
+    <option value="noun.txt">పేరుక</option>
+    <option value="pronoun.txt">మరుపేరుక</option>
+    <option value="verb.txt">చైవులు</option>
+    <option value="adjective.txt">తనారాలు</option>
+    <option value="adverb.txt">చేరణులు</option>
+    <option value="synonyms.txt">సాటిమాటలు</option>
+    <option value="antonyms.txt">సాటికానిమాటలు</option>
     <option value="homonyms.txt">Homonyms</option>
     <option value="interjections.txt">Interjections</option>
     <option value="conjunctions.txt">Conjunctions</option>
@@ -78,14 +78,13 @@
 
   <!-- Search Box -->
   <div id="searchArea" style="display:none;">
-    <input type="text" id="searchBox" placeholder="🔍 Search in this category...">
-    <button onclick="searchContent()">Search</button>
+    <input type="text" id="searchBox" placeholder="🔍 ఇందులో వెతకండి...">
+    <button onclick="searchContent()">వెతుకు</button>
   </div>
 
   <!-- File Content -->
-  <div id="contentBox">Please choose a category.</div>
+  <div id="contentBox">కనికరించి వింగడం ఎంచుకోండి.</div>
 
-  <button class="main-btn" onclick="window.location.href='index.html'">← Main</button>
 
   <script>
     let currentText = "";
