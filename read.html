@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Read More</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #fffaf0;
+      margin: 0;
+      padding: 20px;
+      text-align: center;
+    }
+    h1 { color: #333; margin-bottom: 20px; }
+
+    ul {
+      list-style: none;
+      padding: 0;
+      margin: 0 auto;
+      max-width: 400px;
+    }
+    li {
+      margin: 10px 0;
+    }
+    button.list-btn {
+      width: 100%;
+      padding: 12px;
+      font-size: 18px;
+      background: #007bff;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    button.list-btn:hover { background: #0056b3; }
+
+    #searchArea {
+      margin-top: 20px;
+      display: none;
+    }
+    #searchBox {
+      width: 60%;
+      padding: 10px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+    #contentBox {
+      width: 90%;
+      max-width: 700px;
+      margin: 20px auto;
+      padding: 20px;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      background: #fff;
+      text-align: left;
+      white-space: pre-line;
+      display: none;
+      min-height: 150px;
+    }
+    .main-btn {
+      margin-top: 20px;
+      padding: 12px 20px;
+      font-size: 18px;
+      background: #28a745;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    .main-btn:hover { background: #1e7e34; }
+    .highlight { background: yellow; font-weight: bold; }
+  </style>
+</head>
+<body>
+  <h1>📖 Read More Sections</h1>
+
+  <ul>
+    <li><button class="list-btn" onclick="openFile('grammar.txt')">1. Grammar</button></li>
+    <li><button class="list-btn" onclick="openFile('categories.txt')">2. Select Category and Read</button></li>
+    <li><button class="list-btn" onclick="openFile('articles.txt')">3. Articles</button></li>
+    <li><button class="list-btn" onclick="openFile('stories.txt')">4. Stories</button></li>
+    <li><button class="list-btn" onclick="openFile('idioms.txt')">5. Idioms</button></li>
+    <li><button class="list-btn" onclick="openFile('proverbs.txt')">6. Proverbs / సామెతలు</button></li>
+    <li><button class="list-btn" onclick="openFile('phrasal.txt')">7. Phrasal Lines</button></li>
+    <li><button class="list-btn" onclick="openFile('expressions.txt')">8. Expressions</button></li>
+  </ul>
+
+  <!-- Search Area -->
+  <div id="searchArea">
+    <input type="text" id="searchBox" placeholder="🔍 Search in this section...">
+    <button onclick="searchContent()">Search</button>
+  </div>
+
+  <!-- Content Display -->
+  <div id="contentBox">Select an option above to read.</div>
+
+  <button class="main-btn" onclick="window.location.href='index.html'">← Main</button>
+
+  <script>
+    let currentText = "";
+
+    async function openFile(file) {
+      try {
+        let res = await fetch(file);
+        currentText = await res.text();
+        document.getElementById("contentBox").innerText = currentText;
+        document.getElementById("contentBox").style.display = "block";
+        document.getElementById("searchArea").style.display = "block";
+      } catch {
+        document.getElementById("contentBox").innerText = "❌ Error loading " + file;
+        document.getElementById("contentBox").style.display = "block";
+      }
+    }
+
+    function searchContent() {
+      let query = document.getElementById("searchBox").value.trim();
+      if (!query) {
+        document.getElementById("contentBox").innerText = currentText;
+        return;
+      }
+      let regex = new RegExp(query, "gi");
+      let highlighted = currentText.replace(regex, match => `<span class="highlight">${match}</span>`);
+      document.getElementById("contentBox").innerHTML = highlighted;
+    }
+  </script>
+</body>
+</html>
