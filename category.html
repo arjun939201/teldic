@@ -1,51 +1,79 @@
 <!DOCTYPE html>
-<html lang="te">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Category</title>
+  <title>Dictionary Categories</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
-    body { font-family:"Noto Serif Telugu", serif; background:#fffdf5; padding:20px; }
-    h1 { text-align:center; }
-    button { display:block; margin:10px auto; padding:10px 15px; background:#0077cc; color:white; border:none; border-radius:5px; cursor:pointer; }
-    button:hover { background:#005fa3; }
-    ul { list-style:none; padding:0; }
-    li { padding:8px; border-bottom:1px solid #ddd; white-space:pre-wrap; }
+    body {
+      font-family: Arial, sans-serif;
+      background: #f1f1f1;
+      margin: 0;
+      padding: 20px;
+      text-align: center;
+    }
+    h1 { color: #333; }
+    .categories {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 15px;
+      margin-top: 30px;
+    }
+    .cat-btn {
+      padding: 15px;
+      background: #007bff;
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    .cat-btn:hover { background: #0056b3; }
+    .main-btn {
+      margin-top: 40px;
+      padding: 10px 20px;
+      background: #28a745;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    .main-btn:hover { background: #1e7e34; }
   </style>
 </head>
 <body>
-  <h1>వర్గం</h1>
-  <button onclick="goMain()">⬅ Main</button>
-  <ul id="wordList"></ul>
+  <h1>📚 Categories</h1>
+
+  <div class="categories">
+    <button class="cat-btn" onclick="openFile('noun.txt')">Nouns</button>
+    <button class="cat-btn" onclick="openFile('pronoun.txt')">Pronouns</button>
+    <button class="cat-btn" onclick="openFile('verb.txt')">Verbs</button>
+    <button class="cat-btn" onclick="openFile('adjective.txt')">Adjectives</button>
+    <button class="cat-btn" onclick="openFile('adverb.txt')">Adverbs</button>
+    <button class="cat-btn" onclick="openFile('synonyms.txt')">Synonyms</button>
+    <button class="cat-btn" onclick="openFile('antonyms.txt')">Antonyms</button>
+    <button class="cat-btn" onclick="openFile('idioms.txt')">Idioms</button>
+    <button class="cat-btn" onclick="openFile('proverbs.txt')">Proverbs</button>
+    <button class="cat-btn" onclick="openFile('phrasal_verbs.txt')">Phrasal Verbs</button>
+    <button class="cat-btn" onclick="openFile('homonyms.txt')">Homonyms</button>
+    <button class="cat-btn" onclick="openFile('interjections.txt')">Interjections</button>
+    <button class="cat-btn" onclick="openFile('conjunctions.txt')">Conjunctions</button>
+    <button class="cat-btn" onclick="openFile('prepositions.txt')">Prepositions</button>
+    <button class="cat-btn" onclick="openFile('quantifiers.txt')">Quantifiers</button>
+    <button class="cat-btn" onclick="openFile('derivatives.txt')">Derivatives</button>
+    <button class="cat-btn" onclick="openFile('numbers.txt')">Numbers</button>
+    <button class="cat-btn" onclick="openFile('dictionary.txt')">Dictionary</button>
+    <button class="cat-btn" onclick="openFile('dictionary2.txt')">Dictionary 2</button>
+  </div>
+
+  <button class="main-btn" onclick="window.location.href='index.html'">← Main</button>
 
   <script>
-    const wordList = document.getElementById("wordList");
-
-    function getQueryParam(name) {
-      return new URLSearchParams(window.location.search).get(name);
+    function openFile(file) {
+      window.location.href = file;
     }
-
-    function goMain() {
-      window.location.href = "index.html";
-    }
-
-    async function loadCategory() {
-      const file = getQueryParam("file");
-      if (!file) return;
-      try {
-        const res = await fetch(file);
-        const text = await res.text();
-        text.trim().split("\n").forEach(line => {
-          const li = document.createElement("li");
-          li.textContent = line;
-          wordList.appendChild(li);
-        });
-      } catch {
-        wordList.innerHTML = "<li>File not found</li>";
-      }
-    }
-
-    window.onload = loadCategory;
   </script>
 </body>
 </html>
