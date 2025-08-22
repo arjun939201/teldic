@@ -1,189 +1,89 @@
 <!DOCTYPE html>
-<html lang="te">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Read Section</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Read Page</title>
   <style>
     body {
-      font-family: "Noto Serif Telugu", serif;
-      background: #f4f6f9;
       margin: 0;
-      padding: 0;
-      height: 100vh;
-      display: flex;
-      flex-direction: column;
-    }
-    header {
-      background: #4a148c;
-      color: white;
-      padding: 15px;
-      text-align: center;
-      font-size: 22px;
-      font-weight: bold;
-      flex-shrink: 0;
-    }
-    /* Menu buttons */
-    .menu {
+      font-family: Arial, sans-serif;
       display: flex;
       justify-content: center;
-      gap: 12px;
-      padding: 12px;
-      flex-wrap: wrap;
-      background: #fff;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-      flex-shrink: 0;
+      align-items: center;
+      height: 100vh;
+      background: #f5f7fa;
     }
-    .menu button {
-      background: #6a1b9a;
-      color: white;
+    .container {
+      text-align: center;
+    }
+    .btn {
+      display: inline-block;
+      padding: 12px 24px;
+      margin: 10px;
+      font-size: 18px;
       border: none;
-      padding: 12px 20px;
-      border-radius: 8px;
+      border-radius: 12px;
+      background: #0078d7;
+      color: white;
       cursor: pointer;
-      font-size: 16px;
-      transition: background 0.3s;
+      transition: 0.3s;
     }
-    .menu button:hover {
-      background: #4a148c;
+    .btn:hover {
+      background: #005bb5;
     }
-    /* Blocks */
-    .block {
+    .content {
       display: none;
-      background: white;
-      margin: 0 auto;
+      max-width: 800px;
+      margin: auto;
       padding: 20px;
-      border-radius: 12px 12px 0 0;
-      box-shadow: 0 -2px 6px rgba(0,0,0,0.15);
-      width: 100%;
-      max-width: 900px;
-      flex-grow: 1;
-      display: flex;
-      flex-direction: column;
+      text-align: left;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
     }
-    .block.active {
-      display: flex;
-    }
-    .block h2 {
-      margin: 0 0 10px 0;
-      color: #4a148c;
-      border-bottom: 2px solid #eee;
-      padding-bottom: 6px;
-      font-size: 20px;
-      flex-shrink: 0;
-    }
-    .content-box {
-      flex-grow: 1;
-      border: 1px solid #ddd;
-      padding: 15px;
-      border-radius: 10px;
-      background: #fafafa;
-      line-height: 1.6;
-      overflow-y: auto;
-      white-space: pre-line;
-    }
-    /* Category + Search bar */
-    .category-top {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 10px;
-      gap: 10px;
-      flex-wrap: wrap;
-      flex-shrink: 0;
-    }
-    .category-top select,
-    .category-top input {
-      padding: 8px;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      flex: 1;
-      font-size: 14px;
+    .back-btn {
+      margin-top: 20px;
+      background: #444;
     }
   </style>
 </head>
 <body>
-  <header>పఠన విభాగం (Read Section)</header>
-
-  <!-- Menu Buttons -->
-  <div class="menu">
-    <button onclick="showBlock('grammarBlock')">Grammar</button>
-    <button onclick="showBlock('vocabularyBlock')">Vocabulary</button>
-    <button onclick="showBlock('articlesBlock')">Articles</button>
-    <button onclick="showBlock('storiesBlock')">Stories</button>
-    <button onclick="showBlock('idiomsBlock')">Idioms</button>
-    <button onclick="showBlock('proverbsBlock')">Proverbs</button>
+  <div class="container" id="home">
+    <h2>Select a Category</h2>
+    <button class="btn" onclick="showContent('grammar')">Grammar</button>
+    <button class="btn" onclick="showContent('vocabulary')">Vocabulary</button>
+    <button class="btn" onclick="showContent('articles')">Articles</button>
+    <button class="btn" onclick="showContent('stories')">Stories</button>
+    <button class="btn" onclick="showContent('idioms')">Idioms</button>
   </div>
 
-  <!-- Grammar Block -->
-  <div class="block" id="grammarBlock">
-    <h2>Grammar</h2>
-    <div class="content-box" id="grammarContent">Loading...</div>
-  </div>
-
-  <!-- Vocabulary Block -->
-  <div class="block" id="vocabularyBlock">
-    <h2>Vocabulary</h2>
-    <div class="category-top">
-      <select id="categorySelect">
-        <option value="">--వర్గం ఎంచుకోండి--</option>
-        <option value="noun">నామవాచకం</option>
-        <option value="verb">క్రియ</option>
-        <option value="adjective">విశేషణం</option>
-        <option value="adverb">క్రియావిశేషణం</option>
-      </select>
-      <input type="text" id="categorySearch" placeholder="Search...">
-    </div>
-    <div class="content-box" id="vocabularyContent">ఇక్కడ పదాలు కనిపిస్తాయి...</div>
-  </div>
-
-  <!-- Articles Block -->
-  <div class="block" id="articlesBlock">
-    <h2>Articles</h2>
-    <div class="content-box" id="articlesContent">Loading...</div>
-  </div>
-
-  <!-- Stories Block -->
-  <div class="block" id="storiesBlock">
-    <h2>Stories</h2>
-    <div class="content-box" id="storiesContent">Loading...</div>
-  </div>
-
-  <!-- Idioms Block -->
-  <div class="block" id="idiomsBlock">
-    <h2>Idioms</h2>
-    <div class="content-box" id="idiomsContent">Loading...</div>
-  </div>
-
-  <!-- Proverbs Block -->
-  <div class="block" id="proverbsBlock">
-    <h2>Proverbs (సామెతలు)</h2>
-    <div class="content-box" id="proverbsContent">Loading...</div>
+  <div class="content" id="content">
+    <h2 id="title"></h2>
+    <p id="text"></p>
+    <button class="btn back-btn" onclick="goBack()">⬅ Back</button>
   </div>
 
   <script>
-    // Show block
-    function showBlock(id) {
-      document.querySelectorAll('.block').forEach(b => b.classList.remove('active'));
-      document.getElementById(id).classList.add('active');
+    const data = {
+      grammar: "This is grammar content...",
+      vocabulary: "This is vocabulary content...",
+      articles: "This is articles content...",
+      stories: "This is stories content...",
+      idioms: "This is idioms content..."
+    };
+
+    function showContent(type) {
+      document.getElementById("home").style.display = "none";
+      document.getElementById("content").style.display = "block";
+      document.getElementById("title").innerText = type.charAt(0).toUpperCase() + type.slice(1);
+      document.getElementById("text").innerText = data[type];
     }
 
-    // Load text files
-    function loadFile(type, file) {
-      fetch(file)
-        .then(res => res.text())
-        .then(text => {
-          document.getElementById(type + "Content").innerText = text;
-        })
-        .catch(() => {
-          document.getElementById(type + "Content").innerText = "⚠️ File not found!";
-        });
+    function goBack() {
+      document.getElementById("content").style.display = "none";
+      document.getElementById("home").style.display = "block";
     }
-
-    // Load contents
-    loadFile("grammar", "grammar.txt");
-    loadFile("articles", "articles.txt");
-    loadFile("stories", "story.txt");
-    loadFile("idioms", "idioms.txt");
-    loadFile("proverbs", "proverbs.txt");
   </script>
 </body>
 </html>
