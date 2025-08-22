@@ -53,21 +53,22 @@
 <body>
   <!-- Home page -->
   <div class="container" id="home">
-    <h2>Select a Category</h2>
-    <button class="btn" onclick="loadFile('grammar.txt','Grammar')">Grammar</button>
-    <button class="btn" onclick="loadFile('category.txt','Vocabulary')">Vocabulary</button>
-    <button class="btn" onclick="loadFile('article.txt','Articles')">Articles</button>
-    <button class="btn" onclick="loadFile('story.txt','Stories')">Stories</button>
-    <button class="btn" onclick="loadFile('idioms.txt','Idioms')">Idioms</button>
-    <button class="btn" onclick="loadFile('proverbs.txt','Proverbs')">Proverbs</button>
-    <button class="btn" onclick="loadFile('phrasal_verbs.txt','Phrasal Verbs')">Phrasal Verbs</button>
+    <h2>ఇవి చదవండి</h2>
+    <button class="btn" onclick="loadFile('grammar.txt','Grammar')">నుడికట్టు</button>
+    <button class="btn" onclick="loadFile('category.txt','Vocabulary')">మాటలమూట</button>
+    <button class="btn" onclick="loadFile('article.txt','Articles')">అవి ఇవి</button>
+    <button class="btn" onclick="loadFile('story.txt','Stories')">వాకువలు</button>
+    <button class="btn" onclick="loadFile('idioms.txt','Idioms')">జాతీయాలు</button>
+    <button class="btn" onclick="loadFile('proverbs.txt','Proverbs')">సామెతలు</button>
+    <button class="btn" onclick="loadFile('phrasal_verbs.txt','Phrasal Verbs')">పొట్టిపలుకులు</button>
   </div>
 
   <!-- Content page -->
   <div class="content" id="content">
+    
+    <button class="btn back-btn" onclick="goBack()">⬅ వెనక్కి</button>
     <h2 id="title"></h2>
     <pre id="text"></pre>
-    <button class="btn back-btn" onclick="goBack()">⬅ Back</button>
   </div>
 
   <script>
