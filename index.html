@@ -162,9 +162,7 @@
     <!-- Vocabulary Section -->
   <div class="vocab-box">
     <div class="box-title">🗂️ మాటోలి (vocabulary)</div>
-    <div class="vocab-section-result">
     <div id="vocabContent">తీస్తున్నా...</div>
-    </div>
     <div class="nav-buttons">
       <button onclick="prevVocab()">← వెనకది</button>
       <button onclick="nextVocab()">తర్వాతది→</button>
@@ -279,10 +277,8 @@
     for (let section of sections) {
       if (section.textContent.toLowerCase().includes(query)) {
      results.push(
-  `<div class="result-entry">
-     <section class="vocab-section-result">${section.innerHTML}</section>
-     <span class="category-label">Vocabulary</span>
-   </div>`
+  `<div class="result-entry">${section.innerHTML}</section>
+     <span class="category-label">Vocabulary</span>`
 ); }
     }
   } catch (e) {
