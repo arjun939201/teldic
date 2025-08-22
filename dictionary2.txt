@@ -515,6 +515,54 @@ Pus: చీము
 
 Breast milk: చనుబాలు
 
+Sight, vision: కనుకలి, చూపు, పారువ, కంటిచూపు
+
+Hearing: వినుకలి, వినికిడి
+
+Sense of smell: మూచూపు, మూర్కోలు
+
+Sense of taste: చవిచూపు, చవిగోలు
+
+Sense of touch, contact: ముట్టుకోలు, తగులుడు
+
+Breath: ఊర్పు, ఊపిరి
+
+Sigh: ఇంకువ, నిట్టూర్పు
+
+Snoring: గుఱక
+
+Heartbeat: గుండెచప్పుడు
+
+Yawn: ఆవులింత
+
+Sneeze: తుమ్ము
+
+Hiccup: ఎక్కిలి
+
+Cough: దగ్గు
+
+Eating: తింట, కుడుపు
+
+Drinking: త్రాగుడు, కుడుపు
+
+Flatulence: పిత్త
+
+Gulp, swallow: గుటక
+
+Blink: ఱెప్పపాటు
+
+Movement: కదలిక
+
+Walking: నడక
+
+Clearing throat: కాండ్రింత
+
+Hawking when spitting: కేకరింత
+
+Pregnancy: చూలు, వ్రేకటి
+
+Delivery: కానుపు, కాన్పు
+
 మైమొత్తం - Full body
 
 మై, మేయి, ఒళ్ళు – body  
@@ -565,6 +613,88 @@ Breast milk: చనుబాలు
 
 నలులు– Atoms
 లోనలులు – Subatomic particles
+
+Ailment, affliction: జబ్బు, నలుకువ
+
+Sickness, disease: నలత, జబ్బు, తెవులు/తెగులు, నొవ్వు
+
+Pain, ache: నొప్పి, పోటు(stabbing pain), మంట(burning)
+
+Agony: తీపు
+
+Fatigue, Exhaustion: అలసట/అలకువ/ఆలయిక, బడలిక
+
+Numbness, paralysis, palsy: తిమురు, తిమ్మిరి
+
+Nausea: వెక్కసము
+
+Vomiting: కక్కుడు
+
+Intoxication: మైకము
+
+Fainting: సోలింత
+
+Drowsiness: జడ్జు
+
+Itchiness: దురద, జిల, దూల, తీంట్రము
+
+Murrain: చీడ
+
+Hunger: ఆకొన్నతనము, ఆకలి, గొద
+
+Thirst: దప్పి, దప్పిక
+
+A cut, wound: గంటు, నర్కు
+
+Sting: కొండి, కుట్టు, చురుకు
+
+Bite: కాటు
+
+A blow, injury: దెబ్బ
+
+Blindness: గ్రుడ్డి, గ్రుడ్డితనము, గుడ్డితనము, చీకు, చీకురు
+
+Deafness: చెవుడు
+
+Limping: కుంటినడక
+
+Lameness: కుంటితనము
+
+Greyness, greying of hair: నర, నరపు
+
+Cold, catarrh, influenza: జలుబు, రొంప, పడిసెము
+
+Fever: వేకి
+
+Leucoderma: బొల్లి, ప్రుంగుడు
+
+Heart attack: గుండెపోటు
+
+Heart Palpitations: గుండెయదురు, నెగ్గురు
+
+Headache: తలయేరు, నెట్టినొప్పి, తలనొప్పి
+
+Scabies: చిడుము
+
+Measles: తడపర
+
+Rabies: కుక్కవెఱ్ఱి
+
+Asthma: ఉబ్బసము
+
+Swelling: వాపు, ఉబ్బరము
+
+Elephantiasis: బోదకాలు
+
+Sprain: బెణుకు
+
+Ischuria: నీరుకట్టు
+
+Cholera: మరిడి
+
+Dermatophytosis: చిరుగుడు
+
+Sore eye, ophthalmia: కంటికలక
 
 మూటు = tool
 మరమూటు = device
