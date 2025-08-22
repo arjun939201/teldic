@@ -10,12 +10,18 @@
       background: #f9f9f9;
       margin: 0;
       padding: 20px;
-      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
-    h1 { color: #333; }
+    h1 { color: #333; margin-bottom: 20px; }
+
+    /* Search Section */
     .search-box {
-      margin: 20px auto;
-      max-width: 400px;
+      width: 90%;
+      max-width: 600px;
+      text-align: center;
+      margin-bottom: 20px;
     }
     input[type="text"] {
       width: 70%;
@@ -32,14 +38,49 @@
       border-radius: 5px;
     }
     button:hover { background: #0056b3; }
-    .random-box {
-      margin-top: 30px;
+
+    /* Results + Random Word */
+    .result-box, .random-box {
+      width: 90%;
+      max-width: 600px;
+      min-height: 100px;
+      margin-top: 15px;
       padding: 20px;
       border: 1px solid #ddd;
       background: #fff;
       border-radius: 10px;
-      display: inline-block;
+      text-align: left;
+      box-sizing: border-box;
     }
+    .box-title {
+      font-weight: bold;
+      margin-bottom: 10px;
+      color: #444;
+    }
+    .nav-buttons {
+      margin-top: 10px;
+      display: flex;
+      justify-content: space-between;
+    }
+    .nav-buttons button {
+      flex: 1;
+      margin: 0 5px;
+      background: #28a745;
+    }
+    .nav-buttons button:hover { background: #1e7e34; }
+
+    /* Read Button */
+    .read-btn {
+      margin-top: 30px;
+      padding: 12px 20px;
+      font-size: 18px;
+      background: #6c63ff;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    .read-btn:hover { background: #5147d8; }
   </style>
 </head>
 <body>
@@ -51,17 +92,25 @@
     <button onclick="searchWord()">Search</button>
   </div>
 
-  <!-- Random Word -->
-  <div class="random-box">
-    <h3>Random Word</h3>
-    <p id="randomWord">Loading...</p>
+  <!-- Search Result -->
+  <div class="result-box">
+    <div class="box-title">🔎 Search Result</div>
+    <div id="searchResult">No search yet.</div>
   </div>
 
-  <br><br>
-  <button onclick="window.location.href='category.html'">Read →</button>
+  <!-- Random Word -->
+  <div class="random-box">
+    <div class="box-title">🎲 Random Word</div>
+    <div id="randomWord">Loading...</div>
+    <div class="nav-buttons">
+      <button onclick="prevWord()">← Previous</button>
+      <button onclick="nextWord()">Next →</button>
+    </div>
+  </div>
+
+  <button class="read-btn" onclick="window.location.href='category.html'">Read →</button>
 
   <script>
-    // Load all .txt files (simulate by file list)
     const files = [
       "noun.txt", "pronoun.txt", "verb.txt", "adjective.txt", "adverb.txt",
       "synonyms.txt", "antonyms.txt", "idioms.txt", "proverbs.txt",
@@ -70,41 +119,83 @@
       "derivatives.txt", "numbers.txt", "dictionary.txt", "dictionary2.txt"
     ];
 
-    // Pick random file + random word
-    async function loadRandomWord() {
-      let file = files[Math.floor(Math.random() * files.length)];
-      try {
-        let res = await fetch(file);
-        let text = await res.text();
-        let words = text.split(/\r?\n/).filter(Boolean);
-        let random = words[Math.floor(Math.random() * words.length)];
-        document.getElementById("randomWord").innerText = random;
-      } catch {
-        document.getElementById("randomWord").innerText = "Error loading word.";
+    let randomWords = [];
+    let currentIndex = 0;
+
+    // Load random words from all files
+    async function loadRandomWordList() {
+      randomWords = [];
+      for (let file of files) {
+        try {
+          let res = await fetch(file);
+          let text = await res.text();
+          let words = text.split(/\r?\n/).filter(Boolean);
+          randomWords.push(...words);
+        } catch {}
+      }
+      shuffleArray(randomWords);
+      showRandomWord();
+    }
+
+    function showRandomWord() {
+      if (randomWords.length === 0) {
+        document.getElementById("randomWord").innerText = "No words available.";
+        return;
+      }
+      document.getElementById("randomWord").innerText = randomWords[currentIndex];
+    }
+
+    function nextWord() {
+      if (randomWords.length > 0) {
+        currentIndex = (currentIndex + 1) % randomWords.length;
+        showRandomWord();
+      }
+    }
+
+    function prevWord() {
+      if (randomWords.length > 0) {
+        currentIndex = (currentIndex - 1 + randomWords.length) % randomWords.length;
+        showRandomWord();
       }
     }
 
     // Search function
     async function searchWord() {
       let query = document.getElementById("searchInput").value.toLowerCase();
-      if (!query) return alert("Enter a word to search!");
-      
-      for (let file of files) {
-        let res = await fetch(file);
-        let text = await res.text();
-        let lines = text.split(/\r?\n/);
-        for (let line of lines) {
-          if (line.toLowerCase().includes(query)) {
-            alert("Found in " + file + ":\n" + line);
-            return;
-          }
-        }
+      let resultBox = document.getElementById("searchResult");
+      resultBox.innerHTML = "Searching...";
+
+      if (!query) {
+        resultBox.innerHTML = "Please enter a word.";
+        return;
       }
-      alert("Word not found!");
+
+      for (let file of files) {
+        try {
+          let res = await fetch(file);
+          let text = await res.text();
+          let lines = text.split(/\r?\n/);
+          for (let line of lines) {
+            if (line.toLowerCase().includes(query)) {
+              resultBox.innerHTML = `<strong>Found in ${file}:</strong><br>${line}`;
+              return;
+            }
+          }
+        } catch {}
+      }
+      resultBox.innerHTML = "❌ Word not found.";
+    }
+
+    // Shuffle helper
+    function shuffleArray(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
     }
 
     // On load
-    loadRandomWord();
+    loadRandomWordList();
   </script>
 </body>
 </html>
