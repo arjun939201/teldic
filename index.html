@@ -5,127 +5,140 @@
   <title>తెలుగు నిఘంటువు</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
-    body { margin:0; font-family:"Noto Serif Telugu", serif; background:#f9f7f1; color:#222; }
-    header { padding:12px 16px; background:#fff; border-bottom:1px solid #ddd; position:sticky; top:0; display:flex; align-items:center; gap:12px; }
-    h1 { margin:0; font-size:18px; color:#7a2d00; font-weight:700; flex:1; }
-    #search { padding:8px 12px; border:1px solid #ccc; border-radius:6px; font-size:14px; width:180px; }
-    #category { padding:8px 12px; border:1px solid #ccc; border-radius:6px; font-size:14px; }
-
-    main { max-width:100%; margin:20px auto; padding:0 16px; }
-    .sheet { background:#fff; border:1px solid #ddd; border-radius:12px;
-             box-shadow:0 4px 12px #0001; padding:20px; line-height:1.6; font-size:15px; }
-
-    .entry { padding:4px 0; cursor:pointer; }
-    .entry:hover { background:#fff7e6; }
-
-    .num { color:#7a2d00; font-weight:bold; margin-right:6px; }
-
-    /* Popup modal */
-    .modal {
-      display:none; position:fixed; top:0; left:0; width:100%; height:100%;
-      background:#0006; display:flex; align-items:center; justify-content:center;
+    body {
+      margin: 0;
+      font-family: "Noto Serif Telugu", serif;
+      background: #f9f9f9;
+      padding: 20px;
     }
-    .modal-content {
-      background:#fff; padding:20px; border-radius:12px; max-width:400px;
-      box-shadow:0 4px 12px #0005;
+    h1 { text-align: center; }
+    select {
+      display: block;
+      margin: 10px auto;
+      padding: 10px;
+      font-size: 16px;
     }
-    .modal-content h2 { margin:0 0 8px; font-size:18px; color:#7a2d00; }
-    .modal-content p { margin:4px 0; }
-    .close { float:right; cursor:pointer; font-size:18px; }
+    ul { list-style-type: none; padding: 0; }
+    li {
+      padding: 8px;
+      border-bottom: 1px solid #ddd;
+      cursor: pointer;
+    }
+    li:hover { background: #eee; }
+
+    /* Popup styles */
+    .popup {
+      display: none; /* hidden by default */
+      position: fixed;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      background: white;
+      padding: 20px;
+      border: 1px solid #444;
+      border-radius: 8px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+      z-index: 1000;
+      width: 300px;
+      max-width: 90%;
+    }
+    .popup h2 { margin-top: 0; font-size: 20px; }
+    .popup button {
+      background: #d33;
+      color: white;
+      border: none;
+      padding: 8px 12px;
+      cursor: pointer;
+      border-radius: 5px;
+      float: right;
+    }
+    .popup-overlay {
+      display: none; /* hidden by default */
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.5);
+      z-index: 999;
+    }
   </style>
 </head>
 <body>
-  <header>
-    <h1>తెలుగు నిఘంటువు</h1>
-    <select id="category">
-      <option value="noun.txt">Nouns</option>
-      <option value="pronoun.txt">Pronouns</option>
-      <option value="verb.txt">Verbs</option>
-      <option value="adjective.txt">Adjectives</option>
-      <option value="adverb.txt">Adverbs</option>
-      <option value="synonyms.txt">Synonyms</option>
-      <option value="antonyms.txt">Antonyms</option>
-    </select>
-    <input id="search" type="text" placeholder="Search word…" />
-  </header>
 
-  <main>
-    <section class="sheet" id="dict">Loading…</section>
-  </main>
+  <h1>📘 తెలుగు నిఘంటువు</h1>
 
-  <!-- Popup modal -->
-  <div class="modal" id="popup">
-    <div class="modal-content">
-      <span class="close" onclick="closePopup()">✖</span>
-      <h2 id="popupWord"></h2>
-      <p id="popupMeaning"></p>
-      <p id="popupRole"></p>
-      <p id="popupExample"></p>
-    </div>
+  <select id="categorySelect">
+    <option value="">-- వర్గం ఎంచుకోండి --</option>
+    <option value="nouns.txt">నామవాచకాలు (Nouns)</option>
+    <option value="pronouns.txt">సర్వనామాలు (Pronouns)</option>
+    <option value="verbs.txt">క్రియలు (Verbs)</option>
+    <option value="adjectives.txt">విశేషణాలు (Adjectives)</option>
+    <option value="adverbs.txt">క్రియావిశేషణాలు (Adverbs)</option>
+    <option value="synonyms.txt">పర్యాయపదాలు (Synonyms)</option>
+    <option value="antonyms.txt">వ్యతిరేక పదాలు (Antonyms)</option>
+    <option value="conjunctions.txt">అన్వయాలు (Conjunctions)</option>
+    <option value="prepositions.txt">ఉపసర్గలు (Prepositions)</option>
+    <option value="interjections.txt">విస్మయాదిబోధకాలు (Interjections)</option>
+    <option value="idioms.txt">ప్రసిద్ధోక్తులు (Idioms)</option>
+    <option value="proverbs.txt">సామెతలు (Proverbs)</option>
+    <option value="phrasal_verbs.txt">ఉపసర్గ క్రియలు (Phrasal Verbs)</option>
+    <option value="numbers.txt">సంఖ్యలు (Numbers)</option>
+    <option value="quantifiers.txt">పరిమాణ పదాలు (Quantifiers)</option>
+    <option value="homonyms.txt">సమాన శబ్ద పదాలు (Homonyms)</option>
+    <option value="derivatives.txt">ఉత్పన్న పదాలు (Derivatives)</option>
+  </select>
+
+  <ul id="wordList"></ul>
+
+  <!-- Popup Overlay -->
+  <div class="popup-overlay" id="popupOverlay"></div>
+
+  <!-- Popup Box -->
+  <div class="popup" id="popupBox">
+    <button onclick="closePopup()">Close</button>
+    <h2 id="popupWord"></h2>
+    <p id="popupMeaning"></p>
   </div>
 
   <script>
-    let originalText = "";
+    const categorySelect = document.getElementById('categorySelect');
+    const wordList = document.getElementById('wordList');
+    const popupBox = document.getElementById('popupBox');
+    const popupOverlay = document.getElementById('popupOverlay');
+    const popupWord = document.getElementById('popupWord');
+    const popupMeaning = document.getElementById('popupMeaning');
 
-    async function loadDictionary(file){
-      try{
-        const res = await fetch(file);
-        let text = await res.text();
-        let lines = text.trim().split("\n").filter(Boolean);
-
-        const dictEl=document.getElementById("dict");
-        dictEl.innerHTML = lines.map((line,i)=>renderEntry(line,i)).join("");
-        originalText=lines.join("\n");
-      }catch(err){
-        document.getElementById("dict").textContent="❌ Could not load "+file;
+    categorySelect.addEventListener('change', () => {
+      const file = categorySelect.value;
+      wordList.innerHTML = '';
+      if (file) {
+        fetch(file)
+          .then(res => res.text())
+          .then(text => {
+            const lines = text.trim().split('\n');
+            lines.forEach(line => {
+              const li = document.createElement('li');
+              li.textContent = line;
+              li.addEventListener('click', () => {
+                const parts = line.split('=');
+                popupWord.textContent = parts[0].trim();
+                popupMeaning.textContent = parts[1] ? parts[1].trim() : '';
+                openPopup();
+              });
+              wordList.appendChild(li);
+            });
+          });
       }
-    }
-
-    function renderEntry(line,i){
-      return `<div class="entry" onclick="showPopup(\`${escapeHtml(line)}\`)">
-        <span class="num">${i+1}.</span> ${line}
-      </div>`;
-    }
-
-    function escapeHtml(str){
-      return str.replace(/`/g,"&#96;").replace(/"/g,"&quot;");
-    }
-
-    function showPopup(line){
-      // line format: word = meaning {role}
-      const [wordPart, meaningPart] = line.split("=");
-      const word = wordPart?.trim() || "";
-      const roleMatch = line.match(/{([^}]*)}/);
-      const role = roleMatch ? roleMatch[1] : "(role unknown)";
-      const meaning = meaningPart?.replace(/\{.*?\}/,"").trim() || "";
-
-      document.getElementById("popupWord").textContent=word;
-      document.getElementById("popupMeaning").textContent="Meaning: "+meaning;
-      document.getElementById("popupRole").textContent="Role: "+role;
-      document.getElementById("popupExample").textContent="ఉదాహరణ: "+word+" వాక్యంలో వాడబడింది.";
-      document.getElementById("popup").style.display="flex";
-    }
-
-    function closePopup(){ document.getElementById("popup").style.display="none"; }
-
-    // search
-    document.getElementById("search").addEventListener("input", e=>{
-      const term=e.target.value.trim();
-      const lines=originalText.split("\n");
-      const dictEl=document.getElementById("dict");
-      if(!term){ dictEl.innerHTML=lines.map((line,i)=>renderEntry(line,i)).join(""); return; }
-      const regex=new RegExp(term,"gi");
-      dictEl.innerHTML=lines
-        .filter(l=>regex.test(l))
-        .map((line,i)=>renderEntry(line,i)).join("") || "(❌ No results)";
     });
 
-    // load default
-    loadDictionary("noun.txt");
-    document.getElementById("category").addEventListener("change", e=>{
-      loadDictionary(e.target.value);
-      document.getElementById("search").value="";
-    });
+    function openPopup() {
+      popupBox.style.display = 'block';
+      popupOverlay.style.display = 'block';
+    }
+
+    function closePopup() {
+      popupBox.style.display = 'none';
+      popupOverlay.style.display = 'none';
+    }
   </script>
+
 </body>
 </html>
