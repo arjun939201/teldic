@@ -119,6 +119,19 @@
   text-align: left;
   box-sizing: border-box;
   }
+    /* Ensures vocabulary sections in search results look boxed and wrap text */
+.vocab-section-result {
+  display: block;
+  background: #f6f8fa;
+  border: 1px solid #d0d7de;
+  border-radius: 8px;
+  padding: 14px 18px;
+  margin: 7px 0;
+  box-sizing: border-box;
+  word-break: break-word;
+  white-space: pre-line; /* preserves line breaks but wraps long lines */
+  overflow-x: auto;      /* optional: horizontal scroll if there's a super-long word */
+}
   </style>
 </head>
 <body>
@@ -263,8 +276,12 @@
     let sections = Array.from(doc.querySelectorAll('section'));
     for (let section of sections) {
       if (section.textContent.toLowerCase().includes(query)) {
-        results.push(`<div class="result-entry">${section.innerHTML} <span class="category-label">Vocabulary</span></div>`);
-      }
+     results.push(
+  `<div class="result-entry">
+     <section class="vocab-section-result">${section.innerHTML}</section>
+     <span class="category-label">Vocabulary</span>
+   </div>`
+); }
     }
   } catch (e) {
     // Optionally log or ignore error
