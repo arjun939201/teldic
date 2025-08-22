@@ -16,21 +16,18 @@
       padding: 15px;
       text-align: center;
     }
-    nav ul {
-      display: flex;
-      flex-wrap: wrap;
-      list-style: none;
-      padding: 10px;
-      margin: 0;
-      background: #eee;
-      justify-content: center;
+    ul.menu {
+      list-style: decimal;
+      padding: 20px;
+      max-width: 700px;
+      margin: auto;
     }
-    nav ul li {
-      margin: 5px 10px;
+    ul.menu li {
+      margin: 8px 0;
     }
-    nav ul li a {
+    ul.menu li a {
       text-decoration: none;
-      color: #333;
+      color: #6200ea;
       font-weight: bold;
     }
     .block {
@@ -91,37 +88,35 @@
 </head>
 <body>
   <header>
-    <h1>ఇవి చదవండి</h1>
+    <h1>పఠన విభాగం (Read Section)</h1>
   </header>
 
-  <!-- Navigation -->
-  <nav>
-    <ul>
-      <li><a href="#categoryBlock">Category</a></li>
-      <li><a href="#grammarBlock">Grammar</a></li>
-      <li><a href="#articlesBlock">Articles</a></li>
-      <li><a href="#storiesBlock">Stories</a></li>
-      <li><a href="#idiomsBlock">Idioms</a></li>
-      <li><a href="#proverbsBlock">Proverbs</a></li>
-    </ul>
-  </nav>
+  <!-- Menu List -->
+  <ul class="menu">
+    <li><a href="#categoryBlock">Category</a></li>
+    <li><a href="#grammarBlock">Grammar</a></li>
+    <li><a href="#articlesBlock">Articles</a></li>
+    <li><a href="#storiesBlock">Stories</a></li>
+    <li><a href="#idiomsBlock">Idioms</a></li>
+    <li><a href="#proverbsBlock">సామెతలు</a></li>
+  </ul>
 
   <!-- Category Block -->
   <div class="block" id="categoryBlock">
     <h2>Category</h2>
     <div class="category-top">
-      <select>
-        <option>--వర్గం ఎంచుకోండి--</option>
-        <option>నామవాచకం (Noun)</option>
-        <option>సర్వనామం (Pronoun)</option>
-        <option>క్రియ (Verb)</option>
-        <option>విశేషణం (Adjective)</option>
-        <option>క్రియావిశేషణం (Adverb)</option>
+      <select id="categorySelect">
+        <option value="">--వర్గం ఎంచుకోండి--</option>
+        <option value="noun">నామవాచకం (Noun)</option>
+        <option value="pronoun">సర్వనామం (Pronoun)</option>
+        <option value="verb">క్రియ (Verb)</option>
+        <option value="adjective">విశేషణం (Adjective)</option>
+        <option value="adverb">క్రియావిశేషణం (Adverb)</option>
       </select>
-      <input type="text" placeholder="Search...">
+      <input type="text" id="categorySearch" placeholder="Search...">
     </div>
-    <div class="results">
-      <p>ఇక్కడ పంటకాలు కనిపిస్తాయి...</p>
+    <div class="results" id="categoryResults">
+      <p>ఇక్కడ ఫలితాలు కనిపిస్తాయి...</p>
     </div>
   </div>
 
@@ -129,10 +124,10 @@
   <div class="block" id="grammarBlock">
     <h2>Grammar</h2>
     <div class="random-box">
-      <p>Grammar content will load here...</p>
+      <p id="grammarContent">Loading...</p>
       <div class="btns">
-        <button>Previous</button>
-        <button>Next</button>
+        <button onclick="prevItem('grammar')">Previous</button>
+        <button onclick="nextItem('grammar')">Next</button>
       </div>
     </div>
   </div>
@@ -141,10 +136,10 @@
   <div class="block" id="articlesBlock">
     <h2>Articles</h2>
     <div class="random-box">
-      <p>Articles content will load here...</p>
+      <p id="articlesContent">Loading...</p>
       <div class="btns">
-        <button>Previous</button>
-        <button>Next</button>
+        <button onclick="prevItem('articles')">Previous</button>
+        <button onclick="nextItem('articles')">Next</button>
       </div>
     </div>
   </div>
@@ -153,10 +148,10 @@
   <div class="block" id="storiesBlock">
     <h2>Stories</h2>
     <div class="random-box">
-      <p>Stories content will load here...</p>
+      <p id="storiesContent">Loading...</p>
       <div class="btns">
-        <button>Previous</button>
-        <button>Next</button>
+        <button onclick="prevItem('stories')">Previous</button>
+        <button onclick="nextItem('stories')">Next</button>
       </div>
     </div>
   </div>
@@ -165,10 +160,10 @@
   <div class="block" id="idiomsBlock">
     <h2>Idioms</h2>
     <div class="random-box">
-      <p>Idioms content will load here...</p>
+      <p id="idiomsContent">Loading...</p>
       <div class="btns">
-        <button>Previous</button>
-        <button>Next</button>
+        <button onclick="prevItem('idioms')">Previous</button>
+        <button onclick="nextItem('idioms')">Next</button>
       </div>
     </div>
   </div>
@@ -177,13 +172,68 @@
   <div class="block" id="proverbsBlock">
     <h2>Proverbs (సామెతలు)</h2>
     <div class="random-box">
-      <p>Proverbs content will load here...</p>
+      <p id="proverbsContent">Loading...</p>
       <div class="btns">
-        <button>Previous</button>
-        <button>Next</button>
+        <button onclick="prevItem('proverbs')">Previous</button>
+        <button onclick="nextItem('proverbs')">Next</button>
       </div>
     </div>
   </div>
+
+  <script>
+    // Data storage
+    let data = {
+      grammar: [],
+      articles: [],
+      stories: [],
+      idioms: [],
+      proverbs: []
+    };
+
+    let index = {
+      grammar: 0,
+      articles: 0,
+      stories: 0,
+      idioms: 0,
+      proverbs: 0
+    };
+
+    // Load files
+    function loadFile(type, file) {
+      fetch(file)
+        .then(res => res.text())
+        .then(text => {
+          data[type] = text.split("\n").filter(line => line.trim() !== "");
+          document.getElementById(type + "Content").innerText = data[type][0] || "No content";
+        })
+        .catch(() => {
+          document.getElementById(type + "Content").innerText = "File not found!";
+        });
+    }
+
+    function showContent(type) {
+      document.getElementById(type + "Content").innerText = data[type][index[type]];
+    }
+
+    function prevItem(type) {
+      if (data[type].length === 0) return;
+      index[type] = (index[type] - 1 + data[type].length) % data[type].length;
+      showContent(type);
+    }
+
+    function nextItem(type) {
+      if (data[type].length === 0) return;
+      index[type] = (index[type] + 1) % data[type].length;
+      showContent(type);
+    }
+
+    // Load all txt files
+    loadFile("grammar", "grammar.txt");
+    loadFile("articles", "articles.txt");
+    loadFile("stories", "story.txt");
+    loadFile("idioms", "idioms.txt");
+    loadFile("proverbs", "proverbs.txt");
+  </script>
 
 </body>
 </html>
