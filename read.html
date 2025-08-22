@@ -16,21 +16,28 @@
       padding: 15px;
       text-align: center;
     }
-    ul.menu {
-      list-style: decimal;
-      padding: 20px;
-      max-width: 700px;
-      margin: auto;
+    .menu {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      padding: 15px;
+      flex-wrap: wrap;
+      background: #f1f1f1;
     }
-    ul.menu li {
-      margin: 8px 0;
+    .menu button {
+      background: #6200ea;
+      color: white;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 14px;
     }
-    ul.menu li a {
-      text-decoration: none;
-      color: #6200ea;
-      font-weight: bold;
+    .menu button:hover {
+      background: #4500b5;
     }
     .block {
+      display: none;
       background: white;
       margin: 20px auto;
       padding: 15px;
@@ -38,51 +45,31 @@
       box-shadow: 0 2px 5px rgba(0,0,0,0.1);
       max-width: 700px;
     }
+    .block.active {
+      display: block;
+    }
     .block h2 {
       margin-top: 0;
       color: #6200ea;
     }
-    .random-box {
+    .content-box {
       border: 1px solid #ddd;
       padding: 10px;
       border-radius: 8px;
-      text-align: center;
-    }
-    .btns {
-      margin-top: 10px;
-      display: flex;
-      justify-content: space-between;
-    }
-    button {
-      background: #6200ea;
-      color: white;
-      border: none;
-      padding: 5px 15px;
-      border-radius: 6px;
-      cursor: pointer;
-    }
-    button:hover {
-      background: #4500b5;
+      background: #fafafa;
     }
     .category-top {
       display: flex;
       justify-content: space-between;
-      align-items: center;
       margin-bottom: 10px;
+      gap: 10px;
     }
-    .category-top select, 
+    .category-top select,
     .category-top input {
       padding: 5px;
       border: 1px solid #ccc;
       border-radius: 6px;
-    }
-    .results {
-      border: 1px solid #ddd;
-      padding: 10px;
-      border-radius: 8px;
-      margin-top: 10px;
-      background: #fafafa;
-      min-height: 50px;
+      flex: 1;
     }
   </style>
 </head>
@@ -91,143 +78,82 @@
     <h1>పఠన విభాగం (Read Section)</h1>
   </header>
 
-  <!-- Menu List -->
-  <ul class="menu">
-    <li><a href="#categoryBlock">Category</a></li>
-    <li><a href="#grammarBlock">Grammar</a></li>
-    <li><a href="#articlesBlock">Articles</a></li>
-    <li><a href="#storiesBlock">Stories</a></li>
-    <li><a href="#idiomsBlock">Idioms</a></li>
-    <li><a href="#proverbsBlock">సామెతలు</a></li>
-  </ul>
-
-  <!-- Category Block -->
-  <div class="block" id="categoryBlock">
-    <h2>Category</h2>
-    <div class="category-top">
-      <select id="categorySelect">
-        <option value="">--వర్గం ఎంచుకోండి--</option>
-        <option value="noun">నామవాచకం (Noun)</option>
-        <option value="pronoun">సర్వనామం (Pronoun)</option>
-        <option value="verb">క్రియ (Verb)</option>
-        <option value="adjective">విశేషణం (Adjective)</option>
-        <option value="adverb">క్రియావిశేషణం (Adverb)</option>
-      </select>
-      <input type="text" id="categorySearch" placeholder="Search...">
-    </div>
-    <div class="results" id="categoryResults">
-      <p>ఇక్కడ ఫలితాలు కనిపిస్తాయి...</p>
-    </div>
+  <!-- Menu Buttons -->
+  <div class="menu">
+    <button onclick="showBlock('grammarBlock')">Grammar</button>
+    <button onclick="showBlock('vocabularyBlock')">Vocabulary</button>
+    <button onclick="showBlock('articlesBlock')">Articles</button>
+    <button onclick="showBlock('storiesBlock')">Stories</button>
+    <button onclick="showBlock('idiomsBlock')">Idioms</button>
+    <button onclick="showBlock('proverbsBlock')">Proverbs</button>
   </div>
 
   <!-- Grammar Block -->
   <div class="block" id="grammarBlock">
     <h2>Grammar</h2>
-    <div class="random-box">
-      <p id="grammarContent">Loading...</p>
-      <div class="btns">
-        <button onclick="prevItem('grammar')">Previous</button>
-        <button onclick="nextItem('grammar')">Next</button>
-      </div>
+    <div class="content-box" id="grammarContent">Loading...</div>
+  </div>
+
+  <!-- Vocabulary Block -->
+  <div class="block" id="vocabularyBlock">
+    <h2>Vocabulary</h2>
+    <div class="category-top">
+      <select id="categorySelect">
+        <option value="">--వర్గం ఎంచుకోండి--</option>
+        <option value="noun">నామవాచకం</option>
+        <option value="verb">క్రియ</option>
+        <option value="adjective">విశేషణం</option>
+        <option value="adverb">క్రియావిశేషణం</option>
+      </select>
+      <input type="text" id="categorySearch" placeholder="Search...">
     </div>
+    <div class="content-box" id="vocabularyContent">ఇక్కడ పదాలు కనిపిస్తాయి...</div>
   </div>
 
   <!-- Articles Block -->
   <div class="block" id="articlesBlock">
     <h2>Articles</h2>
-    <div class="random-box">
-      <p id="articlesContent">Loading...</p>
-      <div class="btns">
-        <button onclick="prevItem('articles')">Previous</button>
-        <button onclick="nextItem('articles')">Next</button>
-      </div>
-    </div>
+    <div class="content-box" id="articlesContent">Loading...</div>
   </div>
 
   <!-- Stories Block -->
   <div class="block" id="storiesBlock">
     <h2>Stories</h2>
-    <div class="random-box">
-      <p id="storiesContent">Loading...</p>
-      <div class="btns">
-        <button onclick="prevItem('stories')">Previous</button>
-        <button onclick="nextItem('stories')">Next</button>
-      </div>
-    </div>
+    <div class="content-box" id="storiesContent">Loading...</div>
   </div>
 
   <!-- Idioms Block -->
   <div class="block" id="idiomsBlock">
     <h2>Idioms</h2>
-    <div class="random-box">
-      <p id="idiomsContent">Loading...</p>
-      <div class="btns">
-        <button onclick="prevItem('idioms')">Previous</button>
-        <button onclick="nextItem('idioms')">Next</button>
-      </div>
-    </div>
+    <div class="content-box" id="idiomsContent">Loading...</div>
   </div>
 
   <!-- Proverbs Block -->
   <div class="block" id="proverbsBlock">
     <h2>Proverbs (సామెతలు)</h2>
-    <div class="random-box">
-      <p id="proverbsContent">Loading...</p>
-      <div class="btns">
-        <button onclick="prevItem('proverbs')">Previous</button>
-        <button onclick="nextItem('proverbs')">Next</button>
-      </div>
-    </div>
+    <div class="content-box" id="proverbsContent">Loading...</div>
   </div>
 
   <script>
-    // Data storage
-    let data = {
-      grammar: [],
-      articles: [],
-      stories: [],
-      idioms: [],
-      proverbs: []
-    };
+    // Show block
+    function showBlock(id) {
+      document.querySelectorAll('.block').forEach(b => b.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+    }
 
-    let index = {
-      grammar: 0,
-      articles: 0,
-      stories: 0,
-      idioms: 0,
-      proverbs: 0
-    };
-
-    // Load files
+    // Load text files
     function loadFile(type, file) {
       fetch(file)
         .then(res => res.text())
         .then(text => {
-          data[type] = text.split("\n").filter(line => line.trim() !== "");
-          document.getElementById(type + "Content").innerText = data[type][0] || "No content";
+          document.getElementById(type + "Content").innerText = text;
         })
         .catch(() => {
           document.getElementById(type + "Content").innerText = "File not found!";
         });
     }
 
-    function showContent(type) {
-      document.getElementById(type + "Content").innerText = data[type][index[type]];
-    }
-
-    function prevItem(type) {
-      if (data[type].length === 0) return;
-      index[type] = (index[type] - 1 + data[type].length) % data[type].length;
-      showContent(type);
-    }
-
-    function nextItem(type) {
-      if (data[type].length === 0) return;
-      index[type] = (index[type] + 1) % data[type].length;
-      showContent(type);
-    }
-
-    // Load all txt files
+    // Load contents
     loadFile("grammar", "grammar.txt");
     loadFile("articles", "articles.txt");
     loadFile("stories", "story.txt");
