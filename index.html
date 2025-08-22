@@ -228,38 +228,54 @@
       }
     }
 
-    // Search function
-    async function searchWord() {
-      let query = document.getElementById("searchInput").value.toLowerCase();
-      let resultBox = document.getElementById("searchResult");
-      resultBox.innerHTML = "Searching...";
+      async function searchWord() {
+  let query = document.getElementById("searchInput").value.toLowerCase();
+  let resultBox = document.getElementById("searchResult");
+  resultBox.innerHTML = "Searching...";
 
-      if (!query) {
-        resultBox.innerHTML = "Please enter a word.";
-        return;
+  if (!query) {
+    resultBox.innerHTML = "Please enter a word.";
+    return;
+  }
+
+  let results = [];
+
+  // Search word files
+  for (let file of files) {
+    try {
+      let res = await fetch(file);
+      let text = await res.text();
+      let lines = text.split(/\r?\n/);
+      for (let line of lines) {
+        if (line.toLowerCase().includes(query)) {
+          results.push(`<div class="result-entry">${line} <span class="category-label">${categoryLabels[file]}</span></div>`);
+        }
       }
+    } catch {}
+  }
 
-      let results = [];
-
-      for (let file of files) {
-        try {
-          let res = await fetch(file);
-          let text = await res.text();
-          let lines = text.split(/\r?\n/);
-          for (let line of lines) {
-            if (line.toLowerCase().includes(query)) {
-              results.push(`<div class="result-entry">${line} <span class="category-label">${categoryLabels[file]}</span></div>`);
-            }
-          }
-        } catch {}
-      }
-
-      if (results.length > 0) {
-        resultBox.innerHTML = results.join("");
-      } else {
-        resultBox.innerHTML = "❌ Word not found.";
+  // --- SEARCH vocabulary.html SECTIONS ---
+  try {
+    let vocabRes = await fetch('vocabulary.html');
+    let vocabHtml = await vocabRes.text();
+    let parser = new DOMParser();
+    let doc = parser.parseFromString(vocabHtml, 'text/html');
+    let sections = Array.from(doc.querySelectorAll('section'));
+    for (let section of sections) {
+      if (section.textContent.toLowerCase().includes(query)) {
+        results.push(`<div class="result-entry">${section.innerHTML} <span class="category-label">Vocabulary</span></div>`);
       }
     }
+  } catch (e) {
+    // Optionally log or ignore error
+  }
+
+  if (results.length > 0) {
+    resultBox.innerHTML = results.join("");
+  } else {
+    resultBox.innerHTML = "❌ Word not found.";
+  }
+      }
 
     // Shuffle helper
     function shuffleArray(array) {
