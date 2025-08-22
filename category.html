@@ -2,154 +2,117 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Dictionary Categories</title>
+  <title>Categories</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
     body {
       font-family: Arial, sans-serif;
-      background: #f1f1f1;
+      background: #f0f8ff;
       margin: 0;
       padding: 20px;
       text-align: center;
     }
-    h1 { color: #333; margin-bottom: 20px; }
+    h1 { color: #222; margin-bottom: 20px; }
 
-    /* Dropdown */
-    select {
+    select, input[type="text"], button {
       padding: 10px;
       font-size: 16px;
       border-radius: 6px;
       border: 1px solid #ccc;
+      margin: 8px;
     }
 
-    /* Search + Results */
-    .content-box {
+    input[type="text"] { width: 60%; }
+
+    #contentBox {
       width: 90%;
       max-width: 700px;
-      margin: 25px auto;
+      margin: 20px auto;
       padding: 20px;
       border: 1px solid #ddd;
       border-radius: 10px;
       background: #fff;
       text-align: left;
-      display: none; /* hidden until a category is chosen */
-    }
-    .search-bar {
-      text-align: center;
-      margin-bottom: 15px;
-    }
-    .search-bar input {
-      width: 70%;
-      padding: 10px;
-      font-size: 16px;
-    }
-    .search-bar button {
-      padding: 10px 15px;
-      font-size: 16px;
-      background: #28a745;
-      color: #fff;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-    }
-    .search-bar button:hover { background: #1e7e34; }
-
-    .results {
-      margin-top: 15px;
-      max-height: 400px;
-      overflow-y: auto;
+      display: none;
       white-space: pre-line;
+      min-height: 150px;
     }
 
-    /* Main button */
     .main-btn {
-      margin-top: 30px;
+      margin-top: 20px;
       padding: 12px 20px;
       font-size: 18px;
-      background: #6c63ff;
+      background: #28a745;
       color: #fff;
       border: none;
       border-radius: 8px;
       cursor: pointer;
     }
-    .main-btn:hover { background: #5147d8; }
+    .main-btn:hover { background: #1e7e34; }
+    .highlight { background: yellow; font-weight: bold; }
   </style>
 </head>
 <body>
-  <h1>📚 చదువు </h1>
+  <h1>📚 Word Categories</h1>
 
-  <!-- Dropdown selection -->
-  <div>
-    <label for="categorySelect"><b>Select Category:</b></label>
-    <select id="categorySelect" onchange="openCategory(this.value)">
-      <option value="">--Choose--</option>
-      <option value="noun.txt">Nouns</option>
-      <option value="pronoun.txt">Pronouns</option>
-      <option value="verb.txt">Verbs</option>
-      <option value="adjective.txt">Adjectives</option>
-      <option value="adverb.txt">Adverbs</option>
-      <option value="synonyms.txt">Synonyms</option>
-      <option value="antonyms.txt">Antonyms</option>
-      <option value="idioms.txt">Idioms</option>
-      <option value="proverbs.txt">Proverbs</option>
-      <option value="phrasal_verbs.txt">Phrasal Verbs</option>
-      <option value="homonyms.txt">Homonyms</option>
-      <option value="interjections.txt">Interjections</option>
-      <option value="conjunctions.txt">Conjunctions</option>
-      <option value="prepositions.txt">Prepositions</option>
-      <option value="quantifiers.txt">Quantifiers</option>
-      <option value="derivatives.txt">Derivatives</option>
-      <option value="numbers.txt">Numbers</option>
-      <option value="dictionary.txt">Dictionary</option>
-      <option value="dictionary2.txt">Dictionary 2</option>
-    </select>
+  <!-- Dropdown -->
+  <select id="categorySelect" onchange="openFile(this.value)">
+    <option value="">--Select a Category--</option>
+    <option value="noun.txt">Nouns</option>
+    <option value="pronoun.txt">Pronouns</option>
+    <option value="verb.txt">Verbs</option>
+    <option value="adjective.txt">Adjectives</option>
+    <option value="adverb.txt">Adverbs</option>
+    <option value="synonyms.txt">Synonyms</option>
+    <option value="antonyms.txt">Antonyms</option>
+    <option value="homonyms.txt">Homonyms</option>
+    <option value="interjections.txt">Interjections</option>
+    <option value="conjunctions.txt">Conjunctions</option>
+    <option value="prepositions.txt">Prepositions</option>
+    <option value="quantifiers.txt">Quantifiers</option>
+    <option value="derivatives.txt">Derivatives</option>
+    <option value="numbers.txt">Numbers</option>
+    <option value="dictionary.txt">Dictionary</option>
+    <option value="dictionary2.txt">Dictionary 2</option>
+  </select>
+
+  <!-- Search Box -->
+  <div id="searchArea" style="display:none;">
+    <input type="text" id="searchBox" placeholder="🔍 Search in this category...">
+    <button onclick="searchContent()">Search</button>
   </div>
 
-  <!-- Category Content -->
-  <div class="content-box" id="contentBox">
-    <div class="search-bar">
-      <input type="text" id="categorySearch" placeholder="Search in category...">
-      <button onclick="searchInCategory()">వెతుకు</button>
-    </div>
-    <div class="results" id="categoryContent">దయచేసి ఏదైనా ఎంచుకోండి.. </div>
-  </div>
+  <!-- File Content -->
+  <div id="contentBox">Please choose a category.</div>
 
-  <button class="main-btn" onclick="window.location.href='index.html'">← ముంగిలి</button>
+  <button class="main-btn" onclick="window.location.href='index.html'">← Main</button>
 
   <script>
-    let currentFile = "";
-    let currentContent = [];
+    let currentText = "";
 
-    async function openCategory(file) {
+    async function openFile(file) {
       if (!file) return;
-      currentFile = file;
       try {
         let res = await fetch(file);
-        let text = await res.text();
-        currentContent = text.split(/\r?\n/).filter(Boolean);
-        document.getElementById("categoryContent").innerText = currentContent.join("\n");
+        currentText = await res.text();
+        document.getElementById("contentBox").innerText = currentText;
         document.getElementById("contentBox").style.display = "block";
+        document.getElementById("searchArea").style.display = "block";
       } catch {
-        document.getElementById("categoryContent").innerText = "❌ Error loading " + file;
+        document.getElementById("contentBox").innerText = "❌ Error loading " + file;
         document.getElementById("contentBox").style.display = "block";
       }
     }
 
-    function searchInCategory() {
-      let query = document.getElementById("categorySearch").value.toLowerCase();
-      let resultDiv = document.getElementById("categoryContent");
-
+    function searchContent() {
+      let query = document.getElementById("searchBox").value.trim();
       if (!query) {
-        resultDiv.innerText = currentContent.join("\n");
+        document.getElementById("contentBox").innerText = currentText;
         return;
       }
-
-      let matches = currentContent.filter(line => line.toLowerCase().includes(query));
-      if (matches.length > 0) {
-        resultDiv.innerText = matches.join("\n");
-      } else {
-        resultDiv.innerText = "❌ No matches found in " + currentFile;
-      }
+      let regex = new RegExp(query, "gi");
+      let highlighted = currentText.replace(regex, match => `<span class="highlight">${match}</span>`);
+      document.getElementById("contentBox").innerHTML = highlighted;
     }
   </script>
 </body>
