@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="te">
+<head>
+  <meta charset="UTF-8">
+  <title>Category</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body { font-family:"Noto Serif Telugu", serif; background:#fffdf5; padding:20px; }
+    h1 { text-align:center; }
+    button { display:block; margin:10px auto; padding:10px 15px; background:#0077cc; color:white; border:none; border-radius:5px; cursor:pointer; }
+    button:hover { background:#005fa3; }
+    ul { list-style:none; padding:0; }
+    li { padding:8px; border-bottom:1px solid #ddd; white-space:pre-wrap; }
+  </style>
+</head>
+<body>
+  <h1>వర్గం</h1>
+  <button onclick="goMain()">⬅ Main</button>
+  <ul id="wordList"></ul>
+
+  <script>
+    const wordList = document.getElementById("wordList");
+
+    function getQueryParam(name) {
+      return new URLSearchParams(window.location.search).get(name);
+    }
+
+    function goMain() {
+      window.location.href = "index.html";
+    }
+
+    async function loadCategory() {
+      const file = getQueryParam("file");
+      if (!file) return;
+      try {
+        const res = await fetch(file);
+        const text = await res.text();
+        text.trim().split("\n").forEach(line => {
+          const li = document.createElement("li");
+          li.textContent = line;
+          wordList.appendChild(li);
+        });
+      } catch {
+        wordList.innerHTML = "<li>File not found</li>";
+      }
+    }
+
+    window.onload = loadCategory;
+  </script>
+</body>
+</html>
