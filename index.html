@@ -43,7 +43,7 @@
     .result-box, .random-box {
       width: 90%;
       max-width: 600px;
-      min-height: 100px;
+      min-height: 120px;
       margin-top: 15px;
       padding: 20px;
       border: 1px solid #ddd;
@@ -57,6 +57,21 @@
       margin-bottom: 10px;
       color: #444;
     }
+    .result-entry {
+      margin-bottom: 8px;
+      padding: 8px;
+      border-bottom: 1px solid #eee;
+    }
+    .category-label {
+      font-size: 13px;
+      font-weight: bold;
+      color: #555;
+      background: #f0f0f0;
+      padding: 2px 6px;
+      border-radius: 5px;
+      margin-left: 5px;
+    }
+
     .nav-buttons {
       margin-top: 10px;
       display: flex;
@@ -94,7 +109,7 @@
 
   <!-- Search Result -->
   <div class="result-box">
-    <div class="box-title">🔎 Search Result</div>
+    <div class="box-title">🔎 Search Results</div>
     <div id="searchResult">No search yet.</div>
   </div>
 
@@ -111,13 +126,30 @@
   <button class="read-btn" onclick="window.location.href='category.html'">Read →</button>
 
   <script>
-    const files = [
-      "noun.txt", "pronoun.txt", "verb.txt", "adjective.txt", "adverb.txt",
-      "synonyms.txt", "antonyms.txt", "idioms.txt", "proverbs.txt",
-      "phrasal_verbs.txt", "homonyms.txt", "interjections.txt",
-      "conjunctions.txt", "prepositions.txt", "quantifiers.txt",
-      "derivatives.txt", "numbers.txt", "dictionary.txt", "dictionary2.txt"
-    ];
+    // Map file names to category labels
+    const categoryLabels = {
+      "noun.txt": "Noun",
+      "pronoun.txt": "Pronoun",
+      "verb.txt": "Verb",
+      "adjective.txt": "Adjective",
+      "adverb.txt": "Adverb",
+      "synonyms.txt": "Synonym",
+      "antonyms.txt": "Antonym",
+      "idioms.txt": "Idiom",
+      "proverbs.txt": "Proverb",
+      "phrasal_verbs.txt": "Phrasal Verb",
+      "homonyms.txt": "Homonym",
+      "interjections.txt": "Interjection",
+      "conjunctions.txt": "Conjunction",
+      "prepositions.txt": "Preposition",
+      "quantifiers.txt": "Quantifier",
+      "derivatives.txt": "Derivative",
+      "numbers.txt": "Number",
+      "dictionary.txt": "Dictionary",
+      "dictionary2.txt": "Dictionary 2"
+    };
+
+    const files = Object.keys(categoryLabels);
 
     let randomWords = [];
     let currentIndex = 0;
@@ -170,6 +202,8 @@
         return;
       }
 
+      let results = [];
+
       for (let file of files) {
         try {
           let res = await fetch(file);
@@ -177,13 +211,17 @@
           let lines = text.split(/\r?\n/);
           for (let line of lines) {
             if (line.toLowerCase().includes(query)) {
-              resultBox.innerHTML = `<strong>Found in ${file}:</strong><br>${line}`;
-              return;
+              results.push(`<div class="result-entry">${line} <span class="category-label">${categoryLabels[file]}</span></div>`);
             }
           }
         } catch {}
       }
-      resultBox.innerHTML = "❌ Word not found.";
+
+      if (results.length > 0) {
+        resultBox.innerHTML = results.join("");
+      } else {
+        resultBox.innerHTML = "❌ Word not found.";
+      }
     }
 
     // Shuffle helper
