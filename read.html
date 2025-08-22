@@ -41,6 +41,8 @@
       background: white;
       border-radius: 12px;
       box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      height: 80vh;
+      overflow-y: auto;
     }
     .back-btn {
       margin-top: 20px;
@@ -49,35 +51,43 @@
   </style>
 </head>
 <body>
+  <!-- Home page -->
   <div class="container" id="home">
     <h2>Select a Category</h2>
-    <button class="btn" onclick="showContent('grammar')">Grammar</button>
-    <button class="btn" onclick="showContent('vocabulary')">Vocabulary</button>
-    <button class="btn" onclick="showContent('articles')">Articles</button>
-    <button class="btn" onclick="showContent('stories')">Stories</button>
-    <button class="btn" onclick="showContent('idioms')">Idioms</button>
+    <button class="btn" onclick="loadFile('grammar.txt','Grammar')">Grammar</button>
+    <button class="btn" onclick="loadFile('category.txt','Vocabulary')">Vocabulary</button>
+    <button class="btn" onclick="loadFile('article.txt','Articles')">Articles</button>
+    <button class="btn" onclick="loadFile('story.txt','Stories')">Stories</button>
+    <button class="btn" onclick="loadFile('idiom.txt','Idioms')">Idioms</button>
+    <button class="btn" onclick="loadFile('proverb.txt','Proverbs')">Proverbs</button>
+    <button class="btn" onclick="loadFile('phrasal_verbs.txt','Phrasal Verbs')">Phrasal Verbs</button>
   </div>
 
+  <!-- Content page -->
   <div class="content" id="content">
     <h2 id="title"></h2>
-    <p id="text"></p>
+    <pre id="text"></pre>
     <button class="btn back-btn" onclick="goBack()">⬅ Back</button>
   </div>
 
   <script>
-    const data = {
-      grammar: "This is grammar content...",
-      vocabulary: "This is vocabulary content...",
-      articles: "This is articles content...",
-      stories: "This is stories content...",
-      idioms: "This is idioms content..."
-    };
-
-    function showContent(type) {
-      document.getElementById("home").style.display = "none";
-      document.getElementById("content").style.display = "block";
-      document.getElementById("title").innerText = type.charAt(0).toUpperCase() + type.slice(1);
-      document.getElementById("text").innerText = data[type];
+    function loadFile(file, title) {
+      fetch(file)
+        .then(response => {
+          if (!response.ok) {
+            throw new Error("File not found: " + file);
+          }
+          return response.text();
+        })
+        .then(data => {
+          document.getElementById("home").style.display = "none";
+          document.getElementById("content").style.display = "block";
+          document.getElementById("title").innerText = title;
+          document.getElementById("text").innerText = data;
+        })
+        .catch(error => {
+          document.getElementById("text").innerText = "Error loading file: " + error.message;
+        });
     }
 
     function goBack() {
