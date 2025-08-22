@@ -38,7 +38,18 @@
       border-radius: 5px;
     }
     button:hover { background: #0056b3; }
+.button-row {
+  display: flex;           /* Arrange children in a row */
+  justify-content: space-around; /* Evenly space buttons */
+  gap: 10px;               /* Optional spacing between buttons */
+}
 
+.read-btn {
+  padding: 10px 20px;      /* Adjust button size */
+  font-size: 16px;
+  cursor: pointer;
+}
+    
     /* Results + Random Word */
     .result-box, .random-box {
       width: 90%;
@@ -123,10 +134,12 @@
     </div>
   </div>
 
+  <div class="button-row">
   <button class="read-btn" onclick="window.location.href='read.html'">చదువు →</button>
-  <button class="read-btn" onclick="window.location.href='games.html'">ఆటలు →</button>
-  <button class="read-btn" onclick="window.location.href='neologisms.html'">కొత్తమాటకట్లు →</button>
-  
+  <button class="read-btn" onclick="window.location.href='read.html'">చదువు →</button>
+  <button class="read-btn" onclick="window.location.href='read.html'">చదువు →</button>
+</div>
+
   <script>
     // Map file names to category labels
     const categoryLabels = {
