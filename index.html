@@ -1,96 +1,110 @@
 <!DOCTYPE html>
-<html lang="te">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>తెలుగు నిఘంటువు</title>
+  <title>Dictionary - Main Page</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
-    body { font-family: "Noto Serif Telugu", serif; background: #f9f9f9; padding: 20px; }
-    h1 { text-align: center; }
-    #searchBox { display: block; margin: 10px auto; padding: 10px; width: 80%; font-size: 16px; border: 1px solid #aaa; border-radius: 5px; }
-    select { display: block; margin: 10px auto; padding: 10px; font-size: 16px; }
-    ul { list-style: none; padding: 0; }
-    li { padding: 8px; border-bottom: 1px solid #ddd; cursor: pointer; white-space: pre-wrap; }
-    li:hover { background: #eee; }
+    body {
+      font-family: Arial, sans-serif;
+      background: #f9f9f9;
+      margin: 0;
+      padding: 20px;
+      text-align: center;
+    }
+    h1 { color: #333; }
+    .search-box {
+      margin: 20px auto;
+      max-width: 400px;
+    }
+    input[type="text"] {
+      width: 70%;
+      padding: 10px;
+      font-size: 16px;
+    }
+    button {
+      padding: 10px 15px;
+      font-size: 16px;
+      cursor: pointer;
+      background: #007bff;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+    }
+    button:hover { background: #0056b3; }
+    .random-box {
+      margin-top: 30px;
+      padding: 20px;
+      border: 1px solid #ddd;
+      background: #fff;
+      border-radius: 10px;
+      display: inline-block;
+    }
   </style>
 </head>
 <body>
+  <h1>📖 My Dictionary</h1>
 
-  <h1>📘 తెలుగు నిఘంటువు</h1>
-  <input type="text" id="searchBox" placeholder="పదం వెతకండి...">
+  <!-- Search -->
+  <div class="search-box">
+    <input type="text" id="searchInput" placeholder="Search a word...">
+    <button onclick="searchWord()">Search</button>
+  </div>
 
-  <select id="categorySelect">
-    <option value="">-- వర్గం ఎంచుకోండి --</option>
-    <option value="nouns.txt">నామవాచకాలు (Nouns)</option>
-    <option value="pronouns.txt">సర్వనామాలు (Pronouns)</option>
-    <option value="verbs.txt">క్రియలు (Verbs)</option>
-    <option value="adjectives.txt">విశేషణాలు (Adjectives)</option>
-    <option value="adverbs.txt">క్రియావిశేషణాలు (Adverbs)</option>
-    <option value="synonyms.txt">పర్యాయపదాలు (Synonyms)</option>
-    <option value="antonyms.txt">వ్యతిరేక పదాలు (Antonyms)</option>
-    <option value="conjunctions.txt">అన్వయాలు (Conjunctions)</option>
-    <option value="prepositions.txt">ఉపసర్గలు (Prepositions)</option>
-    <option value="interjections.txt">విస్మయాదిబోధకాలు (Interjections)</option>
-    <option value="idioms.txt">ప్రసిద్ధోక్తులు (Idioms)</option>
-    <option value="proverbs.txt">సామెతలు (Proverbs)</option>
-    <option value="phrasal_verbs.txt">ఉపసర్గ క్రియలు (Phrasal Verbs)</option>
-    <option value="numbers.txt">సంఖ్యలు (Numbers)</option>
-    <option value="quantifiers.txt">పరిమాణ పదాలు (Quantifiers)</option>
-    <option value="homonyms.txt">సమాన శబ్ద పదాలు (Homonyms)</option>
-    <option value="derivatives.txt">ఉత్పన్న పదాలు (Derivatives)</option>
-  </select>
+  <!-- Random Word -->
+  <div class="random-box">
+    <h3>Random Word</h3>
+    <p id="randomWord">Loading...</p>
+  </div>
 
-  <ul id="wordList"></ul>
+  <br><br>
+  <button onclick="window.location.href='category.html'">Read →</button>
 
   <script>
-    const categorySelect = document.getElementById("categorySelect");
-    const searchBox = document.getElementById("searchBox");
-    const wordList = document.getElementById("wordList");
-
-    const allFiles = [
-      "nouns.txt","pronouns.txt","verbs.txt","adjectives.txt","adverbs.txt",
-      "synonyms.txt","antonyms.txt","conjunctions.txt","prepositions.txt","interjections.txt",
-      "idioms.txt","proverbs.txt","phrasal_verbs.txt","numbers.txt","quantifiers.txt",
-      "homonyms.txt","derivatives.txt"
+    // Load all .txt files (simulate by file list)
+    const files = [
+      "noun.txt", "pronoun.txt", "verb.txt", "adjective.txt", "adverb.txt",
+      "synonyms.txt", "antonyms.txt", "idioms.txt", "proverbs.txt",
+      "phrasal_verbs.txt", "homonyms.txt", "interjections.txt",
+      "conjunctions.txt", "prepositions.txt", "quantifiers.txt",
+      "derivatives.txt", "numbers.txt", "dictionary.txt", "dictionary2.txt"
     ];
-    let currentWords = [];
 
-    function renderWords(words) {
-      wordList.innerHTML = "";
-      words.forEach(w => {
-        const li = document.createElement("li");
-        li.textContent = w;
-        wordList.appendChild(li);
-      });
+    // Pick random file + random word
+    async function loadRandomWord() {
+      let file = files[Math.floor(Math.random() * files.length)];
+      try {
+        let res = await fetch(file);
+        let text = await res.text();
+        let words = text.split(/\r?\n/).filter(Boolean);
+        let random = words[Math.floor(Math.random() * words.length)];
+        document.getElementById("randomWord").innerText = random;
+      } catch {
+        document.getElementById("randomWord").innerText = "Error loading word.";
+      }
     }
 
-    async function loadRandomWords() {
-      let allWords = [];
-      for (let file of allFiles) {
-        try {
-          const res = await fetch(file);
-          const text = await res.text();
-          allWords = allWords.concat(text.trim().split("\n"));
-        } catch {}
+    // Search function
+    async function searchWord() {
+      let query = document.getElementById("searchInput").value.toLowerCase();
+      if (!query) return alert("Enter a word to search!");
+      
+      for (let file of files) {
+        let res = await fetch(file);
+        let text = await res.text();
+        let lines = text.split(/\r?\n/);
+        for (let line of lines) {
+          if (line.toLowerCase().includes(query)) {
+            alert("Found in " + file + ":\n" + line);
+            return;
+          }
+        }
       }
-      currentWords = allWords;
-      const sample = allWords.sort(() => 0.5 - Math.random()).slice(0, 30);
-      renderWords(sample);
+      alert("Word not found!");
     }
 
-    // category selection → go to new page
-    categorySelect.addEventListener("change", () => {
-      if (categorySelect.value) {
-        window.location.href = "category.html?file=" + categorySelect.value;
-      }
-    });
-
-    searchBox.addEventListener("input", () => {
-      const q = searchBox.value.toLowerCase();
-      renderWords(currentWords.filter(w => w.toLowerCase().includes(q)));
-    });
-
-    window.onload = loadRandomWords;
+    // On load
+    loadRandomWord();
   </script>
 </body>
 </html>
