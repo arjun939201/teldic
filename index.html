@@ -237,10 +237,10 @@
       async function searchWord() {
   let query = document.getElementById("searchInput").value.toLowerCase();
   let resultBox = document.getElementById("searchResult");
-  resultBox.innerHTML = "Searching...";
+  resultBox.innerHTML = "వెతుకుతున్న...";
 
   if (!query) {
-    resultBox.innerHTML = "Please enter a word.";
+    resultBox.innerHTML = "ఏదైనా వ్రాయండి...";
     return;
   }
 
@@ -260,23 +260,6 @@
     } catch {}
   }
 
-  // --- SEARCH vocabulary.html SECTIONS ---
-  try {
-    let vocabRes = await fetch('vocabulary.html');
-    let vocabHtml = await vocabRes.text();
-    let parser = new DOMParser();
-    let doc = parser.parseFromString(vocabHtml, 'text/html');
-    let sections = Array.from(doc.querySelectorAll('section'));
-    for (let section of sections) {
-      if (section.textContent.toLowerCase().includes(query)) {
-     results.push(
-  `<div class="result-entry">${section.innerHTML}</section>
-     <span class="category-label">Vocabulary</span>`
-); }
-    }
-  } catch (e) {
-    // Optionally log or ignore error
-  }
 
   if (results.length > 0) {
     resultBox.innerHTML = results.join("");
