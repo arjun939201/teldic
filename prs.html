@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Search & Highlight Demo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body { font-family: sans-serif; margin: 0; padding: 0; background: #f9f9f9; }
+    .container { max-width: 600px; margin: 40px auto; padding: 20px; background: white; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);}
+    .search-bar { display: flex; gap: 8px; margin-bottom: 12px; }
+    .search-bar input[type="text"] { flex: 1; font-size: 1rem; padding: 6px 8px; border-radius: 4px; border: 1px solid #ccc;}
+    textarea {
+      width: 100%;
+      min-height: 180px;
+      font-size: 1.08rem;
+      line-height: 1.5;
+      padding: 10px;
+      border-radius: 6px;
+      border: 1px solid #bbb;
+      resize: vertical;
+      margin-bottom: 18px;
+    }
+    .highlighted {
+      background-color: #ffe66d;
+      border-radius: 3px;
+      padding: 0 2px;
+    }
+    .fab-nav {
+      position: fixed;
+      right: 32px;
+      bottom: 32px;
+      z-index: 100;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .fab-btn {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      border: 0;
+      background: #0057e7;
+      color: white;
+      font-size: 1.5rem;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+      transition: background 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .fab-btn:active {
+      background: #003778;
+    }
+    .match-info {
+      font-size: 0.98rem;
+      color: #333;
+      margin-left: 10px;
+      min-width: 80px;
+    }
+    .matches-container {
+      min-height: 18px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <form class="search-bar" onsubmit="event.preventDefault(); doSearch();">
+      <input type="text" id="searchInput" placeholder="Search..." aria-label="Search">
+      <button type="button" onclick="doSearch()" style="padding: 6px 14px; border-radius: 4px;">🔍</button>
+      <span class="match-info matches-container" id="matchInfo"></span>
+    </form>
+    <textarea id="mainText" placeholder="Paste Telugu, Hindi, or any text here..."></textarea>
+    <div id="displayDiv" style="white-space: pre-wrap; word-break: break-word; min-height: 120px; margin-top: 8px;"></div>
+  </div>
+  <div class="fab-nav" id="fabNav" style="display: none;">
+    <button class="fab-btn" id="prevBtn" title="Previous match">&#8593;</button>
+    <button class="fab-btn" id="nextBtn" title="Next match">&#8595;</button>
+  </div>
+  <script>
+    const mainText = document.getElementById('mainText');
+    const displayDiv = document.getElementById('displayDiv');
+    const searchInput = document.getElementById('searchInput');
+    const matchInfo = document.getElementById('matchInfo');
+    const fabNav = document.getElementById('fabNav');
+    const nextBtn = document.getElementById('nextBtn');
+    const prevBtn = document.getElementById('prevBtn');
+
+    let currentMatches = [];
+    let currentMatchIdx = 0;
+    let lastSearch = "";
+
+    // Update displayDiv with plain text from textarea
+    mainText.addEventListener('input', () => {
+      updateDisplay();
+      clearMatches();
+    });
+
+    function updateDisplay() {
+      displayDiv.innerHTML = escapeHtml(mainText.value);
+      fabNav.style.display = 'none';
+      matchInfo.textContent = '';
+    }
+
+    // Escape HTML for safe display
+    function escapeHtml(text) {
+      return text.replace(/[&<>"']/g, function(m) {
+        return ({
+          '&': '&amp;',
+          '<': '&lt;',
+          '>': '&gt;',
+          '"': '&quot;',
+          "'": '&#39;'
+        })[m];
+      });
+    }
+
+    // Main search logic
+    function doSearch() {
+      let text = mainText.value;
+      let query = searchInput.value;
+      clearMatches();
+      if (!query || !text) {
+        updateDisplay();
+        return;
+      }
+      lastSearch = query;
+      const regex = new RegExp(escapeRegExp(query), 'giu');
+      currentMatches = [];
+      let match;
+      // Find all matches with their start/end indices
+      while ((match = regex.exec(text)) !== null) {
+        currentMatches.push({start: match.index, end: regex.lastIndex});
+        // Avoid infinite loop for zero-length matches
+        if (match.index === regex.lastIndex) regex.lastIndex++;
+      }
+      if (!currentMatches.length) {
+        updateDisplay();
+        matchInfo.textContent = "No matches";
+        return;
+      }
+      currentMatchIdx = 0;
+      highlightMatches();
+      updateNav();
+      scrollToCurrent();
+    }
+
+    // Highlight all matches and focus current
+    function highlightMatches() {
+      let text = mainText.value;
+      if (!currentMatches.length) {
+        displayDiv.innerHTML = escapeHtml(text);
+        return;
+      }
+      let parts = [];
+      let lastIdx = 0;
+      for (let i = 0; i < currentMatches.length; i++) {
+        let {start, end} = currentMatches[i];
+        parts.push(escapeHtml(text.slice(lastIdx, start)));
+        let cls = "highlighted";
+        if (i === currentMatchIdx) cls += " current-highlight";
+        parts.push(`<span class="${cls}" id="match-${i}">${escapeHtml(text.slice(start, end))}</span>`);
+        lastIdx = end;
+      }
+      parts.push(escapeHtml(text.slice(lastIdx)));
+      displayDiv.innerHTML = parts.join('');
+      matchInfo.textContent = `Match ${currentMatchIdx+1} of ${currentMatches.length}`;
+    }
+
+    function scrollToCurrent() {
+      setTimeout(() => {
+        let el = document.getElementById(`match-${currentMatchIdx}`);
+        if (el) el.scrollIntoView({behavior: "smooth", block: "center"});
+      }, 50);
+    }
+
+    function updateNav() {
+      fabNav.style.display = currentMatches.length > 0 ? 'flex' : 'none';
+    }
+
+    function clearMatches() {
+      currentMatches = [];
+      currentMatchIdx = 0;
+      fabNav.style.display = 'none';
+      matchInfo.textContent = '';
+    }
+
+    nextBtn.onclick = () => {
+      if (!currentMatches.length) return;
+      currentMatchIdx = (currentMatchIdx + 1) % currentMatches.length;
+      highlightMatches();
+      scrollToCurrent();
+    };
+    prevBtn.onclick = () => {
+      if (!currentMatches.length) return;
+      currentMatchIdx = (currentMatchIdx - 1 + currentMatches.length) % currentMatches.length;
+      highlightMatches();
+      scrollToCurrent();
+    };
+
+    // Support pressing Enter in search to trigger search
+    searchInput.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        doSearch();
+      }
+    });
+
+    // Helper: Escape regexp chars in search
+    function escapeRegExp(string) {
+      return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    }
+
+    // Initial
+    updateDisplay();
+
+    // On page load, clicking highlighted text moves to that match
+    displayDiv.addEventListener('click', function(e) {
+      if (e.target.classList.contains('highlighted')) {
+        const id = e.target.id;
+        if (id && id.startsWith('match-')) {
+          let idx = parseInt(id.split('-')[1], 10);
+          if (!isNaN(idx)) {
+            currentMatchIdx = idx;
+            highlightMatches();
+            scrollToCurrent();
+          }
+        }
+      }
+    });
+  </script>
+</body>
+</html>
