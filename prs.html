@@ -8,22 +8,30 @@
     body { font-family: sans-serif; margin: 0; padding: 0; background: #f9f9f9; }
     .container { max-width: 600px; margin: 40px auto; padding: 20px; background: white; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);}
     .search-bar { display: flex; gap: 8px; margin-bottom: 12px; }
-    .search-bar input[type="text"] { flex: 1; font-size: 1rem; padding: 6px 8px; border-radius: 4px; border: 1px solid #ccc;}
+    .search-bar input[type="text"] { flex: 1; font-size: 0.92rem; padding: 5px 8px; border-radius: 4px; border: 1px solid #ccc;}
     textarea {
       width: 100%;
-      min-height: 180px;
-      font-size: 1.08rem;
-      line-height: 1.5;
-      padding: 10px;
+      min-height: 140px;
+      font-size: 0.98rem;
+      line-height: 1.4;
+      padding: 8px;
       border-radius: 6px;
       border: 1px solid #bbb;
       resize: vertical;
-      margin-bottom: 18px;
+      margin-bottom: 14px;
     }
     .highlighted {
       background-color: #ffe66d;
       border-radius: 3px;
       padding: 0 2px;
+      font-size: 0.98em;
+      transition: background 0.2s, color 0.2s;
+    }
+    .current-highlight {
+      background-color: #2196f3 !important;
+      color: #fff !important;
+      font-weight: bold;
+      font-size: 1em;
     }
     .fab-nav {
       position: fixed;
@@ -35,13 +43,13 @@
       gap: 12px;
     }
     .fab-btn {
-      width: 48px;
-      height: 48px;
+      width: 40px;
+      height: 40px;
       border-radius: 50%;
       border: 0;
       background: #0057e7;
       color: white;
-      font-size: 1.5rem;
+      font-size: 1.25rem;
       cursor: pointer;
       box-shadow: 0 2px 8px rgba(0,0,0,0.12);
       transition: background 0.2s;
@@ -53,13 +61,17 @@
       background: #003778;
     }
     .match-info {
-      font-size: 0.98rem;
+      font-size: 0.89rem;
       color: #333;
-      margin-left: 10px;
-      min-width: 80px;
+      margin-left: 8px;
+      min-width: 64px;
+      letter-spacing: 0.3px;
     }
     .matches-container {
-      min-height: 18px;
+      min-height: 16px;
+    }
+    #displayDiv {
+      font-size: 0.99rem;
     }
   </style>
 </head>
@@ -67,11 +79,11 @@
   <div class="container">
     <form class="search-bar" onsubmit="event.preventDefault(); doSearch();">
       <input type="text" id="searchInput" placeholder="Search..." aria-label="Search">
-      <button type="button" onclick="doSearch()" style="padding: 6px 14px; border-radius: 4px;">🔍</button>
+      <button type="button" onclick="doSearch()" style="padding: 5px 12px; border-radius: 4px; font-size:0.95rem;">🔍</button>
       <span class="match-info matches-container" id="matchInfo"></span>
     </form>
     <textarea id="mainText" placeholder="Paste Telugu, Hindi, or any text here..."></textarea>
-    <div id="displayDiv" style="white-space: pre-wrap; word-break: break-word; min-height: 120px; margin-top: 8px;"></div>
+    <div id="displayDiv" style="white-space: pre-wrap; word-break: break-word; min-height: 90px; margin-top: 6px;"></div>
   </div>
   <div class="fab-nav" id="fabNav" style="display: none;">
     <button class="fab-btn" id="prevBtn" title="Previous match">&#8593;</button>
@@ -164,7 +176,8 @@
       }
       parts.push(escapeHtml(text.slice(lastIdx)));
       displayDiv.innerHTML = parts.join('');
-      matchInfo.textContent = `Match ${currentMatchIdx+1} of ${currentMatches.length}`;
+      // Show as "1/n"
+      matchInfo.textContent = `${currentMatches.length > 0 ? (currentMatchIdx+1) : 0}/${currentMatches.length}`;
     }
 
     function scrollToCurrent() {
