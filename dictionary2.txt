@@ -1268,3 +1268,78 @@ mother = తల్లి, అమ్మ
 వినల్వి = వినందగినది, శ్రోతవ్యము (audible)
 తినల్వి = తినందగినది, భక్షణీయము, eatable
 ఉండల్వి = ఉండందగినది, వసితవ్యము, stayable
+
+ Internet – తమూవల
+ Website – వలగూడు
+ Webpage – వలపుట
+ URL – ఐవనె (ఐకానువు వనర నెలవరి)
+ Browser – వయ్యాలికాను
+ Search Engine – రోపెన
+ Homepage – ఇలపుట
+ Link – లంకె
+ Wi-Fi – తీవ (తీవేగు లేని వల)
+ Broadband – విఱివితౌలం
+ Modem – మిస్కుమార్పెన
+ Router – త్రోవమూటు
+ Hotspot – వలనటారం
+ Email – మెఱంపు 
+ Chat – ముచ్చట
+ Forum – ౙగిల
+ Blog – వలాంకు
+ Social Media – కూటక్రోవియం
+ Comment – మీఁదువల్కు
+ Emoji – మెదలగుర్తు
+ Download – దిగుమతి
+ Upload – ఎగుమతి
+ Attachment – అతుకు
+ Cloud Storage – మొగినిల్వ
+ Streaming – పాఱకాటం
+ Password – మిస్కుమాట
+ Username – వాడుకరిపేరు
+ Spam – అడ్డకమ్మ
+ Virus – తనిగొంటు
+ Firewall – కావలి గోడ
+ Phishing – మోసపు వల
+ Encryption – వ్రాదాఁపకం 
+ Account – పద్దు
+ Login – లోసోరణ
+ Logout – వెలిసోరణ
+ Profile – తనుకోటి
+ Notification – వ్రాజాటన 
+ Update – క్రోచిదం
+ Bandwidth – మిస్కిమరం
+
+**ఎడాటం** - విషయ / subject/matter
+**పరియ** - అంశం / topic
+**ఎగ్గుర్తు** - సారాంశం
+**తెలిమి** - పరిజ్ఞానం / Knowledge 
+**నిఱం **- విషయవస్తు / Content 
+**కతన** - logic
+**విడఁబర్పు** - Explanation 
+**ఆకళింపు** - understanding
+**లోరువులు** - వివరాలు / Details 
+**లోరువాటి** - detailed 
+**మునుచెప్పిదం** - premise/primary statement
+**తలపోత** - చింతన / thought
+**కనుగోలింపు** - విచారణ / inquiry
+**నేటు** - నిర్ణయం / decisions
+**పసించు** - గ్రహించు / to comprehend
+**నుడింపు** - అనువాదం / Translation, Interpretation 
+**మీఁదువల్కు**/**మీఁదువల్కరం** - వ్యాఖ్యానం / Commentary, Annotation 
+**విరలింపు** - విశ్లేషణ / Analysis 
+**విరలాది** - విశ్లేషణాత్మక వివరణ
+**తెఱకువ** - వివేకం / Discernment 
+**తేఁటదనం** - స్పష్టత / Clarity 
+**విఁడబర్చుడు** - వివరణాత్మకం / Explanatory 
+**మెదలం** - భావన / imagination/notion
+**అనుకోలు** - అభిప్రాయం / Opinion 
+**గుఱికోలు** - ఉద్దేశం / Intention 
+**ఆలకం** - అవధానం /attention
+**అరగలి తీరింపు** - సందేహ నివృత్తి / Doubt clarification 
+**చాటన** - ప్రకటన/declaration
+**వాగీటు** - వర్ణన / వర్ణించు
+**చూపకం** - presentation
+**తేఱిచూడ్కి** - observation
+**వాగీటువ గుమిలెక్కరం** - వివరణ గణన / Descriptive statistics
+**మెండీట** - criticism
+**బిమ్మిటిపాదు** - doubtful
