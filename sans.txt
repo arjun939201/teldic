@@ -2,46 +2,198 @@
 
 పట్టి : సర్వనామాలు, క్రియలు, వాక్యాలు
 
-సర్వనామాలు :
+### 1. వ్యక్తి సర్వనామాలు (Personal Pronouns)
 
-1. వ్యక్తి సర్వనామాలు (Personal Pronouns)
+నేను — అహం — I  
+నన్ను — మం — Me  
+నాతో — మయా — With me  
+నాకు — మహ్యం — To me  
+నాకుండి — మత్తః — From me  
+నా — మమ — My  
+నాలో — మయి — In me  
+నా — హే అహమ్ — Oh me!  
 
-నేను — అహమ్ — I
-నీవు — త్వమ్ — You
-అతడు — సః — He
-ఆమె — సా — She
-అది — తత్ — It / That
-మనం — వయమ్ — We
-నవు — త్వమ్ — You
-వారు — తే — They
+నీవు — త్వం — You  
+నిన్ను - త్వాం — You (object)  
+నిన్నతో — త్వయా — With you  
+నీకు — తుభ్యం — To you  
+నినుండి — త్వత్తః — From you  
+నీ — తవ — Your  
+నీలో — త్వయి — In you  
+నీయే — హే త్వమ్ — Oh you!  
 
-2. ప్రశ్నార్థక సర్వనామాలు (Interrogative Pronouns / Question Words)
+అతడు — సః (Sah) — He  
+అతన్ని — తమ్ (Tam) — Him  
+అతనితో — తేన (Tena) — With him  
+అతనికి — తస్య (Tasya) — To him  
+అతనినుండి — తస్మాత్ (Tasmāt) — From him  
+అతనిది — తస్య (Tasya) — His  
+అతనిలో — తస్మిన్ (Tasmin) — In him  
+అతనే — హే సః (He Sah) — Oh he!  
 
-ఎవరు — కః / కిమ్ — Who
-ఏం — కిమ్ — What
-ఎక్కడ — కుత్ర — Where
-ఎప్పుడు — కదా — When
-ఎందుకు — కిమర్థమ్ — Why
-ఎలా — కథమ్ — How
+ఆమె — సా (Sā) — She  
+ఆమెను — తామ్ (Tām) — Her  
+ఆమెతో — తయా (Tayā) — With her  
+ఆమెకి — తస్యై (Tasyai) — To her  
+ఆమెనుండి — తస్యాః (Tasyāḥ) — From her  
+ఆమెది — తస్యాః (Tasyāḥ) — Her  
+ఆమెలో — తస్యాం (Tasyām) — In her  
+ఆమే — హే సా (He Sā) — Oh she!  
 
-3. సూచన సర్వనామాలు (Demonstrative Pronouns)
+మనం — వయం (Vayam) — We  
+మనలను — ఆస్మాన్ (Asmān) — Us  
+మనతో — అస్మాభిః (Asmābhiḥ) — With us  
+మనకు — అస్మభ్యం (Asmabhyam) — To us  
+మననుండి — అస్మత్తః (Asmattaḥ) — From us  
+మనది — అస్మాకం (Asmākam) — Our  
+మనలో — అస్మాసు (Asmāsu) — In us  
+మనే — హే వయం (He Vayam) — Oh we!  
 
-ఇది — ఇదు / తత్ — This / That
-అది — తత్ — That
-ఇక్కడ — అత్ర — Here
-అక్కడ — తత్ర — There
-ఇక్కడి — అत्र — Of here / This place
-అక్కడి — తత్ర — Of there / That place
+వారు — తే (Te) — They  
+వారిని — తాన్ (Tān) — Them  
+వారితో — తైః (Taiḥ) — With them  
+వారికి — తేభ్యః (Tebhyaḥ) — To them  
+వారినుండి — తేభ్యః (Tebhyaḥ) — From them  
+వారి — తేషాం (Teṣām) — Their  
+వారిలో — తేషు (Teṣu) — In them  
+వారే — హే తే (He Te) — Oh they!  
 
-4. పరస్పర సర్వనామాలు (Reciprocal Pronouns)
+***
 
-తమము — వారు / తే — Each other / Themselves
-స్వయమ్ — స్వయమ్ — Oneself
+### 2. ప్రశ్నార్థక సర్వనామాలు (Interrogative Pronouns)
 
-5. అసాధారణ / ఇతర సర్వనామాలు (Indefinite / Other Pronouns)
+ఎవరు — కః (Kaḥ) — Who  
+ఎవరిని — కమ్ (Kam) — Whom  
+ఎవరోతో — కేన (Kena) — With whom  
+ఎవరికీ — కస్య (Kasya) — To whom  
+ఎవరి నుండి — కస్మాత్ (Kasmāt) — From whom  
+ఎవరి — కస్య (Kasya) — Whose  
+ఎవరిలో — కస్మిన్ (Kasmin) — In whom  
+ఎవరో — హే కః (He Kaḥ) — Oh who!  
 
-ఎవరూ — కశ్చన / నరే — Someone / Anyone
-ఎందరో — బహువి — Many / Several
-ఎక్కడో — కుత్రచ — Somewhere
-ఏదో — కిఛ్చితం — Something / Some
-ఎవరూ కాదు — నహి కశ్చన — No one
+ఏం — కిమ్ (Kim) — What  
+ఏంతో — కేన (Kena) — With what  
+ఏంకి — కస్య (Kasya) — To what  
+ఏం నుండి — కస్మాత్ (Kasmāt) — From what  
+ఏం — కస్య (Kasya) — Of what  
+ఏంలో — కస్మిన్ (Kasmin) — In what  
+ఏం — హే కిమ్ (He Kim) — Oh what!  
+
+ఎక్కడ — కుత్ర (Kutra) — Where  
+ఎప్పుడు — కదా (Kadā) — When  
+ఎందుకు — కిమర్థమ్ (Kimartham) — Why  
+ఎలా — కథమ్ (Katham) — How  
+
+***
+
+### 3. సూచన సర్వనామాలు (Demonstrative Pronouns)
+
+ఇది — అయమ్ (Ayam) — This (masculine)  
+ఇది (స్త్రీ) — ఇయం (Iyam) — This (female)  
+దీని — అస్య (Asya) — Of this  
+దీనితో — ఎన (Ena) — With this  
+దీనికి — అస్మై (Asmai) — To this  
+దీనినుండి — అస్మాత్ (Asmāt) — From this  
+దానిలో — అస్మిన్ (Asmin) — In this  
+ఇదే — హే అయమ్ (He Ayam) — Oh this!  
+
+అది — సః / తత్ (Sah / Tat) — That  
+దానిని — తమ్ / తత్ (Tam / Tat) — That (object)  
+దానితో — తేన (Tena) — With that  
+దానికీ — తస్మై (Tasmai) — To that  
+దానినుండి — తస్మాత్ (Tasmāt) — From that  
+దాని — తస్య (Tasya) — That’s  
+దానిలో — తస్మిన్ (Tasmin) — In that  
+అది — హే తత్ (He Tat) — Oh that!  
+
+ఇక్కడ — అత్ర (Atra) — Here  
+అక్కడ — తత్ర (Tatra) — There  
+
+***
+
+### 4. పరస్పర సర్వనామాలు (Reciprocal Pronouns)
+
+తమము / తాము — తే (Te) — Each other / Themselves  
+తమను — తాన్ (Tān) — Each other (object)  
+తమతో — తైః (Taiḥ) — With each other  
+తమకు — తేభ్యః (Tebhyaḥ) — To each other  
+తమనుండి — తేభ్యః (Tebhyaḥ) — From each other  
+తమ — తేషాం (Teṣām) — Their  
+తమలో — తేషు (Teṣu) — In each other  
+తమే — హే తే (He Te) — Oh each other!  
+
+స్వయమ్ — స్వయమ్ (Svayam) — Oneself  
+స్వయంతో — స్వయేన (Svayena) — With oneself  
+
+***
+
+### 5. అసాధారణ / ఇతర సర్వనామాలు (Indefinite Pronouns)
+
+ఎవరో — కశ్చన (Kaścana) — Someone  
+ఎవరినైనా — కమ్చనమ్ (Kamcanam) — Someone (object)  
+ఎవరోతో — కేనచిత్ (Kenacit) — With someone  
+ఎవరికి — కస్యచిత్ (Kasyacit) — To someone  
+ఎవరినుండి — కస్మాచ్చిత్ (Kasmācchit) — From someone  
+ఎవరి — కస్యచిత్ (Kasyacit) — Someone’s  
+ఎవరిలో — కస్మిన్న్ చిత్ (Kasmincit) — In someone  
+ఎవరో — హే కశ్చన (He Kaścana) — Oh someone!  
+
+ఎందరో — బహవః (Bahavaḥ) — Many  
+ఎక్కడో — క్వచిత్ (Kvachit) — Somewhere  
+ఏదో — కిఞ్చిత్ (Kiñcit) — Something  
+ఎవరూ కాదు — న కశ్చిత్ (Na Kaścit) — No one  
+ఎక్కడికీ — క్వచన (Kvachana) — Anywhere  
+ఏదైనా — కిఞ్చిత్ (Kiñcit) — Anything  
+
+***
+
+### 6. సంబంధ సర్వనామాలు (Relative Pronouns)
+
+ఎవడు — యః (Yaḥ) — Who / That  
+ఎవరిని — యమ్ (Yam) — Whom  
+ఎవరి — యస్య (Yasya) — Whose  
+ఎవరికీ — యస్మై (Yasmai) — To whom  
+ఎవరినుండి — యస్మాత్ (Yasmāt) — From whom  
+ఎవరిలో — యస్మిన్ (Yasmin) — In whom  
+
+ఏది — యత్ (Yat) — Which  
+ఏదితో — యేన (Yena) — With which  
+ఏదికి — యస్మై (Yasmai) — To which  
+ఏదినుండి — యస్మాత్ (Yasmāt) — From which  
+ఏదిలో — యస్మిన్ (Yasmin) — In which  
+
+ఎక్కడ — యత్ర (Yatra) — Where  
+ఎప్పుడు — యదా (Yadā) — When  
+ఎందుకు — యతః (Yataḥ) — Why  
+ఎలా — యథా (Yathā) — How  
+
+***
+
+### 7. స్వతంత్ర / ఆత్మనిష్ఠ సర్వనామాలు (Reflexive Pronouns)
+
+నేనునే — మమ స్వయమ్ (Mama Svayam) — Myself  
+నీవునే — తవ స్వయమ్ (Tava Svayam) — Yourself  
+అతడునే — తస్య స్వయమ్ (Tasya Svayam) — Himself  
+ఆమేనే — తస్యాః స్వయమ్ (Tasyāḥ Svayam) — Herself  
+మనమే — అస్మాకం స్వయమ్ (Asmākam Svayam) — Ourselves  
+వారునే — తేషాం స్వయమ్ (Teṣām Svayam) — Themselves  
+
+***
+
+### 8. ఉద్ఘాటక సర్వనామాలు (Emphatic Pronouns)
+
+నానే — ఏవ అహమ్ (Eva Aham) — I myself  
+నీవే — ఏవ త్వమ్ (Eva Tvam) — You yourself  
+అతడే — ఏవ సః (Eva Sah) — He himself  
+ఆమే — ఏవ సా (Eva Sā) — She herself  
+మనమే — ఏవ వయం (Eva Vayam) — We ourselves  
+వారే — ఏవ తే (Eva Te) — They themselves  
+
+***
+
+### 9. ప్రతికూల సర్వనామాలు (Negative Pronouns)
+
+ఎవరూ కాదు — న కశ్చిత్ (Na Kaścit) — No one  
+ఏదీ కాదు — న కిఞ్చిత్ (Na Kiñcit) — Nothing  
+ఎక్కడా లేదు — న క్వచిత్ (Na Kvachit) — Nowhere  
+ఎప్పుడూ కాదు — న కదా (Na Kadā) — Never  
