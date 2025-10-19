@@ -1,0 +1,49 @@
+తెలుగు <=> సంస్కృతం నేర్మిలి
+
+### 🟩 వ్యక్తి సర్వనామాలు (Personal Pronouns)
+
+నేను — అహమ్ — I
+నీవు — త్వమ్ — You
+అతడు — సః — He
+ఆమె — సా — She
+అది — తత్ — It / That
+మనం — వయమ్ — We
+నవు — త్వమ్ — You
+వారు — తే — They
+
+### 🟩 ప్రశ్నార్థక సర్వనామాలు (Interrogative Pronouns / Question Words)
+
+ఎవరు — కః / కిమ్ — Who
+ఏం — కిమ్ — What
+ఎక్కడ — కుత్ర — Where
+ఎప్పుడు — కదా — When
+ఎందుకు — కిమర్థమ్ — Why
+ఎలా — కథమ్ — How
+
+---
+
+### 🟩 సూచన సర్వనామాలు (Demonstrative Pronouns)
+
+ఇది — ఇదు / తత్ — This / That
+అది — తత్ — That
+ఇక్కడ — అత్ర — Here
+అక్కడ — తత్ర — There
+ఇక్కడి — అत्र — Of here / This place
+అక్కడి — తత్ర — Of there / That place
+
+---
+
+### 🟩 పరస్పర సర్వనామాలు (Reciprocal Pronouns)
+
+తమము — వారు / తే — Each other / Themselves
+స్వయమ్ — స్వయమ్ — Oneself
+
+---
+
+### 🟩 అసాధారణ / ఇతర సర్వనామాలు (Indefinite / Other Pronouns)
+
+ఎవరూ — కశ్చన / నరే — Someone / Anyone
+ఎందరో — బహువి — Many / Several
+ఎక్కడో — కుత్రచ — Somewhere
+ఏదో — కిఛ్చితం — Something / Some
+ఎవరూ కాదు — నహి కశ్చన — No one
