@@ -1,0 +1,51 @@
+body {
+  font-family: 'Noto Sans Telugu', sans-serif;
+  background: #faf6f0;
+  color: #2c1d15;
+  padding: 20px;
+  text-align: center;
+}
+
+header {
+  margin-bottom: 20px;
+}
+
+#searchBox {
+  width: 60%;
+  padding: 10px;
+  font-size: 1.1em;
+  border: 1px solid #caa27a;
+  border-radius: 5px;
+}
+
+#searchBtn {
+  padding: 10px 20px;
+  margin-left: 10px;
+  background-color: #d4a373;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+#result {
+  text-align: left;
+  margin-top: 30px;
+  background: #fff;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+.word {
+  font-size: 1.8em;
+  color: #5b3600;
+  margin-bottom: 10px;
+}
+
+.field {
+  margin-bottom: 10px;
+}
+.field strong {
+  color: #7b4a1d;
+}
