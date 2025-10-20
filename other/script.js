@@ -1,6 +1,6 @@
 let dictionaryData = [];
 
-fetch("data/dictionary.json")
+fetch("other/dictionary.json")
   .then(res => res.json())
   .then(data => dictionaryData = data);
 
