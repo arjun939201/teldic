@@ -1408,3 +1408,19 @@ mother = తల్లి, అమ్మ
 వినన్‌ + అల్వి => వినల్వి = వినందగినది, శ్రోతవ్యము (audible)
 తినన్‌ + అల్వి => తినల్వి = తినందగినది, భక్షణీయము
 ఉండన్‌ + అల్వి => ఉండల్వి = ఉండందగినది, వసితవ్యము
+కలుపుకోలుతనం = adaptability
+హెచ్చుదనం = superiority
+దిగుదనం = inferiority
+వ్రాయాది = lyrics
+ఎంచుపారు అమరాలు = computational systems
+నెంతాది పెంపుకాను/పెంపరి = Software developer
+నెరపోగు పెంపుగారం = Full stack devlopment
+వల పెంపుగారం = web development
+మునుకొన పెంపుకాను/పెంపరి = Frontend developer
+వెనుకొన పెంపుకాను/పెంపరి = Backend developer
+ఆట పెంపుకాను/పెంపరి = Game devloper
+ఏలితెలివి మరకాను = AI engineer
+వాడుకరితెర కాగీటరి = User Interface designer
+తెల్వందాది సరియేలరి = Database administrator
+చేపట్టు నెఱపరి = project manager
+ఉర్వాది బిసకాను = Hardware technician
