@@ -1,0 +1,231 @@
+vocabulary.txt format :
+{
+register word : కైకొను
+grammartical role : verb
+non-register word : స్వీకరించు
+examples {
+1. మేము పంపిన కానుకలు కైకొనండి
+2. బ్రతుకున పాటేదైన కైకొనాలి
+}
+}
+
+
+code : 
+<!doctype html>
+<html lang="te">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>మేలిమి తెలుగు తెల్లడి</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Telugu:wght@400;600;700&display=swap" rel="stylesheet">
+
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'Noto Serif Telugu', serif;
+  background: #f5f7fa;
+  color: #2c3e50;
+}
+
+/* ===== HEADER ===== */
+.header {
+  background: linear-gradient(135deg, #1e3c72, #2a5298);
+  color: #fff;
+  padding: 0.7rem 1.5rem;
+}
+
+.header-content {
+  max-width: 1400px;
+  margin: auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.site-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+.menu-button {
+  background: rgba(255,255,255,0.2);
+  border: 1px solid rgba(255,255,255,0.3);
+  color: #fff;
+  padding: 0.4rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+/* ===== SEARCH ===== */
+.search-toolbar {
+  background: #fff;
+  border-bottom: 2px solid #e1e8ed;
+  padding: 1rem 1.5rem;
+}
+
+.toolbar-row {
+  display: flex;
+  gap: 1.5rem;
+  align-items: center;
+  overflow-x: auto;
+}
+
+.search-row {
+  margin-top: 0.8rem;
+}
+
+.search-input {
+  width: 100%;
+  padding: 0.6rem 0.9rem;
+  font-size: 1.05rem;
+  border-radius: 6px;
+  border: 2px solid #cbd5e1;
+}
+
+/* ===== RESULTS ===== */
+.results-area {
+  padding: 1.5rem;
+}
+
+.results-grid {
+  max-width: 850px;
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.result-item {
+  padding-bottom: 0.8rem;
+  border-bottom: 1px solid #e1e8ed;
+}
+
+/* Register word */
+.result-register {
+  font-size: 1.55rem;
+  font-weight: 700;
+  color: #1e3c72;
+}
+
+/* grammatical role */
+.result-role {
+  font-size: 0.9rem;
+  font-style: italic;
+  color: #64748b;
+  margin-left: 0.4rem;
+}
+
+/* non-register */
+.result-non {
+  font-size: 1.05rem;
+  margin-top: 0.25rem;
+  color: #374151;
+}
+
+/* examples */
+.result-examples {
+  margin-top: 0.4rem;
+  padding-left: 1rem;
+}
+
+.result-examples div {
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+/* highlight register word only */
+.highlight {
+  background: #fff176;
+  color: #c62828;
+  padding: 2px 4px;
+  border-radius: 3px;
+}
+</style>
+</head>
+
+<body>
+
+<header class="header">
+  <div class="header-content">
+    <div class="site-title">మేలిమి తెలుగు తెల్లడి</div>
+    <button class="menu-button">అవిఇవి ▾</button>
+  </div>
+</header>
+
+<div class="search-toolbar">
+  <div class="toolbar-row">
+    <strong>వెతుకుదీరు :</strong>
+    <label><input type="radio" name="mode" value="entry" checked> entry</label>
+    <label><input type="radio" name="mode" value="anywhere"> anywhere</label>
+  </div>
+
+  <div class="search-row">
+    <input class="search-input" id="searchInput" placeholder="మాట వెతకండి">
+  </div>
+</div>
+
+<main class="results-area">
+  <div class="results-grid" id="results"></div>
+</main>
+
+<script>
+let entries = [];
+let mode = 'entry';
+
+function highlight(word, q) {
+  if (!q) return word;
+  return word.replace(new RegExp(q, 'g'), m =>
+    `<span class="highlight">${m}</span>`
+  );
+}
+
+function render(q) {
+  const box = document.getElementById('results');
+  box.innerHTML = '';
+  if (!q) return;
+
+  entries.filter(e => {
+    return mode === 'entry'
+      ? e.register.includes(q) || e.non.includes(q)
+      : e.full.includes(q);
+  }).forEach(e => {
+    box.innerHTML += `
+      <div class="result-item">
+        <div class="result-register">
+          ${mode === 'anywhere' ? highlight(e.register, q) : e.register}
+          <span class="result-role">(${e.role})</span>
+        </div>
+        <div class="result-non">${e.non}</div>
+        <div class="result-examples">
+          ${e.examples.map(ex => `<div>• ${ex}</div>`).join('')}
+        </div>
+      </div>
+    `;
+  });
+}
+
+/* load vocabulary */
+fetch('vocabulary.txt').then(r => r.text()).then(text => {
+  text.split('}').forEach(block => {
+    if (!block.includes('register word')) return;
+    entries.push({
+      register: /register word\s*:\s*(.+)/.exec(block)?.[1]?.trim() || '',
+      role: /grammartical role\s*:\s*(.+)/.exec(block)?.[1]?.trim() || '',
+      non: /non-register word\s*:\s*(.+)/.exec(block)?.[1]?.trim() || '',
+      examples: [...block.matchAll(/\d+\.\s*(.+)/g)].map(m => m[1]),
+      full: block
+    });
+  });
+});
+
+searchInput.oninput = () => render(searchInput.value);
+document.querySelectorAll('input[name="mode"]').forEach(r =>
+  r.onchange = e => { mode = e.target.value; render(searchInput.value); }
+);
+</script>
+
+</body>
+</html>
