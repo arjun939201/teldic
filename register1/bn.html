@@ -2,16 +2,14 @@
 <html lang="te">
 <head>
 <meta charset="UTF-8">
-<title>బంగారు నానెలు – PDF వెతుకు</title>
+<title>బంగారు నానెలు</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Telugu:wght@400;600;700&display=swap" rel="stylesheet">
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-
 <style>
 body {
-  font-family: 'Noto Serif Telugu', serif;
+  font-family:'Noto Serif Telugu', serif;
   background:#faf6ef;
   color:#3b2f2f;
   margin:0;
@@ -26,8 +24,8 @@ header {
 }
 
 .search-box {
-  padding:1rem;
   background:#fffaf0;
+  padding:1rem;
   border-bottom:1px solid #e7dbc8;
 }
 
@@ -37,27 +35,24 @@ input {
   font-size:1.2rem;
   border-radius:6px;
   border:1.5px solid #e7dbc8;
+  background:#faf6ef;
 }
 
 .results {
-  padding:1.2rem;
   max-width:900px;
   margin:auto;
+  padding:1.2rem;
 }
 
 .result {
   padding:0.8rem 0;
   border-bottom:1px solid #e7dbc8;
-  line-height:1.6;
-}
-
-.page {
-  font-size:0.9rem;
-  color:#7c2d12;
+  line-height:1.7;
 }
 
 .highlight {
   background:#fde68a;
+  color:#9a3412;
   padding:2px 4px;
   border-radius:3px;
 }
@@ -66,38 +61,28 @@ input {
 
 <body>
 
-<header>బంగారు నానెలు (PDF వెతుకు)</header>
+<header>బంగారు నానెలు</header>
 
 <div class="search-box">
-  <input id="q" placeholder="PDF లో మాట వెతకండి">
+  <input id="q" placeholder="మాట వెతకండి">
 </div>
 
 <div class="results" id="results">
-  PDF లోని మాటలు లోడ్ అవుతున్నాయి…
+  పదం నమోదు చేయండి…
 </div>
 
 <script>
-pdfjsLib.GlobalWorkerOptions.workerSrc =
-  "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+let text = "";
 
-const pdfUrl = "BN Publishing version.pdf";
-let pages = [];
-
-function highlight(text, q) {
-  const re = new RegExp(q, "gi");
-  return text.replace(re, m => `<span class="highlight">${m}</span>`);
+function highlight(t, q) {
+  return t.replace(new RegExp(q, "g"), m =>
+    `<span class="highlight">${m}</span>`
+  );
 }
 
-pdfjsLib.getDocument(pdfUrl).promise.then(async pdf => {
-  for (let i = 1; i <= pdf.numPages; i++) {
-    const page = await pdf.getPage(i);
-    const content = await page.getTextContent();
-    const text = content.items.map(it => it.str).join(" ");
-    pages.push({ page: i, text });
-  }
-  document.getElementById("results").innerHTML =
-    "PDF సిద్ధంగా ఉంది. మాట వెతకండి.";
-});
+fetch("https://archive.org/stream/bangaru-nanelu/BN%20Publishing%20version_djvu.txt")
+  .then(r => r.text())
+  .then(t => text = t);
 
 q.oninput = () => {
   const query = q.value.trim();
@@ -106,25 +91,26 @@ q.oninput = () => {
 
   if (!query) return;
 
-  const hits = pages.filter(p => p.text.includes(query));
+  let pos = 0, found = 0;
 
-  if (hits.length === 0) {
-    box.innerHTML = "ఈ మాట PDF లో దొరకలేదు.";
-    return;
-  }
-
-  hits.forEach(h => {
-    const snippet = h.text.slice(
-      Math.max(0, h.text.indexOf(query) - 40),
-      h.text.indexOf(query) + 80
-    );
+  while ((pos = text.indexOf(query, pos)) !== -1 && found < 50) {
+    const start = Math.max(0, pos - 60);
+    const end = Math.min(text.length, pos + query.length + 60);
+    const snippet = text.slice(start, end);
 
     box.innerHTML += `
       <div class="result">
-        <div class="page">పుట: ${h.page}</div>
         ${highlight(snippet, query)}
-      </div>`;
-  });
+      </div>
+    `;
+
+    pos += query.length;
+    found++;
+  }
+
+  if (!box.innerHTML) {
+    box.innerHTML = "ఈ మాట దొరకలేదు.";
+  }
 };
 </script>
 
