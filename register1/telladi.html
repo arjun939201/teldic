@@ -32,7 +32,7 @@ body {
 }
 
 .site-title {
-  font-size: 1.45rem;      /* increased */
+  font-size: 1.45rem;
   font-weight: 700;
 }
 
@@ -43,12 +43,11 @@ body {
   padding: 0.65rem 1.4rem;
 }
 
-/* 🔒 2nd line — KEEP SIZE */
 .toolbar-row {
   display: flex;
   align-items: center;
   gap: 0.9rem;
-  font-size: 1.1rem;       /* unchanged */
+  font-size: 1.1rem;
   color: #5b4636;
 }
 
@@ -59,7 +58,6 @@ body {
   cursor: pointer;
 }
 
-/* search box */
 .search-row {
   margin-top: 0.55rem;
 }
@@ -67,7 +65,7 @@ body {
 .search-input {
   width: 100%;
   padding: 0.6rem 0.9rem;
-  font-size: 1.2rem;       /* increased */
+  font-size: 1.2rem;
   border-radius: 6px;
   border: 1.5px solid #e7dbc8;
   background: #faf6ef;
@@ -91,9 +89,8 @@ body {
   border-bottom: 1px solid #e7dbc8;
 }
 
-/* Register word */
 .result-register {
-  font-size: 1.7rem;       /* dominant */
+  font-size: 1.7rem;
   font-weight: 700;
   color: #b45309;
 }
@@ -105,14 +102,12 @@ body {
   margin-left: 0.4rem;
 }
 
-/* Gloss */
 .result-non {
-  color : green;
+  color: green;
   font-size: 1.15rem;
   margin-top: 0.2rem;
 }
 
-/* Examples */
 .result-examples {
   margin-top: 0.45rem;
   padding-left: 1rem;
@@ -123,12 +118,22 @@ body {
   line-height: 1.6;
 }
 
-/* Highlight (register word only) */
 .highlight {
   background: #fde68a;
   color: #9a3412;
   padding: 2px 4px;
   border-radius: 3px;
+}
+
+/* intro + no result */
+.placeholder {
+  font-size: 1.15rem;
+  line-height: 1.7;
+  color: #4b3621;
+}
+.no-result {
+  font-size: 1.2rem;
+  color: #7c2d12;
 }
 </style>
 </head>
@@ -146,12 +151,10 @@ body {
   <div class="toolbar-row">
     <strong>వెతుకుదీరు :</strong>
     <label>
-      <input type="radio" name="mode" value="entry" checked>
-      entry
+      <input type="radio" name="mode" value="entry" checked> entry
     </label>
     <label>
-      <input type="radio" name="mode" value="anywhere">
-      anywhere
+      <input type="radio" name="mode" value="anywhere"> anywhere
     </label>
   </div>
 
@@ -161,7 +164,14 @@ body {
 </div>
 
 <main class="results-area">
-  <div class="results-grid" id="results"></div>
+  <div class="results-grid" id="results">
+    <div class="placeholder">
+      అలనాటి వాడుక తెలుగు మాటలను వంచంగా ఎసవాడి ఏనాటి తెలుగు తరాలకైన తెలుగు
+      వంచనుడిగా గట్టిగుర్తింపుగా కుదిరిపించడానికి తొలియడుగు "మేలిమి తెలుగు".
+      ఇది తెలుగు ఎదుగులలోనే ఒక ఎడచూపు (Farvision).
+      మేలిమి అంటే excellent / fine అని
+    </div>
+  </div>
 </main>
 
 <script>
@@ -170,45 +180,61 @@ let mode = 'entry';
 
 function highlight(word, q) {
   if (!q) return word;
-  return word.replace(new RegExp(q, 'g'), m =>
-    `<span class="highlight">${m}</span>`
+  return word.replace(new RegExp(q, 'g'),
+    m => `<span class="highlight">${m}</span>`
   );
 }
 
 function render(q) {
   const box = document.getElementById('results');
   box.innerHTML = '';
-  if (!q) return;
 
-  entries
-    .filter(e =>
-      mode === 'entry'
-        ? (e.register.includes(q) || e.non.includes(q))
-        : (e.register.includes(q) ||
-           e.non.includes(q) ||
-           e.examples.some(ex => ex.includes(q)))
-    )
-    .forEach(e => {
-      box.innerHTML += `
-        <div class="result-item">
-          <div class="result-register">
-            ${mode === 'anywhere' ? highlight(e.register, q) : e.register}
-            <span class="result-role">(${e.role})</span>
-          </div>
-          <div class="result-non">${e.non}</div>
-          <div class="result-examples">
-            ${e.examples.map(ex => `<div>• ${ex}</div>`).join('')}
-          </div>
+  if (!q) {
+    box.innerHTML = `
+      <div class="placeholder">
+        అలనాటి వాడుక తెలుగు మాటలను వంచంగా ఎసవాడి ఏనాటి తెలుగు తరాలకైన తెలుగు
+        వంచనుడిగా గట్టిగుర్తింపుగా కుదిరిపించడానికి తొలియడుగు "మేలిమి తెలుగు".
+        ఇది తెలుగు ఎదుగులలోనే ఒక ఎడచూపు (Farvision).
+        మేలిమి అంటే excellent / fine అని
+      </div>`;
+    return;
+  }
+
+  const results = entries.filter(e =>
+    mode === 'entry'
+      ? (e.register.includes(q) || e.non.includes(q))
+      : (e.register.includes(q) ||
+         e.non.includes(q) ||
+         e.examples.some(ex => ex.includes(q)))
+  );
+
+  if (results.length === 0) {
+    box.innerHTML = `<div class="no-result">ఈ మాట దొరకలేదు</div>`;
+    return;
+  }
+
+  results.forEach(e => {
+    box.innerHTML += `
+      <div class="result-item">
+        <div class="result-register">
+          ${mode === 'anywhere' ? highlight(e.register, q) : e.register}
+          <span class="result-role">(${e.role})</span>
         </div>
-      `;
-    });
+        <div class="result-non">${e.non}</div>
+        <div class="result-examples">
+          ${e.examples.map(ex => `<div>• ${ex}</div>`).join('')}
+        </div>
+      </div>`;
+  });
 }
 
-/* ===== LOAD COMPACT VOCABULARY ===== */
+/* LOAD VOCABULARY */
 fetch('vocabulary.txt')
   .then(r => r.text())
   .then(text => {
-    const blocks = text.split(/\n\s*\n/).map(b => b.trim()).filter(b => b.startsWith('{'));
+    const blocks = text.split(/\n\s*\n/)
+      .map(b => b.trim())
+      .filter(b => b.startsWith('{'));
 
     blocks.forEach(block => {
       const inner = block.replace(/^\{/, '').replace(/\}$/, '').trim();
@@ -235,8 +261,12 @@ fetch('vocabulary.txt')
   });
 
 searchInput.oninput = () => render(searchInput.value);
+
 document.querySelectorAll('input[name="mode"]').forEach(r =>
-  r.onchange = e => { mode = e.target.value; render(searchInput.value); }
+  r.onchange = e => {
+    mode = e.target.value;
+    render(searchInput.value);
+  }
 );
 </script>
 
