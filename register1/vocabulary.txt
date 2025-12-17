@@ -1,5 +1,5 @@
 {
-register word : కైకను
+register word : కైకొను
 non-register word : స్వీకరించు
 examples {
 1. మేము పంపిన కానుకలు కైకొనండి
