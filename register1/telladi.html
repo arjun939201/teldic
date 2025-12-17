@@ -197,18 +197,46 @@ function render(q) {
 }
 
 /* load vocabulary */
-fetch('vocabulary.txt').then(r => r.text()).then(text => {
-  text.split('}').forEach(block => {
-    if (!block.includes('register word')) return;
-    entries.push({
-      register: /register word\s*:\s*(.+)/.exec(block)?.[1]?.trim() || '',
-      role: /grammartical role\s*:\s*(.+)/.exec(block)?.[1]?.trim() || '',
-      non: /non-register word\s*:\s*(.+)/.exec(block)?.[1]?.trim() || '',
-      examples: [...block.matchAll(/\d+\.\s*(.+)/g)].map(m => m[1]),
-      full: block
+fetch('vocabulary.txt')
+  .then(r => r.text())
+  .then(text => {
+
+    const blocks = text.split('\n}')
+      .map(b => b.trim())
+      .filter(b => b.startsWith('{'));
+
+    blocks.forEach(block => {
+      const lines = block
+        .replace(/^{/, '')
+        .split('\n')
+        .map(l => l.trim())
+        .filter(l => l && l !== '{' && l !== '}');
+
+      if (lines.length < 4) return;
+
+      const register = lines[0];
+      const role = lines[1];
+      const non = lines[2];
+
+      const examples = [];
+      let inExamples = false;
+
+      lines.forEach(l => {
+        if (l.startsWith('{')) inExamples = true;
+        else if (inExamples && /^\d+\./.test(l)) {
+          examples.push(l.replace(/^\d+\.\s*/, ''));
+        }
+      });
+
+      entries.push({
+        register,
+        role,
+        non,
+        examples,
+        full: block
+      });
     });
   });
-});
 
 searchInput.oninput = () => render(searchInput.value);
 document.querySelectorAll('input[name="mode"]').forEach(r =>
