@@ -12,13 +12,13 @@
 
 body {
   font-family: 'Noto Serif Telugu', serif;
-  background: #faf6ef;               /* palm leaf paper */
-  color: #3b2f2f;                    /* manuscript ink */
+  background: #faf6ef;
+  color: #3b2f2f;
 }
 
 /* ===== HEADER ===== */
 .header {
-  background: linear-gradient(135deg, #d97706, #b45309); /* saffron */
+  background: linear-gradient(135deg, #d97706, #b45309);
   color: #fffaf0;
   padding: 0.7rem 1.5rem;
 }
@@ -42,7 +42,6 @@ body {
   color: #fffaf0;
   padding: 0.4rem 1rem;
   border-radius: 4px;
-  cursor: pointer;
   font-weight: 600;
 }
 
@@ -57,7 +56,6 @@ body {
   display: flex;
   gap: 1.5rem;
   align-items: center;
-  overflow-x: auto;
 }
 
 .search-row {
@@ -71,7 +69,6 @@ body {
   border-radius: 6px;
   border: 2px solid #e7dbc8;
   background: #faf6ef;
-  color: #3b2f2f;
 }
 
 /* ===== RESULTS ===== */
@@ -84,7 +81,7 @@ body {
   margin: auto;
   display: flex;
   flex-direction: column;
-  gap: 1.2rem;
+  gap: 1.1rem;
 }
 
 .result-item {
@@ -92,29 +89,24 @@ body {
   border-bottom: 1px solid #e7dbc8;
 }
 
-/* Register word */
 .result-register {
-  font-size: 1.55rem;
+  font-size: 1.45rem;
   font-weight: 700;
-  color: #b45309;  /* deep saffron */
+  color: #b45309;
 }
 
-/* grammatical role */
 .result-role {
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   font-style: italic;
-  color: #7c2d12; /* temple red-brown */
+  color: #7c2d12;
   margin-left: 0.4rem;
 }
 
-/* non-register */
 .result-non {
-  font-size: 1.05rem;
-  margin-top: 0.25rem;
-  color: #3b2f2f;
+  font-size: 1.02rem;
+  margin-top: 0.2rem;
 }
 
-/* examples */
 .result-examples {
   margin-top: 0.4rem;
   padding-left: 1rem;
@@ -127,8 +119,8 @@ body {
 
 /* highlight register word only */
 .highlight {
-  background: #fde68a; /* turmeric yellow */
-  color: #9a3412;      /* temple red */
+  background: #fde68a;
+  color: #9a3412;
   padding: 2px 4px;
   border-radius: 3px;
 }
@@ -164,6 +156,7 @@ body {
 let entries = [];
 let mode = 'entry';
 
+/* ===== Highlight register word only ===== */
 function highlight(word, q) {
   if (!q) return word;
   return word.replace(new RegExp(q, 'g'), m =>
@@ -171,43 +164,51 @@ function highlight(word, q) {
   );
 }
 
+/* ===== Render ===== */
 function render(q) {
   const box = document.getElementById('results');
   box.innerHTML = '';
   if (!q) return;
 
-  entries.filter(e => {
-    return mode === 'entry'
-      ? e.register.includes(q) || e.non.includes(q)
-      : e.full.includes(q);
-  }).forEach(e => {
-    box.innerHTML += `
-      <div class="result-item">
-        <div class="result-register">
-          ${mode === 'anywhere' ? highlight(e.register, q) : e.register}
-          <span class="result-role">(${e.role})</span>
+  entries
+    .filter(e =>
+      mode === 'entry'
+        ? (e.register.includes(q) || e.non.includes(q))
+        : e.full.includes(q)
+    )
+    .forEach(e => {
+      box.innerHTML += `
+        <div class="result-item">
+          <div class="result-register">
+            ${mode === 'anywhere' ? highlight(e.register, q) : e.register}
+            <span class="result-role">(${e.role})</span>
+          </div>
+          <div class="result-non">${e.non}</div>
+          <div class="result-examples">
+            ${e.examples.map(ex => `<div>• ${ex}</div>`).join('')}
+          </div>
         </div>
-        <div class="result-non">${e.non}</div>
-        <div class="result-examples">
-          ${e.examples.map(ex => `<div>• ${ex}</div>`).join('')}
-        </div>
-      </div>
-    `;
-  });
+      `;
+    });
 }
 
-/* load vocabulary */
+/* ===== LOAD & PARSE COMPACT VOCABULARY ===== */
 fetch('vocabulary.txt')
   .then(r => r.text())
   .then(text => {
 
-    const blocks = text.split('\n}')
+    const blocks = text
+      .split(/\n\s*\n/)
       .map(b => b.trim())
       .filter(b => b.startsWith('{'));
 
     blocks.forEach(block => {
-      const lines = block
+      const clean = block
         .replace(/^{/, '')
+        .replace(/}$/, '')
+        .trim();
+
+      const lines = clean
         .split('\n')
         .map(l => l.trim())
         .filter(l => l && l !== '{' && l !== '}');
@@ -222,7 +223,7 @@ fetch('vocabulary.txt')
       let inExamples = false;
 
       lines.forEach(l => {
-        if (l.startsWith('{')) inExamples = true;
+        if (l === '{') inExamples = true;
         else if (inExamples && /^\d+\./.test(l)) {
           examples.push(l.replace(/^\d+\.\s*/, ''));
         }
@@ -238,9 +239,13 @@ fetch('vocabulary.txt')
     });
   });
 
+/* ===== Events ===== */
 searchInput.oninput = () => render(searchInput.value);
 document.querySelectorAll('input[name="mode"]').forEach(r =>
-  r.onchange = e => { mode = e.target.value; render(searchInput.value); }
+  r.onchange = e => {
+    mode = e.target.value;
+    render(searchInput.value);
+  }
 );
 </script>
 
