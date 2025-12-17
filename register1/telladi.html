@@ -5,13 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>మేలిమి తెలుగు తెల్లడి</title>
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Telugu:wght@400;600;700&display=swap" rel="stylesheet">
 
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
-html, body { height: 100%; }
 
 body {
   font-family: 'Noto Serif Telugu', serif;
@@ -19,21 +16,15 @@ body {
   color: #2c3e50;
 }
 
-.app-wrapper {
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-}
-
 /* ===== HEADER ===== */
 .header {
   background: linear-gradient(135deg, #1e3c72, #2a5298);
   color: #fff;
-  padding: 0.8rem 2rem;
+  padding: 0.7rem 1.5rem;
 }
 
 .header-content {
-  max-width: 1600px;
+  max-width: 1400px;
   margin: auto;
   display: flex;
   justify-content: space-between;
@@ -41,150 +32,119 @@ body {
 }
 
 .site-title {
-  font-size: 1.4rem;
+  font-size: 1.25rem;
   font-weight: 700;
 }
-
-.menu-container { position: relative; }
 
 .menu-button {
   background: rgba(255,255,255,0.2);
   border: 1px solid rgba(255,255,255,0.3);
   color: #fff;
-  padding: 0.45rem 1.1rem;
+  padding: 0.4rem 1rem;
   border-radius: 4px;
   cursor: pointer;
   font-weight: 600;
 }
 
-.menu-dropdown {
-  display: none;
-  position: absolute;
-  right: 0;
-  top: 110%;
-  background: #fff;
-  border-radius: 6px;
-  min-width: 160px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-}
-
-.menu-dropdown.active { display: block; }
-
-.menu-item {
-  padding: 0.75rem 1rem;
-  cursor: pointer;
-}
-.menu-item:hover { background: #f1f5f9; }
-
-/* ===== TOOLBAR ===== */
+/* ===== SEARCH ===== */
 .search-toolbar {
   background: #fff;
   border-bottom: 2px solid #e1e8ed;
-  padding: 1rem 2rem;
+  padding: 1rem 1.5rem;
 }
 
 .toolbar-row {
   display: flex;
-  gap: 2rem;
+  gap: 1.5rem;
   align-items: center;
   overflow-x: auto;
-  white-space: nowrap;
 }
 
-.search-modes {
-  display: flex;
-  gap: 1.5rem;
-}
-
-.radio-option {
-  display: flex;
-  gap: 0.4rem;
-  align-items: center;
-  font-weight: 600;
-}
-
-/* ===== SEARCH ===== */
 .search-row {
-  margin-top: 1rem;
+  margin-top: 0.8rem;
   display: flex;
-  gap: 0.75rem;
+  gap: 0.6rem;
 }
 
 .search-input {
   flex: 1;
-  padding: 0.85rem 1rem;
-  font-size: 1.15rem;
-  border-radius: 8px;
+  padding: 0.6rem 0.9rem;
+  font-size: 1.05rem;
+  border-radius: 6px;
   border: 2px solid #cbd5e1;
 }
 
 .search-button {
-  padding: 0.85rem 1.8rem;
-  font-size: 1rem;
+  padding: 0.6rem 1.4rem;
+  font-size: 0.95rem;
   font-weight: 700;
   background: #1e3c72;
   color: #fff;
   border: none;
-  border-radius: 8px;
+  border-radius: 6px;
   cursor: pointer;
 }
 
 /* ===== RESULTS ===== */
 .results-area {
-  flex: 1;
-  overflow-y: auto;
-  padding: 2rem;
-}
-
-.pretext {
-  text-align: center;
-  padding: 4rem 2rem;
-  color: #64748b;
+  padding: 1.5rem;
 }
 
 .results-grid {
-  max-width: 900px;
+  max-width: 850px;
   margin: auto;
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 1rem;
 }
 
 .result-card {
-  border: 2px solid #e1e8ed;
-  border-radius: 10px;
-  padding: 2rem;
+  border: 1.5px solid #e1e8ed;
+  border-radius: 8px;
+  padding: 1.2rem;
   background: #fff;
 }
 
+/* Register word + role */
 .result-register {
-  font-size: 2rem;
+  font-size: 1.55rem;
   font-weight: 700;
   color: #1e3c72;
 }
 
+.result-role {
+  font-size: 0.9rem;
+  font-style: italic;
+  color: #64748b;
+  margin-left: 0.4rem;
+}
+
+/* Labels */
 .result-label {
-  margin-top: 1.2rem;
-  font-size: 0.85rem;
+  margin-top: 0.7rem;
+  font-size: 0.75rem;
   font-weight: 700;
   color: #64748b;
 }
 
+/* Non-register */
 .result-non-register {
-  font-size: 1.3rem;
-  padding: 0.6rem;
+  font-size: 1.1rem;
+  padding: 0.4rem 0.6rem;
   background: #f1f5f9;
-  border-left: 4px solid #6366f1;
+  border-left: 3px solid #6366f1;
 }
 
+/* Examples */
 .result-example {
-  margin-top: 0.5rem;
-  padding: 0.6rem;
+  margin-top: 0.35rem;
+  padding: 0.4rem 0.6rem;
   background: #fafafa;
   border-left: 3px solid #94a3b8;
+  font-size: 0.95rem;
 }
 
-/* ===== HIGHLIGHT (REGISTER WORD ONLY) ===== */
+/* Highlight register word only */
 .highlight {
   background: #fff176;
   color: #c62828;
@@ -195,31 +155,19 @@ body {
 </head>
 
 <body>
-<div class="app-wrapper">
 
 <header class="header">
   <div class="header-content">
     <div class="site-title">మేలిమి తెలుగు తెల్లడి</div>
-    <div class="menu-container">
-      <button class="menu-button" id="menuBtn">అవిఇవి ▾</button>
-      <div class="menu-dropdown" id="menuDrop">
-        <div class="menu-item">వ్యాకరణం చదవండి</div>
-      </div>
-    </div>
+    <button class="menu-button">అవిఇవి ▾</button>
   </div>
 </header>
 
 <div class="search-toolbar">
   <div class="toolbar-row">
     <strong>వెతుకుదీరు :</strong>
-    <div class="search-modes">
-      <label class="radio-option">
-        <input type="radio" name="mode" value="entry" checked> entry
-      </label>
-      <label class="radio-option">
-        <input type="radio" name="mode" value="anywhere"> anywhere
-      </label>
-    </div>
+    <label><input type="radio" name="mode" value="entry" checked> entry</label>
+    <label><input type="radio" name="mode" value="anywhere"> anywhere</label>
   </div>
 
   <div class="search-row">
@@ -229,17 +177,14 @@ body {
 </div>
 
 <main class="results-area">
-  <div class="pretext" id="pretext">పదం వెతకండి…</div>
   <div class="results-grid" id="results"></div>
 </main>
-
-</div>
 
 <script>
 let entries = [];
 let mode = 'entry';
 
-function highlightRegister(word, q) {
+function highlight(word, q) {
   if (!q) return word;
   return word.replace(new RegExp(q, 'g'), m =>
     `<span class="highlight">${m}</span>`
@@ -247,30 +192,30 @@ function highlightRegister(word, q) {
 }
 
 function render(q) {
-  const res = document.getElementById('results');
-  const pre = document.getElementById('pretext');
-  res.innerHTML = '';
+  const box = document.getElementById('results');
+  box.innerHTML = '';
 
-  if (!q) { pre.style.display = 'block'; return; }
-  pre.style.display = 'none';
+  if (!q) return;
 
   entries.filter(e => {
-    if (mode === 'entry') {
-      return e.register.includes(q) || e.non.includes(q);
-    }
-    return e.full.includes(q);
+    return mode === 'entry'
+      ? e.register.includes(q) || e.non.includes(q)
+      : e.full.includes(q);
   }).forEach(e => {
-    res.innerHTML += `
+    box.innerHTML += `
       <div class="result-card">
         <div class="result-register">
-          ${mode === 'anywhere' ? highlightRegister(e.register, q) : e.register}
+          ${mode === 'anywhere' ? highlight(e.register, q) : e.register}
+          <span class="result-role">(${e.role})</span>
         </div>
 
         <div class="result-label">అనుబంధ పదం</div>
         <div class="result-non-register">${e.non}</div>
 
         <div class="result-label">ఉదాహరణలు</div>
-        ${e.examples.map(x => `<div class="result-example">${x}</div>`).join('')}
+        ${e.examples.map(ex =>
+          `<div class="result-example">${ex}</div>`
+        ).join('')}
       </div>
     `;
   });
@@ -281,11 +226,13 @@ fetch('vocabulary.txt').then(r => r.text()).then(text => {
   text.split('}').forEach(block => {
     if (!block.includes('register word')) return;
 
-    const reg = /register word\s*:\s*(.+)/.exec(block)?.[1]?.trim() || '';
-    const non = /non-register word\s*:\s*(.+)/.exec(block)?.[1]?.trim() || '';
-    const ex = [...block.matchAll(/\d+\.\s*(.+)/g)].map(m => m[1]);
-
-    entries.push({ register: reg, non, examples: ex, full: block });
+    entries.push({
+      register: /register word\s*:\s*(.+)/.exec(block)?.[1]?.trim() || '',
+      role: /grammartical role\s*:\s*(.+)/.exec(block)?.[1]?.trim() || '',
+      non: /non-register word\s*:\s*(.+)/.exec(block)?.[1]?.trim() || '',
+      examples: [...block.matchAll(/\d+\.\s*(.+)/g)].map(m => m[1]),
+      full: block
+    });
   });
 });
 
@@ -294,8 +241,6 @@ searchInput.oninput = () => render(searchInput.value);
 document.querySelectorAll('input[name="mode"]').forEach(r =>
   r.onchange = e => { mode = e.target.value; render(searchInput.value); }
 );
-
-menuBtn.onclick = () => menuDrop.classList.toggle('active');
 </script>
 
 </body>
