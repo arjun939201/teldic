@@ -1,12 +1,9 @@
 vocabulary.txt format :
 {
-register word : కైకొను
-grammartical role : verb
-non-register word : స్వీకరించు
-examples {
-1. మేము పంపిన కానుకలు కైకొనండి
-2. బ్రతుకున పాటేదైన కైకొనాలి
-}
+word
+role
+gloss
+{ examples }
 }
 
 
