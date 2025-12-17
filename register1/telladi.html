@@ -36,30 +36,11 @@ body {
   font-weight: 700;
 }
 
-.menu-button {
-  background: rgba(255,255,255,0.15);
-  border: 1px solid rgba(255,255,255,0.35);
-  color: #fffaf0;
-  padding: 0.4rem 1rem;
-  border-radius: 4px;
-  font-weight: 600;
-}
-
 /* ===== SEARCH ===== */
 .search-toolbar {
   background: #fffaf0;
   border-bottom: 2px solid #e7dbc8;
   padding: 1rem 1.5rem;
-}
-
-.toolbar-row {
-  display: flex;
-  gap: 1.5rem;
-  align-items: center;
-}
-
-.search-row {
-  margin-top: 0.8rem;
 }
 
 .search-input {
@@ -81,7 +62,7 @@ body {
   margin: auto;
   display: flex;
   flex-direction: column;
-  gap: 1.1rem;
+  gap: 1.2rem;
 }
 
 .result-item {
@@ -132,20 +113,11 @@ body {
 <header class="header">
   <div class="header-content">
     <div class="site-title">మేలిమి తెలుగు తెల్లడి</div>
-    <button class="menu-button">అవిఇవి ▾</button>
   </div>
 </header>
 
 <div class="search-toolbar">
-  <div class="toolbar-row">
-    <strong>వెతుకుదీరు :</strong>
-    <label><input type="radio" name="mode" value="entry" checked> entry</label>
-    <label><input type="radio" name="mode" value="anywhere"> anywhere</label>
-  </div>
-
-  <div class="search-row">
-    <input class="search-input" id="searchInput" placeholder="మాట వెతకండి">
-  </div>
+  <input class="search-input" id="searchInput" placeholder="మాట వెతకండి">
 </div>
 
 <main class="results-area">
@@ -154,7 +126,6 @@ body {
 
 <script>
 let entries = [];
-let mode = 'entry';
 
 /* ===== Highlight register word only ===== */
 function highlight(word, q) {
@@ -172,15 +143,15 @@ function render(q) {
 
   entries
     .filter(e =>
-      mode === 'entry'
-        ? (e.register.includes(q) || e.non.includes(q))
-        : e.full.includes(q)
+      e.register.includes(q) ||
+      e.non.includes(q) ||
+      e.examples.some(ex => ex.includes(q))
     )
     .forEach(e => {
       box.innerHTML += `
         <div class="result-item">
           <div class="result-register">
-            ${mode === 'anywhere' ? highlight(e.register, q) : e.register}
+            ${highlight(e.register, q)}
             <span class="result-role">(${e.role})</span>
           </div>
           <div class="result-non">${e.non}</div>
@@ -192,26 +163,20 @@ function render(q) {
     });
 }
 
-/* ===== LOAD & PARSE COMPACT VOCABULARY ===== */
+/* ===== CORRECT COMPACT FORMAT PARSER ===== */
 fetch('vocabulary.txt')
   .then(r => r.text())
   .then(text => {
 
-    const blocks = text
-      .split(/\n\s*\n/)
-      .map(b => b.trim())
-      .filter(b => b.startsWith('{'));
+    // split by outer blocks
+    const blocks = text.split(/\n\s*\n/).map(b => b.trim()).filter(b => b.startsWith('{'));
 
     blocks.forEach(block => {
-      const clean = block
-        .replace(/^{/, '')
-        .replace(/}$/, '')
-        .trim();
 
-      const lines = clean
-        .split('\n')
-        .map(l => l.trim())
-        .filter(l => l && l !== '{' && l !== '}');
+      // remove only outer braces
+      const inner = block.replace(/^\{/, '').replace(/\}$/, '').trim();
+
+      const lines = inner.split('\n').map(l => l.trim()).filter(Boolean);
 
       if (lines.length < 4) return;
 
@@ -222,31 +187,30 @@ fetch('vocabulary.txt')
       const examples = [];
       let inExamples = false;
 
-      lines.forEach(l => {
-        if (l === '{') inExamples = true;
-        else if (inExamples && /^\d+\./.test(l)) {
-          examples.push(l.replace(/^\d+\.\s*/, ''));
+      for (let line of lines) {
+        if (line === '{') {
+          inExamples = true;
+          continue;
         }
-      });
+        if (line === '}') {
+          inExamples = false;
+          continue;
+        }
+        if (inExamples && /^\d+\./.test(line)) {
+          examples.push(line.replace(/^\d+\.\s*/, ''));
+        }
+      }
 
       entries.push({
         register,
         role,
         non,
-        examples,
-        full: block
+        examples
       });
     });
   });
 
-/* ===== Events ===== */
 searchInput.oninput = () => render(searchInput.value);
-document.querySelectorAll('input[name="mode"]').forEach(r =>
-  r.onchange = e => {
-    mode = e.target.value;
-    render(searchInput.value);
-  }
-);
 </script>
 
 </body>
