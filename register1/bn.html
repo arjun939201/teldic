@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="te">
+<head>
+<meta charset="UTF-8">
+<title>బంగారు నానెలు – PDF వెతుకు</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Telugu:wght@400;600;700&display=swap" rel="stylesheet">
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+
+<style>
+body {
+  font-family: 'Noto Serif Telugu', serif;
+  background:#faf6ef;
+  color:#3b2f2f;
+  margin:0;
+}
+
+header {
+  background:linear-gradient(135deg,#d97706,#b45309);
+  color:#fffaf0;
+  padding:0.8rem 1.4rem;
+  font-size:1.4rem;
+  font-weight:700;
+}
+
+.search-box {
+  padding:1rem;
+  background:#fffaf0;
+  border-bottom:1px solid #e7dbc8;
+}
+
+input {
+  width:100%;
+  padding:0.6rem 0.9rem;
+  font-size:1.2rem;
+  border-radius:6px;
+  border:1.5px solid #e7dbc8;
+}
+
+.results {
+  padding:1.2rem;
+  max-width:900px;
+  margin:auto;
+}
+
+.result {
+  padding:0.8rem 0;
+  border-bottom:1px solid #e7dbc8;
+  line-height:1.6;
+}
+
+.page {
+  font-size:0.9rem;
+  color:#7c2d12;
+}
+
+.highlight {
+  background:#fde68a;
+  padding:2px 4px;
+  border-radius:3px;
+}
+</style>
+</head>
+
+<body>
+
+<header>బంగారు నానెలు (PDF వెతుకు)</header>
+
+<div class="search-box">
+  <input id="q" placeholder="PDF లో మాట వెతకండి">
+</div>
+
+<div class="results" id="results">
+  PDF లోని మాటలు లోడ్ అవుతున్నాయి…
+</div>
+
+<script>
+pdfjsLib.GlobalWorkerOptions.workerSrc =
+  "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+
+const pdfUrl = "BN Publishing version.pdf";
+let pages = [];
+
+function highlight(text, q) {
+  const re = new RegExp(q, "gi");
+  return text.replace(re, m => `<span class="highlight">${m}</span>`);
+}
+
+pdfjsLib.getDocument(pdfUrl).promise.then(async pdf => {
+  for (let i = 1; i <= pdf.numPages; i++) {
+    const page = await pdf.getPage(i);
+    const content = await page.getTextContent();
+    const text = content.items.map(it => it.str).join(" ");
+    pages.push({ page: i, text });
+  }
+  document.getElementById("results").innerHTML =
+    "PDF సిద్ధంగా ఉంది. మాట వెతకండి.";
+});
+
+q.oninput = () => {
+  const query = q.value.trim();
+  const box = document.getElementById("results");
+  box.innerHTML = "";
+
+  if (!query) return;
+
+  const hits = pages.filter(p => p.text.includes(query));
+
+  if (hits.length === 0) {
+    box.innerHTML = "ఈ మాట PDF లో దొరకలేదు.";
+    return;
+  }
+
+  hits.forEach(h => {
+    const snippet = h.text.slice(
+      Math.max(0, h.text.indexOf(query) - 40),
+      h.text.indexOf(query) + 80
+    );
+
+    box.innerHTML += `
+      <div class="result">
+        <div class="page">పుట: ${h.page}</div>
+        ${highlight(snippet, query)}
+      </div>`;
+  });
+};
+</script>
+
+</body>
+</html>
