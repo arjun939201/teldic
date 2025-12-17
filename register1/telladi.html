@@ -62,27 +62,14 @@ body {
 
 .search-row {
   margin-top: 0.8rem;
-  display: flex;
-  gap: 0.6rem;
 }
 
 .search-input {
-  flex: 1;
+  width: 100%;
   padding: 0.6rem 0.9rem;
   font-size: 1.05rem;
   border-radius: 6px;
   border: 2px solid #cbd5e1;
-}
-
-.search-button {
-  padding: 0.6rem 1.4rem;
-  font-size: 0.95rem;
-  font-weight: 700;
-  background: #1e3c72;
-  color: #fff;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
 }
 
 /* ===== RESULTS ===== */
@@ -95,23 +82,22 @@ body {
   margin: auto;
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 1.2rem;
 }
 
-.result-card {
-  border: 1.5px solid #e1e8ed;
-  border-radius: 8px;
-  padding: 1.2rem;
-  background: #fff;
+.result-item {
+  padding-bottom: 0.8rem;
+  border-bottom: 1px solid #e1e8ed;
 }
 
-/* Register word + role */
+/* Register word */
 .result-register {
   font-size: 1.55rem;
   font-weight: 700;
   color: #1e3c72;
 }
 
+/* grammatical role */
 .result-role {
   font-size: 0.9rem;
   font-style: italic;
@@ -119,32 +105,25 @@ body {
   margin-left: 0.4rem;
 }
 
-/* Labels */
-.result-label {
-  margin-top: 0.7rem;
-  font-size: 0.75rem;
-  font-weight: 700;
-  color: #64748b;
+/* non-register */
+.result-non {
+  font-size: 1.05rem;
+  margin-top: 0.25rem;
+  color: #374151;
 }
 
-/* Non-register */
-.result-non-register {
-  font-size: 1.1rem;
-  padding: 0.4rem 0.6rem;
-  background: #f1f5f9;
-  border-left: 3px solid #6366f1;
+/* examples */
+.result-examples {
+  margin-top: 0.4rem;
+  padding-left: 1rem;
 }
 
-/* Examples */
-.result-example {
-  margin-top: 0.35rem;
-  padding: 0.4rem 0.6rem;
-  background: #fafafa;
-  border-left: 3px solid #94a3b8;
+.result-examples div {
   font-size: 0.95rem;
+  line-height: 1.6;
 }
 
-/* Highlight register word only */
+/* highlight register word only */
 .highlight {
   background: #fff176;
   color: #c62828;
@@ -172,7 +151,6 @@ body {
 
   <div class="search-row">
     <input class="search-input" id="searchInput" placeholder="మాట వెతకండి">
-    <button class="search-button" id="searchBtn">వెళ్ళు</button>
   </div>
 </div>
 
@@ -194,7 +172,6 @@ function highlight(word, q) {
 function render(q) {
   const box = document.getElementById('results');
   box.innerHTML = '';
-
   if (!q) return;
 
   entries.filter(e => {
@@ -203,29 +180,24 @@ function render(q) {
       : e.full.includes(q);
   }).forEach(e => {
     box.innerHTML += `
-      <div class="result-card">
+      <div class="result-item">
         <div class="result-register">
           ${mode === 'anywhere' ? highlight(e.register, q) : e.register}
           <span class="result-role">(${e.role})</span>
         </div>
-
-        <div class="result-label">అనుబంధ పదం</div>
-        <div class="result-non-register">${e.non}</div>
-
-        <div class="result-label">ఉదాహరణలు</div>
-        ${e.examples.map(ex =>
-          `<div class="result-example">${ex}</div>`
-        ).join('')}
+        <div class="result-non">${e.non}</div>
+        <div class="result-examples">
+          ${e.examples.map(ex => `<div>• ${ex}</div>`).join('')}
+        </div>
       </div>
     `;
   });
 }
 
-/* ===== LOAD VOCABULARY ===== */
+/* load vocabulary */
 fetch('vocabulary.txt').then(r => r.text()).then(text => {
   text.split('}').forEach(block => {
     if (!block.includes('register word')) return;
-
     entries.push({
       register: /register word\s*:\s*(.+)/.exec(block)?.[1]?.trim() || '',
       role: /grammartical role\s*:\s*(.+)/.exec(block)?.[1]?.trim() || '',
@@ -236,7 +208,6 @@ fetch('vocabulary.txt').then(r => r.text()).then(text => {
   });
 });
 
-searchBtn.onclick = () => render(searchInput.value);
 searchInput.oninput = () => render(searchInput.value);
 document.querySelectorAll('input[name="mode"]').forEach(r =>
   r.onchange = e => { mode = e.target.value; render(searchInput.value); }
