@@ -20,7 +20,7 @@ body {
 .header {
   background: linear-gradient(135deg, #d97706, #b45309);
   color: #fffaf0;
-  padding: 0.6rem 1.2rem;
+  padding: 0.75rem 1.4rem;
 }
 
 .header-content {
@@ -32,7 +32,7 @@ body {
 }
 
 .site-title {
-  font-size: 1.4rem;
+  font-size: 1.45rem;      /* increased */
   font-weight: 700;
 }
 
@@ -40,93 +40,93 @@ body {
 .search-toolbar {
   background: #fffaf0;
   border-bottom: 1px solid #e7dbc8;
-  padding: 0.5rem 1.2rem;   /* unchanged */
+  padding: 0.65rem 1.4rem;
 }
 
-/* 🔽 ONLY THIS PART IS REDUCED */
+/* 🔒 2nd line — KEEP SIZE */
 .toolbar-row {
   display: flex;
   align-items: center;
-  gap: 0.6rem;             /* tighter */
-  font-size: 0.8rem;       /* smaller text */
+  gap: 0.9rem;
+  font-size: 1.1rem;       /* unchanged */
   color: #5b4636;
-}
-
-.toolbar-row strong {
-  font-weight: 600;
 }
 
 .toolbar-row label {
   display: flex;
   align-items: center;
-  gap: 0.15rem;            /* tighter radio spacing */
+  gap: 0.25rem;
   cursor: pointer;
 }
-/* 🔼 END OF CHANGE */
 
+/* search box */
 .search-row {
-  margin-top: 0.45rem;
+  margin-top: 0.55rem;
 }
 
 .search-input {
   width: 100%;
-  padding: 0.45rem 0.7rem;
-  font-size: 1.2rem;
-  border-radius: 5px;
+  padding: 0.6rem 0.9rem;
+  font-size: 1.2rem;       /* increased */
+  border-radius: 6px;
   border: 1.5px solid #e7dbc8;
   background: #faf6ef;
 }
 
 /* ===== RESULTS ===== */
 .results-area {
-  padding: 1rem 1.2rem;
+  padding: 1.3rem 1.4rem;
 }
 
 .results-grid {
-  max-width: 800px;
+  max-width: 820px;
   margin: auto;
   display: flex;
   flex-direction: column;
-  gap: 0.9rem;
+  gap: 1.1rem;
 }
 
 .result-item {
-  padding-bottom: 0.6rem;
+  padding-bottom: 0.7rem;
   border-bottom: 1px solid #e7dbc8;
 }
 
+/* Register word */
 .result-register {
-  font-size: 1.5rem;
+  font-size: 1.7rem;       /* dominant */
   font-weight: 700;
   color: #b45309;
 }
 
 .result-role {
-  font-size: 0.8rem;
+  font-size: 0.9rem;
   font-style: italic;
   color: #7c2d12;
-  margin-left: 0.35rem;
+  margin-left: 0.4rem;
 }
 
+/* Gloss */
 .result-non {
-  font-size: 0.98rem;
-  margin-top: 0.15rem;
+  font-size: 1.15rem;
+  margin-top: 0.2rem;
 }
 
+/* Examples */
 .result-examples {
-  margin-top: 0.35rem;
-  padding-left: 0.9rem;
+  margin-top: 0.45rem;
+  padding-left: 1rem;
 }
 
 .result-examples div {
-  font-size: 0.9rem;
-  line-height: 1.55;
+  font-size: 1.05rem;
+  line-height: 1.6;
 }
 
+/* Highlight (register word only) */
 .highlight {
   background: #fde68a;
   color: #9a3412;
-  padding: 1px 3px;
+  padding: 2px 4px;
   border-radius: 3px;
 }
 </style>
@@ -203,10 +203,12 @@ function render(q) {
     });
 }
 
+/* ===== LOAD COMPACT VOCABULARY ===== */
 fetch('vocabulary.txt')
   .then(r => r.text())
   .then(text => {
     const blocks = text.split(/\n\s*\n/).map(b => b.trim()).filter(b => b.startsWith('{'));
+
     blocks.forEach(block => {
       const inner = block.replace(/^\{/, '').replace(/\}$/, '').trim();
       const lines = inner.split('\n').map(l => l.trim()).filter(Boolean);
