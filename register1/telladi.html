@@ -1,261 +1,308 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="te">
 <head>
 <meta charset="UTF-8">
-<title>Telladi – Telugu Native Register</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>మేలిమి తెలుగు తెల్లడి</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Telugu:wght@400;600;700&display=swap" rel="stylesheet">
 
 <style>
-/* ====== COLOR PALETTE (Indian manuscript inspired) ====== */
-:root {
-  --bg-main: #f6f1e7;        /* palm-leaf paper */
-  --bg-panel: #fffaf0;       /* manuscript surface */
-  --ink-main: #2b1d0e;       /* dark brown ink */
-  --ink-soft: #5a4632;
-  --accent: #8b1e1e;         /* deep maroon */
-  --accent-soft: #c9a24d;    /* temple gold */
-  --border: #d8cbb2;
-}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { height: 100%; }
 
-/* ====== BASE ====== */
 body {
-  margin: 0;
-  background: var(--bg-main);
-  color: var(--ink-main);
-  font-family: "Noto Serif Telugu", serif;
+  font-family: 'Noto Serif Telugu', serif;
+  background: #f5f7fa;
+  color: #2c3e50;
 }
 
-/* ====== HEADER ====== */
-header {
+.app-wrapper {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ===== HEADER ===== */
+.header {
+  background: linear-gradient(135deg, #1e3c72, #2a5298);
+  color: #fff;
+  padding: 0.8rem 2rem;
+}
+
+.header-content {
+  max-width: 1800px;
+  margin: auto;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 16px 24px;
-  border-bottom: 2px solid var(--border);
-  background: var(--bg-panel);
 }
 
-header h1 {
-  margin: 0;
-  font-size: 22px;
-  color: var(--accent);
-  letter-spacing: 1px;
+.site-title {
+  font-size: 1.4rem;
+  font-weight: 700;
 }
 
-/* ====== MENU ====== */
-.menu {
-  position: relative;
-}
+.menu-container { position: relative; }
 
-.menu button {
-  background: none;
-  border: 1px solid var(--border);
-  padding: 6px 12px;
+.menu-button {
+  background: rgba(255,255,255,0.2);
+  border: 1px solid rgba(255,255,255,0.3);
+  color: #fff;
+  padding: 0.45rem 1.1rem;
+  border-radius: 4px;
   cursor: pointer;
-  color: var(--ink-main);
-  font-size: 14px;
+  font-weight: 600;
 }
 
-.menu-content {
+.menu-dropdown {
   display: none;
   position: absolute;
   right: 0;
-  top: 32px;
-  background: var(--bg-panel);
-  border: 1px solid var(--border);
-  min-width: 140px;
-  z-index: 10;
+  top: 110%;
+  background: #fff;
+  border-radius: 6px;
+  min-width: 160px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
 }
 
-.menu-content button {
-  width: 100%;
-  border: none;
-  background: none;
-  padding: 10px;
-  text-align: left;
+.menu-dropdown.active { display: block; }
+
+.menu-item {
+  padding: 0.75rem 1rem;
   cursor: pointer;
 }
+.menu-item:hover { background: #f1f5f9; }
 
-.menu-content button:hover {
-  background: var(--bg-main);
+/* ===== TOOLBAR ===== */
+.search-toolbar {
+  background: #fff;
+  border-bottom: 2px solid #e1e8ed;
+  padding: 1rem 2rem;
 }
 
-.menu:hover .menu-content {
-  display: block;
-}
-
-/* ====== MAIN ====== */
-main {
-  padding: 24px;
-  max-width: 900px;
-  margin: auto;
-}
-
-/* ====== SEARCH ====== */
-.search-box {
-  margin-bottom: 16px;
-}
-
-.search-box input {
-  width: 100%;
-  padding: 10px;
-  font-size: 18px;
-  border: 1px solid var(--border);
-  background: var(--bg-panel);
-  color: var(--ink-main);
+.toolbar-row {
+  display: flex;
+  gap: 2rem;
+  align-items: center;
+  overflow-x: auto;
+  white-space: nowrap;
 }
 
 .search-modes {
-  margin-top: 8px;
-  font-size: 14px;
-  color: var(--ink-soft);
+  display: flex;
+  gap: 1.5rem;
 }
 
-.search-modes label {
-  margin-right: 16px;
+.radio-option {
+  display: flex;
+  gap: 0.4rem;
+  align-items: center;
+  font-weight: 600;
+}
+
+/* ===== SEARCH ===== */
+.search-row {
+  margin-top: 1rem;
+  display: flex;
+  gap: 0.75rem;
+}
+
+.search-input {
+  flex: 1;
+  padding: 0.85rem 1rem;
+  font-size: 1.15rem;
+  border-radius: 8px;
+  border: 2px solid #cbd5e1;
+}
+
+.search-button {
+  padding: 0.85rem 1.8rem;
+  font-size: 1rem;
+  font-weight: 700;
+  background: #1e3c72;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
   cursor: pointer;
 }
 
-/* ====== RESULTS ====== */
-.result {
-  background: var(--bg-panel);
-  border: 1px solid var(--border);
-  padding: 14px;
-  margin-bottom: 14px;
-  white-space: pre-wrap;
-  line-height: 1.6;
-  font-size: 16px;
+/* ===== RESULTS ===== */
+.results-area {
+  flex: 1;
+  overflow-y: auto;
+  padding: 2rem;
 }
 
-.result:hover {
-  border-color: var(--accent-soft);
+.pretext {
+  text-align: center;
+  padding: 4rem 2rem;
+  color: #64748b;
 }
 
-/* ====== GRAMMAR MODAL ====== */
-#grammarModal {
+.results-grid {
+  max-width: 1000px;
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.result-card {
+  border: 2px solid #e1e8ed;
+  border-radius: 10px;
+  padding: 2rem;
+  background: #fff;
+}
+
+.result-register {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #1e3c72;
+}
+
+.result-label {
+  margin-top: 1rem;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #64748b;
+}
+
+.result-non-register {
+  font-size: 1.3rem;
+  padding: 0.6rem;
+  background: #f1f5f9;
+  border-left: 4px solid #6366f1;
+}
+
+.result-example {
+  margin-top: 0.5rem;
+  padding: 0.6rem;
+  background: #fafafa;
+  border-left: 3px solid #94a3b8;
+}
+
+/* ===== HIGHLIGHT ===== */
+.highlight {
+  background: #fff176;
+  color: #c62828;
+  padding: 2px 4px;
+  border-radius: 3px;
+  font-weight: 600;
+}
+
+/* ===== MODAL ===== */
+.modal {
   display: none;
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.5);
+  background: rgba(0,0,0,0.6);
+  align-items: center;
+  justify-content: center;
 }
 
-#grammarContent {
-  background: var(--bg-panel);
-  color: var(--ink-main);
+.modal.active { display: flex; }
+
+.modal-content {
+  background: #fff;
   max-width: 800px;
-  margin: 60px auto;
-  padding: 20px;
-  border: 2px solid var(--border);
-  max-height: 80vh;
-  overflow-y: auto;
-}
-
-#grammarContent h2 {
-  margin-top: 0;
-  color: var(--accent);
-}
-
-.close-btn {
-  float: right;
-  cursor: pointer;
-  color: var(--accent);
-  font-size: 18px;
+  width: 90%;
+  padding: 2rem;
+  border-radius: 10px;
 }
 </style>
 </head>
 
 <body>
+<div class="app-wrapper">
 
-<header>
-  <h1>Telladi — Native Telugu Register</h1>
-
-  <div class="menu">
-    <button>Menu ▾</button>
-    <div class="menu-content">
-      <button onclick="openGrammar()">Read Grammar</button>
+<header class="header">
+  <div class="header-content">
+    <div class="site-title">మేలిమి తెలుగు తెల్లడి</div>
+    <div class="menu-container">
+      <button class="menu-button" id="menuBtn">అవిఇవి ▾</button>
+      <div class="menu-dropdown" id="menuDrop">
+        <div class="menu-item" id="grammarBtn">వ్యాకరణం చదవండి</div>
+      </div>
     </div>
   </div>
 </header>
 
-<main>
-  <div class="search-box">
-    <input type="text" id="searchInput" placeholder="Search Telugu word…" />
+<div class="search-toolbar">
+  <div class="toolbar-row">
+    <strong>వెతుకుదీరు :</strong>
     <div class="search-modes">
-      <label>
-        <input type="radio" name="mode" value="entry" checked>
-        Entry words
+      <label class="radio-option">
+        <input type="radio" name="mode" value="entry" checked> entry
       </label>
-      <label>
-        <input type="radio" name="mode" value="anywhere">
-        Anywhere
+      <label class="radio-option">
+        <input type="radio" name="mode" value="anywhere"> anywhere
       </label>
     </div>
   </div>
 
-  <div id="results"></div>
-</main>
-
-<!-- ====== GRAMMAR MODAL ====== -->
-<div id="grammarModal">
-  <div id="grammarContent">
-    <span class="close-btn" onclick="closeGrammar()">✕</span>
-    <h2>Grammar</h2>
-    <pre id="grammarText"></pre>
+  <div class="search-row">
+    <input class="search-input" id="searchInput" placeholder="మాట వెతకండి">
+    <button class="search-button" id="searchBtn">వెళ్ళు</button>
   </div>
 </div>
 
+<main class="results-area">
+  <div class="pretext" id="pretext">పదం వెతకండి…</div>
+  <div class="results-grid" id="results"></div>
+</main>
+
+</div>
+
 <script>
-let blocks = [];
+let data = [];
+let mode = 'entry';
 
-/* ====== LOAD FILES ====== */
-async function loadVocabulary() {
-  const text = await fetch('vocabulary.txt').then(r => r.text());
-  blocks = text.split(/\n\s*\{/).slice(1).map(b => '{' + b);
+function highlight(t, q) {
+  return t.replace(new RegExp(q, 'gi'), m => `<span class="highlight">${m}</span>`);
 }
 
-async function loadGrammar() {
-  const text = await fetch('grammar.txt').then(r => r.text());
-  document.getElementById('grammarText').textContent = text;
-}
+function render(q) {
+  const box = document.getElementById('results');
+  const pre = document.getElementById('pretext');
+  box.innerHTML = '';
 
-/* ====== SEARCH ====== */
-function search() {
-  const q = document.getElementById('searchInput').value.trim();
-  const mode = document.querySelector('input[name="mode"]:checked').value;
-  const results = document.getElementById('results');
-  results.innerHTML = '';
+  if (!q) { pre.style.display = 'block'; return; }
+  pre.style.display = 'none';
 
-  if (!q) return;
-
-  blocks.forEach(block => {
-    let haystack = block;
-
-    if (mode === 'entry') {
-      const match = block.match(/register word\s*:\s*[^\n]+|non-register word\s*:\s*[^\n]+/g);
-      haystack = match ? match.join(' ') : '';
-    }
-
-    if (haystack.includes(q)) {
-      const div = document.createElement('div');
-      div.className = 'result';
-      div.textContent = block;
-      results.appendChild(div);
-    }
+  data.filter(e => {
+    const text = mode === 'entry'
+      ? e.register + e.non
+      : e.full;
+    return text.includes(q);
+  }).forEach(e => {
+    box.innerHTML += `
+      <div class="result-card">
+        <div class="result-register">${mode==='anywhere'?highlight(e.register,q):e.register}</div>
+        <div class="result-label">సామాన్య పదం</div>
+        <div class="result-non-register">${mode==='anywhere'?highlight(e.non,q):e.non}</div>
+        <div class="result-label">ఉదాహరణలు</div>
+        ${e.examples.map(x=>`<div class="result-example">${mode==='anywhere'?highlight(x,q):x}</div>`).join('')}
+      </div>`;
   });
 }
 
-/* ====== GRAMMAR MODAL ====== */
-function openGrammar() {
-  document.getElementById('grammarModal').style.display = 'block';
-}
+fetch('vocabulary.txt').then(r=>r.text()).then(t=>{
+  t.split('{').forEach(b=>{
+    if(!b.trim())return;
+    const r = /register word\s*:\s*(.+)/.exec(b);
+    const n = /non-register word\s*:\s*(.+)/.exec(b);
+    const ex = [...b.matchAll(/\d+\.\s*(.+)/g)].map(m=>m[1]);
+    data.push({register:r?.[1]||'',non:n?.[1]||'',examples:ex,full:b});
+  });
+});
 
-function closeGrammar() {
-  document.getElementById('grammarModal').style.display = 'none';
-}
-
-/* ====== INIT ====== */
-loadVocabulary();
-loadGrammar();
-document.getElementById('searchInput').addEventListener('input', search);
+document.getElementById('searchBtn').onclick=()=>render(searchInput.value);
+document.getElementById('searchInput').oninput=()=>render(searchInput.value);
+document.querySelectorAll('input[name="mode"]').forEach(r=>r.onchange=e=>{mode=e.target.value;render(searchInput.value)});
+menuBtn.onclick=()=>menuDrop.classList.toggle('active');
 </script>
 
 </body>
