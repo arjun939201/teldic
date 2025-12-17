@@ -1,18 +1,19 @@
 {
-register word : కైకొను
-non-register word : స్వీకరించు
-grammartical role : verb
-examples {
+కైకొను
+verb
+తీసుకో, స్వీకరించు, recieve, take
+{
 1. మేము పంపిన కానుకలు కైకొనండి
 2. బ్రతుకున పాటేదైన కైకొనాలి
 }
 }
+
 {
-register word : క్రాలు
-grammartical role : verb
-non-register word : స్పందించు
-examples {
-1. మేము పంపిన వేగుకు క్రాలాడండి
-2. కడుకైచూసిన అక్కడి నుండి క్రాలిక లేదు
+క్రాలు
+verb
+స్పందించు, to respond
+{
+1. మేము పంపిన వేగుకు క్రాలుము
+2. చాలనాళ్ళ నుండి కైచూసిన క్రాలాడలేదు
 }
 }
