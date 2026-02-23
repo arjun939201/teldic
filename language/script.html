@@ -3,29 +3,21 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Professional Telugu Tracing App</title>
-
-<script src="https://cdn.jsdelivr.net/npm/opentype.js@1.3.4/dist/opentype.min.js"></script>
+<title>Telugu Tracing Mobile Safe</title>
 
 <style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Telugu:wght@700&display=swap');
+
 body{
     margin:0;
-    font-family:system-ui, -apple-system, sans-serif;
+    font-family:'Noto Sans Telugu', sans-serif;
     background:#f4fbff;
     text-align:center;
 }
 
-header{
-    padding:15px 10px 5px;
-}
-
-h1{
-    margin:0;
-    font-size:22px;
-}
+h2{margin:12px 0 5px;}
 
 #progress{
-    margin-top:6px;
     font-weight:600;
 }
 
@@ -45,15 +37,15 @@ svg{
     touch-action:none;
 }
 
-.guide{
+.guideText{
     fill:none;
-    stroke:#dddddd;
+    stroke:#ddd;
     stroke-width:6;
     stroke-linejoin:round;
     stroke-linecap:round;
 }
 
-.trace{
+.traceText{
     fill:none;
     stroke:#4CAF50;
     stroke-width:6;
@@ -65,8 +57,6 @@ svg{
     fill:none;
     stroke:#2196F3;
     stroke-width:6;
-    stroke-linejoin:round;
-    stroke-linecap:round;
 }
 
 .glider{
@@ -81,30 +71,31 @@ button{
     font-size:14px;
     background:#4CAF50;
     color:white;
-    cursor:pointer;
 }
 
-button:hover{ background:#388e3c; }
-
 #message{
-    font-size:16px;
     font-weight:600;
     color:green;
-    margin-bottom:12px;
 }
 </style>
 </head>
 <body>
 
-<header>
-<h1>తెలుగు అక్షరాల ట్రేసింగ్</h1>
+<h2>తెలుగు అక్షరాల ట్రేసింగ్</h2>
 <div id="progress"></div>
-</header>
 
 <div class="container">
 
-<svg id="demoSvg" viewBox="0 0 500 260"></svg>
-<svg id="practiceSvg" viewBox="0 0 500 260"></svg>
+<svg id="demoSvg">
+    <text id="demoLetter" class="guideText" x="50%" y="55%" text-anchor="middle" font-size="180">అ</text>
+    <text id="demoTrace" class="demoTrace" x="50%" y="55%" text-anchor="middle" font-size="180">అ</text>
+</svg>
+
+<svg id="practiceSvg">
+    <text id="guideLetter" class="guideText" x="50%" y="55%" text-anchor="middle" font-size="180">అ</text>
+    <text id="traceLetter" class="traceText" x="50%" y="55%" text-anchor="middle" font-size="180">అ</text>
+    <circle id="glider" class="glider" r="8"></circle>
+</svg>
 
 <div>
 <button onclick="prevLetter()">Previous</button>
@@ -118,7 +109,6 @@ button:hover{ background:#388e3c; }
 
 <script>
 
-// -------------------- LETTER SET --------------------
 const letters = [
 "అ","ఆ","ఇ","ఈ","ఉ","ఊ","ఋ","ౠ","ఎ","ఏ","ఐ","ఒ","ఓ","ఔ","అం","అః",
 "క","ఖ","గ","ఘ","ఙ","చ","ఛ","జ","ఝ","ఞ",
@@ -127,206 +117,69 @@ const letters = [
 "శ","ష","స","హ","ళ","క్ష","ఱ"
 ];
 
-// -------------------- GLOBAL STATE --------------------
-let font = null;
-let currentIndex = 0;
-let practiceLength = 0;
-let practiceProgress = 0;
-let demoLength = 0;
-let demoProgress = 0;
-let dragging = false;
+let current=0;
+let dragging=false;
 
-// -------------------- ELEMENTS --------------------
-const demoSvg = document.getElementById("demoSvg");
-const practiceSvg = document.getElementById("practiceSvg");
-const progressLabel = document.getElementById("progress");
-const message = document.getElementById("message");
+const demoLetter = document.getElementById("demoLetter");
+const demoTrace = document.getElementById("demoTrace");
+const guideLetter = document.getElementById("guideLetter");
+const traceLetter = document.getElementById("traceLetter");
+const progress=document.getElementById("progress");
+const message=document.getElementById("message");
+const glider=document.getElementById("glider");
+const practiceSvg=document.getElementById("practiceSvg");
 
-// -------------------- SVG INITIALIZER --------------------
-function initSVG(svg, traceClass){
-    svg.innerHTML = `
-        <path class="guide"></path>
-        <path class="${traceClass}"></path>
-        <circle class="glider" r="8"></circle>
-    `;
-}
-
-initSVG(demoSvg,"demoTrace");
-initSVG(practiceSvg,"trace");
-
-// -------------------- FONT LOAD --------------------
-opentype.load(
-'https://fonts.gstatic.com/s/notosanstelugu/v22/0ihfP6D5Dxx3X88wXk6nCk6uLqJc.ttf',
-function(err, loadedFont){
-    if(err){
-        alert("Telugu font failed to load.");
-        return;
-    }
-    font = loadedFont;
-    loadLetter();
-    requestAnimationFrame(animateDemo);
-});
-
-// -------------------- LOAD LETTER --------------------
 function loadLetter(){
-
-    message.textContent = "";
-
-    const letter = letters[currentIndex];
-    progressLabel.textContent =
-        `Letter ${currentIndex+1} of ${letters.length} : ${letter}`;
-
-    const pathData = font.getPath(letter, 80, 200, 180).toPathData(2);
-
-    setupDemo(pathData);
-    setupPractice(pathData);
+    const letter=letters[current];
+    demoLetter.textContent=letter;
+    demoTrace.textContent=letter;
+    guideLetter.textContent=letter;
+    traceLetter.textContent=letter;
+    traceLetter.style.opacity="0";
+    progress.textContent=`Letter ${current+1} of ${letters.length} : ${letter}`;
+    message.textContent="";
 }
 
-// -------------------- DEMO --------------------
-function setupDemo(pathData){
-    const guide = demoSvg.querySelector(".guide");
-    const trace = demoSvg.querySelector(".demoTrace");
-    const glider = demoSvg.querySelector(".glider");
-
-    guide.setAttribute("d", pathData);
-    trace.setAttribute("d", pathData);
-
-    demoLength = guide.getTotalLength();
-    demoProgress = 0;
-
-    trace.style.strokeDasharray = demoLength;
-    trace.style.strokeDashoffset = demoLength;
-
-    const start = guide.getPointAtLength(0);
-    glider.setAttribute("cx", start.x);
-    glider.setAttribute("cy", start.y);
-}
-
-function animateDemo(){
-    const guide = demoSvg.querySelector(".guide");
-    const trace = demoSvg.querySelector(".demoTrace");
-    const glider = demoSvg.querySelector(".glider");
-
-    if(guide && demoLength){
-        demoProgress += 2;
-        if(demoProgress > demoLength) demoProgress = 0;
-
-        trace.style.strokeDashoffset = demoLength - demoProgress;
-        const p = guide.getPointAtLength(demoProgress);
-        glider.setAttribute("cx", p.x);
-        glider.setAttribute("cy", p.y);
-    }
-
-    requestAnimationFrame(animateDemo);
-}
-
-// -------------------- PRACTICE --------------------
-function setupPractice(pathData){
-    const guide = practiceSvg.querySelector(".guide");
-    const trace = practiceSvg.querySelector(".trace");
-    const glider = practiceSvg.querySelector(".glider");
-
-    guide.setAttribute("d", pathData);
-    trace.setAttribute("d", pathData);
-
-    practiceLength = guide.getTotalLength();
-    practiceProgress = 0;
-
-    trace.style.strokeDasharray = practiceLength;
-    trace.style.strokeDashoffset = practiceLength;
-
-    const start = guide.getPointAtLength(0);
-    glider.setAttribute("cx", start.x);
-    glider.setAttribute("cy", start.y);
-}
-
-// Smooth position to path
-function getClosestLength(svg, x, y, length){
-    const guide = svg.querySelector(".guide");
-    let best = 0;
-    let minDist = Infinity;
-
-    for(let i=0;i<=length;i+=5){
-        const p = guide.getPointAtLength(i);
-        const dx = p.x-x;
-        const dy = p.y-y;
-        const dist = dx*dx + dy*dy;
-        if(dist < minDist){
-            minDist = dist;
-            best = i;
-        }
-    }
-    return best;
-}
-
-function movePractice(e){
-    if(!dragging) return;
-
-    const rect = practiceSvg.getBoundingClientRect();
-    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-    const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-
-    const x = (clientX - rect.left) * (500/rect.width);
-    const y = (clientY - rect.top) * (260/rect.height);
-
-    const closest = getClosestLength(practiceSvg, x, y, practiceLength);
-
-    if(closest > practiceProgress){
-        practiceProgress = closest;
-    }
-
-    updatePractice();
-}
-
-function updatePractice(){
-    const guide = practiceSvg.querySelector(".guide");
-    const trace = practiceSvg.querySelector(".trace");
-    const glider = practiceSvg.querySelector(".glider");
-
-    trace.style.strokeDashoffset = practiceLength - practiceProgress;
-
-    const p = guide.getPointAtLength(practiceProgress);
-    glider.setAttribute("cx", p.x);
-    glider.setAttribute("cy", p.y);
-
-    if(practiceProgress >= practiceLength * 0.95){
-        message.textContent = "Well done!";
-    }
-}
-
-function resetPractice(){
-    setupPractice(
-        practiceSvg.querySelector(".guide").getAttribute("d")
-    );
-    message.textContent = "";
-}
-
-// -------------------- EVENTS --------------------
-practiceSvg.addEventListener("mousedown", ()=> dragging=true);
-practiceSvg.addEventListener("mouseup", ()=> dragging=false);
-practiceSvg.addEventListener("mouseleave", ()=> dragging=false);
-practiceSvg.addEventListener("mousemove", movePractice);
-
-practiceSvg.addEventListener("touchstart", ()=> dragging=true);
-practiceSvg.addEventListener("touchend", ()=> dragging=false);
-practiceSvg.addEventListener("touchcancel", ()=> dragging=false);
-practiceSvg.addEventListener("touchmove", movePractice);
-
-// -------------------- NAVIGATION --------------------
 function nextLetter(){
-    if(currentIndex < letters.length-1){
-        currentIndex++;
+    if(current<letters.length-1){
+        current++;
         loadLetter();
     }
 }
 
 function prevLetter(){
-    if(currentIndex > 0){
-        currentIndex--;
+    if(current>0){
+        current--;
         loadLetter();
     }
 }
 
+function resetPractice(){
+    traceLetter.style.opacity="0";
+    message.textContent="";
+}
+
+// simple fade practice simulation
+practiceSvg.addEventListener("mousedown",()=>dragging=true);
+practiceSvg.addEventListener("mouseup",()=>dragging=false);
+practiceSvg.addEventListener("touchstart",()=>dragging=true);
+practiceSvg.addEventListener("touchend",()=>dragging=false);
+
+practiceSvg.addEventListener("mousemove",()=>{
+    if(!dragging) return;
+    traceLetter.style.opacity="1";
+    message.textContent="Well done!";
+});
+
+practiceSvg.addEventListener("touchmove",()=>{
+    if(!dragging) return;
+    traceLetter.style.opacity="1";
+    message.textContent="Well done!";
+});
+
+loadLetter();
+
 </script>
+
 </body>
 </html>
