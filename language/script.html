@@ -3,32 +3,25 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Telugu Letter Tracing with Demo</title>
-
-<script src="https://cdn.jsdelivr.net/npm/opentype.js@latest/dist/opentype.min.js"></script>
+<title>Telugu Stroke-Based Tracing</title>
 
 <style>
 body{
     margin:0;
     font-family:Arial, sans-serif;
-    background:#f2fbff;
+    background:#f4fbff;
     text-align:center;
 }
 
-h1{ margin:10px 0; }
-
-.container{
-    width:95%;
-    max-width:550px;
-    margin:auto;
-}
+h2{margin:10px 0;}
 
 svg{
-    width:100%;
-    height:250px;
+    width:95%;
+    max-width:500px;
+    height:350px;
     background:white;
     border-radius:12px;
-    margin:10px 0;
+    margin:10px auto;
     box-shadow:0 4px 8px rgba(0,0,0,0.1);
     touch-action:none;
 }
@@ -37,6 +30,7 @@ svg{
     fill:none;
     stroke:#ddd;
     stroke-width:6;
+    stroke-linecap:round;
     stroke-linejoin:round;
 }
 
@@ -44,7 +38,7 @@ svg{
     fill:none;
     stroke:#4CAF50;
     stroke-width:6;
-    stroke-linejoin:round;
+    stroke-linecap:round;
 }
 
 .demoTrace{
@@ -58,40 +52,22 @@ svg{
 }
 
 button{
-    padding:8px 16px;
+    padding:8px 18px;
     margin:5px;
     border:none;
     border-radius:6px;
     background:#4CAF50;
     color:white;
 }
-
-#progress{
-    font-weight:bold;
-}
 </style>
 </head>
 <body>
 
-<h1>తెలుగు ట్రేసింగ్</h1>
+<h2>తెలుగు స్ట్రోక్ ట్రేసింగ్</h2>
+<div id="letterLabel"></div>
 
-<div class="container">
-
-<div id="progress"></div>
-
-<!-- DEMO SVG -->
-<svg id="demoSvg" viewBox="0 0 500 250">
-    <path id="demoGuide" class="guide"></path>
-    <path id="demoTrace" class="demoTrace"></path>
-    <circle id="demoGlider" class="glider" r="7"></circle>
-</svg>
-
-<!-- PRACTICE SVG -->
-<svg id="practiceSvg" viewBox="0 0 500 250">
-    <path id="guide" class="guide"></path>
-    <path id="trace" class="trace"></path>
-    <circle id="glider" class="glider" r="7"></circle>
-</svg>
+<svg id="demoSvg"></svg>
+<svg id="practiceSvg"></svg>
 
 <div>
 <button onclick="prevLetter()">Previous</button>
@@ -99,157 +75,191 @@ button{
 <button onclick="nextLetter()">Next</button>
 </div>
 
-</div>
-
 <script>
 
-const letters = [
-"అ","ఆ","ఇ","ఈ","ఉ","ఊ","ఋ","ౠ","ఎ","ఏ","ఐ","ఒ","ఓ","ఔ","అం","అః",
-"క","ఖ","గ","ఘ","ఙ",
-"చ","ఛ","జ","ఝ","ఞ",
-"ట","ఠ","డ","ఢ","ణ",
-"త","థ","ద","ధ","న",
-"ప","ఫ","బ","భ","మ",
-"య","ర","ల","వ",
-"శ","ష","స","హ",
-"ళ","క్ష","ఱ"
-];
+// -------- STROKE DATABASE (Extend this for full system) --------
+const strokeData = {
+    "అ": [
+        "M120 150 Q200 80 300 150",
+        "M200 150 Q200 220 260 260"
+    ],
+    "ఆ": [
+        "M120 150 Q200 80 300 150",
+        "M200 150 Q200 220 260 260",
+        "M300 150 Q350 200 300 260"
+    ],
+    "ఇ": [
+        "M180 100 Q200 160 180 240",
+        "M180 140 Q240 120 260 160"
+    ],
+    "ఈ": [
+        "M180 100 Q200 160 180 240",
+        "M180 140 Q260 110 290 160"
+    ],
+    "ఉ": [
+        "M150 120 Q200 90 250 120",
+        "M200 120 Q200 200 250 260"
+    ],
+    "ఊ": [
+        "M150 120 Q200 90 250 120",
+        "M200 120 Q200 200 250 260",
+        "M250 120 Q300 160 250 200"
+    ]
+};
 
-let font;
-let current = 0;
-
-// Practice variables
-let totalLength = 0;
-let currentLength = 0;
+// --------- Setup ---------
+const letters = Object.keys(strokeData);
+let currentLetterIndex = 0;
+let currentStrokeIndex = 0;
 let dragging = false;
+let currentLength = 0;
+let totalLength = 0;
 
-// Demo variables
-let demoLength = 0;
-let demoProgress = 0;
-
-const guide = document.getElementById("guide");
-const trace = document.getElementById("trace");
-const glider = document.getElementById("glider");
+const demoSvg = document.getElementById("demoSvg");
 const practiceSvg = document.getElementById("practiceSvg");
+const label = document.getElementById("letterLabel");
 
-const demoGuide = document.getElementById("demoGuide");
-const demoTrace = document.getElementById("demoTrace");
-const demoGlider = document.getElementById("demoGlider");
-
-const progress = document.getElementById("progress");
-
-opentype.load(
-'https://raw.githubusercontent.com/googlefonts/noto-fonts/main/hinted/ttf/NotoSansTelugu/NotoSansTelugu-Regular.ttf',
-function(err, loadedFont){
-    if(err){
-        alert("Font load failed");
-    }else{
-        font = loadedFont;
-        loadLetter();
-        animateDemo();
-    }
-});
-
-function createPath(letter){
-    const path = font.getPath(letter, 50, 200, 180);
-    return path.toPathData(2);
+// SVG Setup
+function createBase(svg){
+    svg.setAttribute("viewBox","0 0 400 300");
+    svg.innerHTML = `
+        <path class="guide"/>
+        <path class="trace"/>
+        <circle class="glider" r="7"/>
+    `;
 }
+createBase(demoSvg);
+createBase(practiceSvg);
 
 function loadLetter(){
+    const letter = letters[currentLetterIndex];
+    label.textContent = `Letter: ${letter}`;
+    currentStrokeIndex = 0;
+    loadStroke();
+}
 
-    const pathData = createPath(letters[current]);
+function loadStroke(){
+    const letter = letters[currentLetterIndex];
+    const strokes = strokeData[letter];
+    const pathData = strokes[currentStrokeIndex];
 
-    // Practice
+    setupSVG(demoSvg, pathData, true);
+    setupSVG(practiceSvg, pathData, false);
+}
+
+function setupSVG(svg, pathData, isDemo){
+    const guide = svg.querySelector(".guide");
+    const trace = svg.querySelector(".trace");
+    const glider = svg.querySelector(".glider");
+
     guide.setAttribute("d", pathData);
     trace.setAttribute("d", pathData);
-    totalLength = guide.getTotalLength();
-    trace.style.strokeDasharray = totalLength;
-    trace.style.strokeDashoffset = totalLength;
-    currentLength = 0;
-    setPracticeGlider(0);
 
-    // Demo
-    demoGuide.setAttribute("d", pathData);
-    demoTrace.setAttribute("d", pathData);
-    demoLength = demoGuide.getTotalLength();
-    demoTrace.style.strokeDasharray = demoLength;
-    demoTrace.style.strokeDashoffset = demoLength;
-    demoProgress = 0;
+    const length = guide.getTotalLength();
 
-    progress.textContent =
-        `Letter ${current+1} of ${letters.length} : ${letters[current]}`;
+    guide.style.strokeDasharray = length;
+    guide.style.strokeDashoffset = 0;
+
+    trace.style.strokeDasharray = length;
+    trace.style.strokeDashoffset = length;
+
+    const start = guide.getPointAtLength(0);
+    glider.setAttribute("cx", start.x);
+    glider.setAttribute("cy", start.y);
+
+    if(!isDemo){
+        totalLength = length;
+        currentLength = 0;
+    }
 }
 
-function setPracticeGlider(len){
-    const p = guide.getPointAtLength(len);
-    glider.setAttribute("cx", p.x);
-    glider.setAttribute("cy", p.y);
-}
-
-function setDemoGlider(len){
-    const p = demoGuide.getPointAtLength(len);
-    demoGlider.setAttribute("cx", p.x);
-    demoGlider.setAttribute("cy", p.y);
-}
-
-function resetPractice(){
-    currentLength = 0;
-    trace.style.strokeDashoffset = totalLength;
-    setPracticeGlider(0);
-}
-
-// PRACTICE CONTROL (NO AUTO MOVE)
+// -------- Practice Logic --------
 practiceSvg.addEventListener("mousedown", ()=> dragging=true);
 practiceSvg.addEventListener("mouseup", ()=> dragging=false);
-practiceSvg.addEventListener("touchstart", ()=> dragging=true);
-practiceSvg.addEventListener("touchend", ()=> dragging=false);
-
 practiceSvg.addEventListener("mousemove", movePractice);
-practiceSvg.addEventListener("touchmove", movePractice);
 
 function movePractice(e){
     if(!dragging) return;
-    e.preventDefault();
 
     currentLength += 4;
     if(currentLength > totalLength)
         currentLength = totalLength;
 
-    trace.style.strokeDashoffset = totalLength - currentLength;
-    setPracticeGlider(currentLength);
-}
+    updatePractice(currentLength);
 
-// DEMO AUTO LOOP
-function animateDemo(){
-
-    demoProgress += 2;
-
-    if(demoProgress > demoLength){
-        demoProgress = 0;
-        demoTrace.style.strokeDashoffset = demoLength;
+    if(currentLength >= totalLength){
+        nextStroke();
     }
-
-    demoTrace.style.strokeDashoffset = demoLength - demoProgress;
-    setDemoGlider(demoProgress);
-
-    requestAnimationFrame(animateDemo);
 }
 
+function updatePractice(len){
+    const guide = practiceSvg.querySelector(".guide");
+    const trace = practiceSvg.querySelector(".trace");
+    const glider = practiceSvg.querySelector(".glider");
+
+    trace.style.strokeDashoffset = totalLength - len;
+
+    const p = guide.getPointAtLength(len);
+    glider.setAttribute("cx", p.x);
+    glider.setAttribute("cy", p.y);
+}
+
+function nextStroke(){
+    const strokes = strokeData[letters[currentLetterIndex]];
+    if(currentStrokeIndex < strokes.length-1){
+        currentStrokeIndex++;
+        loadStroke();
+    }
+}
+
+// -------- Demo Animation --------
+function animateDemo(){
+    const guide = demoSvg.querySelector(".guide");
+    const trace = demoSvg.querySelector(".trace");
+    const glider = demoSvg.querySelector(".glider");
+
+    let len = guide.getTotalLength();
+    let progress = 0;
+
+    function loop(){
+        progress += 2;
+
+        if(progress > len){
+            progress = 0;
+        }
+
+        trace.style.strokeDashoffset = len - progress;
+        const p = guide.getPointAtLength(progress);
+        glider.setAttribute("cx", p.x);
+        glider.setAttribute("cy", p.y);
+
+        requestAnimationFrame(loop);
+    }
+    loop();
+}
+
+// -------- Navigation --------
 function nextLetter(){
-    if(current < letters.length-1){
-        current++;
+    if(currentLetterIndex < letters.length-1){
+        currentLetterIndex++;
         loadLetter();
     }
 }
 
 function prevLetter(){
-    if(current > 0){
-        current--;
+    if(currentLetterIndex > 0){
+        currentLetterIndex--;
         loadLetter();
     }
 }
 
-</script>
+function resetPractice(){
+    loadStroke();
+}
 
+loadLetter();
+animateDemo();
+
+</script>
 </body>
 </html>
