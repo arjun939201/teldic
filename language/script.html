@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Telugu Letter Tracing</title>
+<title>Single Stroke Telugu Tracing</title>
 
 <script src="https://cdn.jsdelivr.net/npm/opentype.js@latest/dist/opentype.min.js"></script>
 
@@ -33,7 +33,7 @@ svg{
 
 .guide{
     fill:none;
-    stroke:#ddd;
+    stroke:#cccccc;
     stroke-width:6;
     stroke-linecap:round;
     stroke-linejoin:round;
@@ -60,7 +60,6 @@ button{
     background:#4CAF50;
     color:white;
 }
-
 button:hover{ background:#388e3c; }
 
 #message{
@@ -73,7 +72,7 @@ button:hover{ background:#388e3c; }
 
 <body>
 
-<h1>తెలుగు అక్షరాల ట్రేసింగ్</h1>
+<h1>తెలుగు సింగిల్ స్ట్రోక్ ట్రేసింగ్</h1>
 <div id="progress"></div>
 
 <svg id="svg" viewBox="0 0 500 420">
@@ -92,7 +91,6 @@ button:hover{ background:#388e3c; }
 
 <script>
 
-// ALL TELUGU LETTERS
 const letters = [
 "అ","ఆ","ఇ","ఈ","ఉ","ఊ","ఋ","ౠ","ఎ","ఏ","ఐ","ఒ","ఓ","ఔ","అం","అః",
 "క","ఖ","గ","ఘ","ఙ",
@@ -105,7 +103,7 @@ const letters = [
 "ళ","క్ష","ఱ"
 ];
 
-let font = null;
+let font;
 let current = 0;
 let totalLength = 0;
 let currentLength = 0;
@@ -118,7 +116,6 @@ const svg = document.getElementById("svg");
 const progress = document.getElementById("progress");
 const message = document.getElementById("message");
 
-// Load Telugu font
 opentype.load(
 'https://raw.githubusercontent.com/googlefonts/noto-fonts/main/hinted/ttf/NotoSansTelugu/NotoSansTelugu-Regular.ttf',
 function(err, loadedFont){
@@ -130,20 +127,42 @@ function(err, loadedFont){
     }
 });
 
-function createPathFromLetter(letter){
+function getOuterContour(letter){
 
     const fontSize = 300;
     const path = font.getPath(letter, 50, 330, fontSize);
-    return path.toPathData(2);
+
+    // Take only first contour (outer shape)
+    const commands = path.commands;
+    let outerPath = "";
+    let started = false;
+
+    for(let cmd of commands){
+        if(cmd.type === "M" && !started){
+            outerPath += `M${cmd.x} ${cmd.y} `;
+            started = true;
+        }
+        else if(started && cmd.type !== "Z"){
+            if(cmd.type === "L")
+                outerPath += `L${cmd.x} ${cmd.y} `;
+            if(cmd.type === "C")
+                outerPath += `C${cmd.x1} ${cmd.y1}, ${cmd.x2} ${cmd.y2}, ${cmd.x} ${cmd.y} `;
+            if(cmd.type === "Q")
+                outerPath += `Q${cmd.x1} ${cmd.y1}, ${cmd.x} ${cmd.y} `;
+        }
+        else if(cmd.type === "Z"){
+            break; // stop after first contour
+        }
+    }
+
+    return outerPath;
 }
 
 function loadLetter(){
-    if(!font) return;
-
     message.textContent="";
     currentLength = 0;
 
-    const pathData = createPathFromLetter(letters[current]);
+    const pathData = getOuterContour(letters[current]);
     guide.setAttribute("d", pathData);
     trace.setAttribute("d", pathData);
 
@@ -166,7 +185,6 @@ function updateGlider(){
     const point = guide.getPointAtLength(currentLength);
     glider.setAttribute("cx", point.x);
     glider.setAttribute("cy", point.y);
-
     trace.style.strokeDashoffset = totalLength - currentLength;
 
     if(currentLength >= totalLength * 0.95){
@@ -182,7 +200,7 @@ function drag(e){
     if(!dragging) return;
     e.preventDefault();
 
-    currentLength += 5;
+    currentLength += 4;
     if(currentLength > totalLength)
         currentLength = totalLength;
 
@@ -221,11 +239,9 @@ function beep(){
     osc.stop(ctx.currentTime + 0.1);
 }
 
-// Mouse & Touch
 svg.addEventListener("mousedown", startDrag);
 svg.addEventListener("mouseup", stopDrag);
 svg.addEventListener("mousemove", drag);
-
 svg.addEventListener("touchstart", startDrag);
 svg.addEventListener("touchend", stopDrag);
 svg.addEventListener("touchmove", drag);
