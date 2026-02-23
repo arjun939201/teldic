@@ -3,7 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Telugu Educational Tracing</title>
+<title>Telugu Letter Tracing</title>
+
+<script src="https://cdn.jsdelivr.net/npm/opentype.js@latest/dist/opentype.min.js"></script>
 
 <style>
 body{
@@ -13,13 +15,17 @@ body{
     text-align:center;
 }
 h1{margin:15px 0 5px;}
-#progress{font-weight:bold;margin-bottom:8px;}
+
+#progress{
+    font-weight:bold;
+    margin-bottom:8px;
+}
 
 svg{
     width:95%;
     max-width:500px;
-    height:400px;
-    background:#ffffff;
+    height:420px;
+    background:white;
     border-radius:15px;
     box-shadow:0 4px 10px rgba(0,0,0,0.1);
     touch-action:none;
@@ -28,7 +34,7 @@ svg{
 .guide{
     fill:none;
     stroke:#ddd;
-    stroke-width:8;
+    stroke-width:6;
     stroke-linecap:round;
     stroke-linejoin:round;
 }
@@ -36,7 +42,7 @@ svg{
 .trace{
     fill:none;
     stroke:#4CAF50;
-    stroke-width:8;
+    stroke-width:6;
     stroke-linecap:round;
     stroke-linejoin:round;
 }
@@ -54,7 +60,8 @@ button{
     background:#4CAF50;
     color:white;
 }
-button:hover{background:#388e3c;}
+
+button:hover{ background:#388e3c; }
 
 #message{
     font-size:18px;
@@ -69,10 +76,10 @@ button:hover{background:#388e3c;}
 <h1>తెలుగు అక్షరాల ట్రేసింగ్</h1>
 <div id="progress"></div>
 
-<svg id="svg" viewBox="0 0 400 400">
+<svg id="svg" viewBox="0 0 500 420">
     <path id="guide" class="guide"></path>
     <path id="trace" class="trace"></path>
-    <circle id="glider" r="10"></circle>
+    <circle id="glider" r="8"></circle>
 </svg>
 
 <div>
@@ -98,6 +105,7 @@ const letters = [
 "ళ","క్ష","ఱ"
 ];
 
+let font = null;
 let current = 0;
 let totalLength = 0;
 let currentLength = 0;
@@ -110,77 +118,71 @@ const svg = document.getElementById("svg");
 const progress = document.getElementById("progress");
 const message = document.getElementById("message");
 
-/*
-Educational Stroke Generator
-Creates different structured shapes so letters
-are not identical oval shapes.
-Shapes rotate between curve, loop, hook,
-and double curve patterns.
-*/
-function generateEducationalPath(index){
-    const type = index % 5;
-
-    switch(type){
-        case 0:
-            return "M120 200 Q200 80 280 200 Q200 320 120 200";
-        case 1:
-            return "M150 120 Q250 120 250 200 Q250 280 150 280";
-        case 2:
-            return "M120 160 Q200 80 280 160 M200 160 Q200 250 280 280";
-        case 3:
-            return "M120 250 Q200 100 280 250 M160 220 Q200 300 240 220";
-        case 4:
-            return "M140 180 Q200 80 260 180 Q200 340 140 180 M200 180 L200 300";
+// Load Telugu font
+opentype.load(
+'https://raw.githubusercontent.com/googlefonts/noto-fonts/main/hinted/ttf/NotoSansTelugu/NotoSansTelugu-Regular.ttf',
+function(err, loadedFont){
+    if(err){
+        alert("Font failed to load.");
+    }else{
+        font = loadedFont;
+        loadLetter();
     }
+});
+
+function createPathFromLetter(letter){
+
+    const fontSize = 300;
+    const path = font.getPath(letter, 50, 330, fontSize);
+    return path.toPathData(2);
 }
 
 function loadLetter(){
+    if(!font) return;
+
     message.textContent="";
-    const pathData = generateEducationalPath(current);
-    guide.setAttribute("d",pathData);
-    trace.setAttribute("d",pathData);
+    currentLength = 0;
+
+    const pathData = createPathFromLetter(letters[current]);
+    guide.setAttribute("d", pathData);
+    trace.setAttribute("d", pathData);
 
     totalLength = guide.getTotalLength();
+
     guide.style.strokeDasharray = totalLength;
     guide.style.strokeDashoffset = 0;
 
     trace.style.strokeDasharray = totalLength;
     trace.style.strokeDashoffset = totalLength;
 
-    currentLength = 0;
-
     const start = guide.getPointAtLength(0);
-    glider.setAttribute("cx",start.x);
-    glider.setAttribute("cy",start.y);
+    glider.setAttribute("cx", start.x);
+    glider.setAttribute("cy", start.y);
 
     progress.textContent = `Letter ${current+1} of ${letters.length} : ${letters[current]}`;
 }
 
 function updateGlider(){
     const point = guide.getPointAtLength(currentLength);
-    glider.setAttribute("cx",point.x);
-    glider.setAttribute("cy",point.y);
+    glider.setAttribute("cx", point.x);
+    glider.setAttribute("cy", point.y);
 
     trace.style.strokeDashoffset = totalLength - currentLength;
 
     if(currentLength >= totalLength * 0.95){
-        message.textContent="Well done!";
+        message.textContent = "Well done!";
         beep();
     }
 }
 
-function startDrag(e){
-    dragging=true;
-}
-function stopDrag(){
-    dragging=false;
-}
+function startDrag(){ dragging = true; }
+function stopDrag(){ dragging = false; }
+
 function drag(e){
     if(!dragging) return;
     e.preventDefault();
 
-    currentLength += 4;
-
+    currentLength += 5;
     if(currentLength > totalLength)
         currentLength = totalLength;
 
@@ -188,11 +190,11 @@ function drag(e){
 }
 
 function resetTracing(){
-    currentLength=0;
+    currentLength = 0;
     trace.style.strokeDashoffset = totalLength;
     const start = guide.getPointAtLength(0);
-    glider.setAttribute("cx",start.x);
-    glider.setAttribute("cy",start.y);
+    glider.setAttribute("cx", start.x);
+    glider.setAttribute("cy", start.y);
     message.textContent="";
 }
 
@@ -214,20 +216,19 @@ function beep(){
     const ctx = new (window.AudioContext||window.webkitAudioContext)();
     const osc = ctx.createOscillator();
     osc.connect(ctx.destination);
-    osc.frequency.value=600;
+    osc.frequency.value = 600;
     osc.start();
-    osc.stop(ctx.currentTime+0.1);
+    osc.stop(ctx.currentTime + 0.1);
 }
 
-svg.addEventListener("mousedown",startDrag);
-svg.addEventListener("mouseup",stopDrag);
-svg.addEventListener("mousemove",drag);
+// Mouse & Touch
+svg.addEventListener("mousedown", startDrag);
+svg.addEventListener("mouseup", stopDrag);
+svg.addEventListener("mousemove", drag);
 
-svg.addEventListener("touchstart",startDrag);
-svg.addEventListener("touchend",stopDrag);
-svg.addEventListener("touchmove",drag);
-
-loadLetter();
+svg.addEventListener("touchstart", startDrag);
+svg.addEventListener("touchend", stopDrag);
+svg.addEventListener("touchmove", drag);
 
 </script>
 
