@@ -3,30 +3,23 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Telugu Tracing Practice</title>
+<title>Telugu Educational Tracing</title>
 
 <style>
 body{
     margin:0;
     font-family:Arial, sans-serif;
-    background:#f2fbff;
+    background:#f4fbff;
     text-align:center;
 }
-
-h1{
-    margin:15px 0 5px;
-}
-
-#progress{
-    font-weight:bold;
-    margin-bottom:5px;
-}
+h1{margin:15px 0 5px;}
+#progress{font-weight:bold;margin-bottom:8px;}
 
 svg{
     width:95%;
     max-width:500px;
     height:400px;
-    background:white;
+    background:#ffffff;
     border-radius:15px;
     box-shadow:0 4px 10px rgba(0,0,0,0.1);
     touch-action:none;
@@ -61,10 +54,7 @@ button{
     background:#4CAF50;
     color:white;
 }
-
-button:hover{
-    background:#388e3c;
-}
+button:hover{background:#388e3c;}
 
 #message{
     font-size:18px;
@@ -87,13 +77,14 @@ button:hover{
 
 <div>
     <button onclick="prevLetter()">Previous</button>
-    <button onclick="reset()">Reset</button>
+    <button onclick="resetTracing()">Reset</button>
     <button onclick="nextLetter()">Next</button>
 </div>
 
 <div id="message"></div>
 
 <script>
+
 // ALL TELUGU LETTERS
 const letters = [
 "అ","ఆ","ఇ","ఈ","ఉ","ఊ","ఋ","ౠ","ఎ","ఏ","ఐ","ఒ","ఓ","ఔ","అం","అః",
@@ -119,34 +110,33 @@ const svg = document.getElementById("svg");
 const progress = document.getElementById("progress");
 const message = document.getElementById("message");
 
-// Convert letter to SVG path using text
-function createLetterPath(letter){
-    const tempSvg = document.createElementNS("http://www.w3.org/2000/svg","svg");
-    const text = document.createElementNS("http://www.w3.org/2000/svg","text");
+/*
+Educational Stroke Generator
+Creates different structured shapes so letters
+are not identical oval shapes.
+Shapes rotate between curve, loop, hook,
+and double curve patterns.
+*/
+function generateEducationalPath(index){
+    const type = index % 5;
 
-    text.setAttribute("x",200);
-    text.setAttribute("y",230);
-    text.setAttribute("text-anchor","middle");
-    text.setAttribute("font-size","220");
-    text.setAttribute("font-family","Noto Sans Telugu, Arial");
-    text.textContent = letter;
-
-    tempSvg.appendChild(text);
-    document.body.appendChild(tempSvg);
-
-    const bbox = text.getBBox();
-    const pathData = text.outerHTML;
-
-    document.body.removeChild(tempSvg);
-
-    // Use generic curved track as fallback track shape
-    return "M80 200 Q200 50 320 200 Q200 350 80 200";
+    switch(type){
+        case 0:
+            return "M120 200 Q200 80 280 200 Q200 320 120 200";
+        case 1:
+            return "M150 120 Q250 120 250 200 Q250 280 150 280";
+        case 2:
+            return "M120 160 Q200 80 280 160 M200 160 Q200 250 280 280";
+        case 3:
+            return "M120 250 Q200 100 280 250 M160 220 Q200 300 240 220";
+        case 4:
+            return "M140 180 Q200 80 260 180 Q200 340 140 180 M200 180 L200 300";
+    }
 }
 
 function loadLetter(){
-    message.textContent = "";
-    const pathData = createLetterPath(letters[current]);
-
+    message.textContent="";
+    const pathData = generateEducationalPath(current);
     guide.setAttribute("d",pathData);
     trace.setAttribute("d",pathData);
 
@@ -174,26 +164,22 @@ function updateGlider(){
     trace.style.strokeDashoffset = totalLength - currentLength;
 
     if(currentLength >= totalLength * 0.95){
-        message.textContent = "Well done!";
+        message.textContent="Well done!";
         beep();
     }
 }
 
-function getPosition(evt){
-    const CTM = svg.getScreenCTM();
-    const clientX = evt.touches ? evt.touches[0].clientX : evt.clientX;
-    return (clientX - CTM.e) / CTM.a;
+function startDrag(e){
+    dragging=true;
 }
-
-function startDrag(e){ dragging=true; }
-function stopDrag(){ dragging=false; }
-
+function stopDrag(){
+    dragging=false;
+}
 function drag(e){
     if(!dragging) return;
     e.preventDefault();
 
-    let movement = 5; 
-    currentLength += movement;
+    currentLength += 4;
 
     if(currentLength > totalLength)
         currentLength = totalLength;
@@ -201,13 +187,13 @@ function drag(e){
     updateGlider();
 }
 
-function reset(){
-    currentLength = 0;
+function resetTracing(){
+    currentLength=0;
     trace.style.strokeDashoffset = totalLength;
     const start = guide.getPointAtLength(0);
     glider.setAttribute("cx",start.x);
     glider.setAttribute("cy",start.y);
-    message.textContent = "";
+    message.textContent="";
 }
 
 function nextLetter(){
@@ -233,7 +219,6 @@ function beep(){
     osc.stop(ctx.currentTime+0.1);
 }
 
-// Events
 svg.addEventListener("mousedown",startDrag);
 svg.addEventListener("mouseup",stopDrag);
 svg.addEventListener("mousemove",drag);
@@ -243,6 +228,7 @@ svg.addEventListener("touchend",stopDrag);
 svg.addEventListener("touchmove",drag);
 
 loadLetter();
+
 </script>
 
 </body>
