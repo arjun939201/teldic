@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Telugu Letter Tracing</title>
+<title>Telugu Letter Tracing with Demo</title>
 
 <script src="https://cdn.jsdelivr.net/npm/opentype.js@latest/dist/opentype.min.js"></script>
 
@@ -11,23 +11,25 @@
 body{
     margin:0;
     font-family:Arial, sans-serif;
-    background:#f4fbff;
+    background:#f2fbff;
     text-align:center;
 }
-h1{margin:15px 0 5px;}
 
-#progress{
-    font-weight:bold;
-    margin-bottom:8px;
+h1{ margin:10px 0; }
+
+.container{
+    width:95%;
+    max-width:550px;
+    margin:auto;
 }
 
 svg{
-    width:95%;
-    max-width:500px;
-    height:420px;
+    width:100%;
+    height:250px;
     background:white;
-    border-radius:15px;
-    box-shadow:0 4px 10px rgba(0,0,0,0.1);
+    border-radius:12px;
+    margin:10px 0;
+    box-shadow:0 4px 8px rgba(0,0,0,0.1);
     touch-action:none;
 }
 
@@ -35,7 +37,6 @@ svg{
     fill:none;
     stroke:#ddd;
     stroke-width:6;
-    stroke-linecap:round;
     stroke-linejoin:round;
 }
 
@@ -43,56 +44,65 @@ svg{
     fill:none;
     stroke:#4CAF50;
     stroke-width:6;
-    stroke-linecap:round;
     stroke-linejoin:round;
 }
 
-#glider{
+.demoTrace{
+    fill:none;
+    stroke:#2196F3;
+    stroke-width:6;
+}
+
+.glider{
     fill:#ff5722;
 }
 
 button{
-    padding:8px 18px;
-    margin:8px;
+    padding:8px 16px;
+    margin:5px;
     border:none;
-    border-radius:8px;
-    font-size:16px;
+    border-radius:6px;
     background:#4CAF50;
     color:white;
 }
 
-button:hover{ background:#388e3c; }
-
-#message{
-    font-size:18px;
-    color:green;
-    margin-top:5px;
+#progress{
+    font-weight:bold;
 }
 </style>
 </head>
-
 <body>
 
-<h1>తెలుగు అక్షరాల ట్రేసింగ్</h1>
+<h1>తెలుగు ట్రేసింగ్</h1>
+
+<div class="container">
+
 <div id="progress"></div>
 
-<svg id="svg" viewBox="0 0 500 420">
+<!-- DEMO SVG -->
+<svg id="demoSvg" viewBox="0 0 500 250">
+    <path id="demoGuide" class="guide"></path>
+    <path id="demoTrace" class="demoTrace"></path>
+    <circle id="demoGlider" class="glider" r="7"></circle>
+</svg>
+
+<!-- PRACTICE SVG -->
+<svg id="practiceSvg" viewBox="0 0 500 250">
     <path id="guide" class="guide"></path>
     <path id="trace" class="trace"></path>
-    <circle id="glider" r="8"></circle>
+    <circle id="glider" class="glider" r="7"></circle>
 </svg>
 
 <div>
-    <button onclick="prevLetter()">Previous</button>
-    <button onclick="resetTracing()">Reset</button>
-    <button onclick="nextLetter()">Next</button>
+<button onclick="prevLetter()">Previous</button>
+<button onclick="resetPractice()">Reset</button>
+<button onclick="nextLetter()">Next</button>
 </div>
 
-<div id="message"></div>
+</div>
 
 <script>
 
-// ALL TELUGU LETTERS
 const letters = [
 "అ","ఆ","ఇ","ఈ","ఉ","ఊ","ఋ","ౠ","ఎ","ఏ","ఐ","ఒ","ఓ","ఔ","అం","అః",
 "క","ఖ","గ","ఘ","ఙ",
@@ -105,97 +115,124 @@ const letters = [
 "ళ","క్ష","ఱ"
 ];
 
-let font = null;
+let font;
 let current = 0;
+
+// Practice variables
 let totalLength = 0;
 let currentLength = 0;
 let dragging = false;
 
+// Demo variables
+let demoLength = 0;
+let demoProgress = 0;
+
 const guide = document.getElementById("guide");
 const trace = document.getElementById("trace");
 const glider = document.getElementById("glider");
-const svg = document.getElementById("svg");
-const progress = document.getElementById("progress");
-const message = document.getElementById("message");
+const practiceSvg = document.getElementById("practiceSvg");
 
-// Load Telugu font
+const demoGuide = document.getElementById("demoGuide");
+const demoTrace = document.getElementById("demoTrace");
+const demoGlider = document.getElementById("demoGlider");
+
+const progress = document.getElementById("progress");
+
 opentype.load(
 'https://raw.githubusercontent.com/googlefonts/noto-fonts/main/hinted/ttf/NotoSansTelugu/NotoSansTelugu-Regular.ttf',
 function(err, loadedFont){
     if(err){
-        alert("Font failed to load.");
+        alert("Font load failed");
     }else{
         font = loadedFont;
         loadLetter();
+        animateDemo();
     }
 });
 
-function createPathFromLetter(letter){
-
-    const fontSize = 300;
-    const path = font.getPath(letter, 50, 330, fontSize);
+function createPath(letter){
+    const path = font.getPath(letter, 50, 200, 180);
     return path.toPathData(2);
 }
 
 function loadLetter(){
-    if(!font) return;
 
-    message.textContent="";
-    currentLength = 0;
+    const pathData = createPath(letters[current]);
 
-    const pathData = createPathFromLetter(letters[current]);
+    // Practice
     guide.setAttribute("d", pathData);
     trace.setAttribute("d", pathData);
-
     totalLength = guide.getTotalLength();
-
-    guide.style.strokeDasharray = totalLength;
-    guide.style.strokeDashoffset = 0;
-
     trace.style.strokeDasharray = totalLength;
     trace.style.strokeDashoffset = totalLength;
+    currentLength = 0;
+    setPracticeGlider(0);
 
-    const start = guide.getPointAtLength(0);
-    glider.setAttribute("cx", start.x);
-    glider.setAttribute("cy", start.y);
+    // Demo
+    demoGuide.setAttribute("d", pathData);
+    demoTrace.setAttribute("d", pathData);
+    demoLength = demoGuide.getTotalLength();
+    demoTrace.style.strokeDasharray = demoLength;
+    demoTrace.style.strokeDashoffset = demoLength;
+    demoProgress = 0;
 
-    progress.textContent = `Letter ${current+1} of ${letters.length} : ${letters[current]}`;
+    progress.textContent =
+        `Letter ${current+1} of ${letters.length} : ${letters[current]}`;
 }
 
-function updateGlider(){
-    const point = guide.getPointAtLength(currentLength);
-    glider.setAttribute("cx", point.x);
-    glider.setAttribute("cy", point.y);
-
-    trace.style.strokeDashoffset = totalLength - currentLength;
-
-    if(currentLength >= totalLength * 0.95){
-        message.textContent = "Well done!";
-        beep();
-    }
+function setPracticeGlider(len){
+    const p = guide.getPointAtLength(len);
+    glider.setAttribute("cx", p.x);
+    glider.setAttribute("cy", p.y);
 }
 
-function startDrag(){ dragging = true; }
-function stopDrag(){ dragging = false; }
+function setDemoGlider(len){
+    const p = demoGuide.getPointAtLength(len);
+    demoGlider.setAttribute("cx", p.x);
+    demoGlider.setAttribute("cy", p.y);
+}
 
-function drag(e){
+function resetPractice(){
+    currentLength = 0;
+    trace.style.strokeDashoffset = totalLength;
+    setPracticeGlider(0);
+}
+
+// PRACTICE CONTROL (NO AUTO MOVE)
+practiceSvg.addEventListener("mousedown", ()=> dragging=true);
+practiceSvg.addEventListener("mouseup", ()=> dragging=false);
+practiceSvg.addEventListener("touchstart", ()=> dragging=true);
+practiceSvg.addEventListener("touchend", ()=> dragging=false);
+
+practiceSvg.addEventListener("mousemove", movePractice);
+practiceSvg.addEventListener("touchmove", movePractice);
+
+function movePractice(e){
     if(!dragging) return;
     e.preventDefault();
 
-    currentLength += 5;
+    currentLength += 4;
     if(currentLength > totalLength)
         currentLength = totalLength;
 
-    updateGlider();
+    trace.style.strokeDashoffset = totalLength - currentLength;
+    setPracticeGlider(currentLength);
 }
 
-function resetTracing(){
-    currentLength = 0;
-    trace.style.strokeDashoffset = totalLength;
-    const start = guide.getPointAtLength(0);
-    glider.setAttribute("cx", start.x);
-    glider.setAttribute("cy", start.y);
-    message.textContent="";
+// DEMO AUTO LOOP
+function animateDemo(){
+
+    demoProgress += 2;
+
+    if(demoProgress > demoLength){
+        demoProgress = 0;
+        demoTrace.style.strokeDashoffset = demoLength;
+    }
+
+    demoTrace.style.strokeDashoffset = demoLength - demoProgress;
+    setDemoGlider(demoProgress);
+
+    requestAnimationFrame(animateDemo);
 }
 
 function nextLetter(){
@@ -211,24 +248,6 @@ function prevLetter(){
         loadLetter();
     }
 }
-
-function beep(){
-    const ctx = new (window.AudioContext||window.webkitAudioContext)();
-    const osc = ctx.createOscillator();
-    osc.connect(ctx.destination);
-    osc.frequency.value = 600;
-    osc.start();
-    osc.stop(ctx.currentTime + 0.1);
-}
-
-// Mouse & Touch
-svg.addEventListener("mousedown", startDrag);
-svg.addEventListener("mouseup", stopDrag);
-svg.addEventListener("mousemove", drag);
-
-svg.addEventListener("touchstart", startDrag);
-svg.addEventListener("touchend", stopDrag);
-svg.addEventListener("touchmove", drag);
 
 </script>
 
