@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="te">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Telugu Letter Tracing Practice</title>
+
+<style>
+body {
+    margin: 0;
+    font-family: 'Noto Sans Telugu', sans-serif;
+    background: #f0f9ff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+h1 {
+    margin-top: 15px;
+    color: #333;
+}
+
+#container {
+    width: 95%;
+    max-width: 500px;
+    text-align: center;
+}
+
+svg {
+    width: 100%;
+    height: 400px;
+    background: #ffffff;
+    border-radius: 15px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    touch-action: none;
+}
+
+.guide-path {
+    fill: none;
+    stroke: #ddd;
+    stroke-width: 8;
+    stroke-linecap: round;
+}
+
+.trace-path {
+    fill: none;
+    stroke: #4CAF50;
+    stroke-width: 8;
+    stroke-linecap: round;
+}
+
+.glider {
+    fill: #ff5722;
+    cursor: pointer;
+}
+
+.controls {
+    margin-top: 15px;
+}
+
+button {
+    padding: 10px 20px;
+    margin: 5px;
+    border-radius: 8px;
+    border: none;
+    background: #4CAF50;
+    color: white;
+    font-size: 16px;
+}
+
+button:hover {
+    background: #388E3C;
+}
+
+#progress {
+    margin: 8px;
+    font-weight: bold;
+}
+
+#message {
+    font-size: 18px;
+    color: green;
+    margin-top: 10px;
+}
+</style>
+</head>
+
+<body>
+<h1>తెలుగు అక్షరాల ట్రేసింగ్</h1>
+
+<div id="container">
+
+<div id="progress"></div>
+
+<svg id="svg" viewBox="0 0 400 400">
+    <path id="guide" class="guide-path"></path>
+    <path id="trace" class="trace-path"></path>
+    <circle id="glider" class="glider" r="10"></circle>
+</svg>
+
+<div class="controls">
+    <button onclick="prevLetter()">Previous</button>
+    <button onclick="resetTracing()">Reset</button>
+    <button onclick="nextLetter()">Next</button>
+</div>
+
+<div id="message"></div>
+
+</div>
+
+<script>
+// ALL TELUGU LETTERS
+const letters = [
+"అ","ఆ","ఇ","ఈ","ఉ","ఊ","ఋ","ౠ","ఎ","ఏ","ఐ","ఒ","ఓ","ఔ","అం","అః",
+"క","ఖ","గ","ఘ","ఙ",
+"చ","ఛ","జ","ఝ","ఞ",
+"ట","ఠ","డ","ఢ","ణ",
+"త","థ","ద","ధ","న",
+"ప","ఫ","బ","భ","మ",
+"య","ర","ల","వ",
+"శ","ష","స","హ",
+"ళ","క్ష","ఱ"
+];
+
+let currentIndex = 0;
+
+const svg = document.getElementById("svg");
+const guide = document.getElementById("guide");
+const trace = document.getElementById("trace");
+const glider = document.getElementById("glider");
+const progressText = document.getElementById("progress");
+const message = document.getElementById("message");
+
+let drawing = false;
+let tracedLength = 0;
+let totalLength = 0;
+
+// Generate generic curved SVG path (placeholder style)
+function generatePath() {
+    return "M100 200 Q200 50 300 200 Q200 350 100 200";
+}
+
+function loadLetter() {
+    const letter = letters[currentIndex];
+
+    // Create a path shape (visual guide)
+    const pathData = generatePath();
+    guide.setAttribute("d", pathData);
+    trace.setAttribute("d", "");
+    message.textContent = "";
+
+    totalLength = guide.getTotalLength();
+    tracedLength = 0;
+
+    const startPoint = guide.getPointAtLength(0);
+    glider.setAttribute("cx", startPoint.x);
+    glider.setAttribute("cy", startPoint.y);
+
+    progressText.textContent = 
+        `Letter ${currentIndex + 1} of ${letters.length} : ${letter}`;
+}
+
+function resetTracing() {
+    trace.setAttribute("d", "");
+    tracedLength = 0;
+    const start = guide.getPointAtLength(0);
+    glider.setAttribute("cx", start.x);
+    glider.setAttribute("cy", start.y);
+    message.textContent = "";
+}
+
+function nextLetter() {
+    if (currentIndex < letters.length - 1) {
+        currentIndex++;
+        loadLetter();
+    }
+}
+
+function prevLetter() {
+    if (currentIndex > 0) {
+        currentIndex--;
+        loadLetter();
+    }
+}
+
+function getMousePosition(evt) {
+    const CTM = svg.getScreenCTM();
+    if (evt.touches) {
+        return {
+            x: (evt.touches[0].clientX - CTM.e) / CTM.a,
+            y: (evt.touches[0].clientY - CTM.f) / CTM.d
+        };
+    } else {
+        return {
+            x: (evt.clientX - CTM.e) / CTM.a,
+            y: (evt.clientY - CTM.f) / CTM.d
+        };
+    }
+}
+
+function checkProximity(x, y) {
+    const segments = 100;
+    for (let i = 0; i <= segments; i++) {
+        const point = guide.getPointAtLength((i / segments) * totalLength);
+        const dx = point.x - x;
+        const dy = point.y - y;
+        if (Math.sqrt(dx * dx + dy * dy) < 20) {
+            tracedLength += totalLength / segments;
+            return true;
+        }
+    }
+    return false;
+}
+
+function startDraw(e) {
+    drawing = true;
+}
+
+function endDraw() {
+    drawing = false;
+}
+
+function draw(e) {
+    if (!drawing) return;
+
+    const pos = getMousePosition(e);
+    const x = pos.x;
+    const y = pos.y;
+
+    if (checkProximity(x, y)) {
+        const currentPath = trace.getAttribute("d");
+        trace.setAttribute("d", currentPath + ` L ${x} ${y}`);
+    }
+
+    glider.setAttribute("cx", x);
+    glider.setAttribute("cy", y);
+
+    if (tracedLength >= totalLength * 0.7) {
+        message.textContent = "Well done!";
+        playSound();
+    }
+}
+
+function playSound() {
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    const oscillator = audioCtx.createOscillator();
+    oscillator.connect(audioCtx.destination);
+    oscillator.frequency.value = 600;
+    oscillator.start();
+    oscillator.stop(audioCtx.currentTime + 0.1);
+}
+
+// Mouse
+svg.addEventListener("mousedown", startDraw);
+svg.addEventListener("mouseup", endDraw);
+svg.addEventListener("mousemove", draw);
+
+// Touch
+svg.addEventListener("touchstart", startDraw);
+svg.addEventListener("touchend", endDraw);
+svg.addEventListener("touchmove", draw);
+
+loadLetter();
+</script>
+
+</body>
+</html>
