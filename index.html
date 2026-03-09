@@ -284,7 +284,7 @@ let vocabIndex = 0;
 
 async function loadVocabulary() {
   try {
-    let res = await fetch('vocabulary.html');
+    let res = await fetch('language/vocabulary.html');
     let html = await res.text();
 
     // Create a DOM parser to extract <section> elements
